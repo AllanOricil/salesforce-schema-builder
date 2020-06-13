@@ -13,7 +13,7 @@
         "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
     },
     "icon": ".images/icon.png",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "engines": {
         "vscode": "^1.32.0"
     },
@@ -26,7 +26,8 @@
     ],
     "main": "./src/extension.js",
     "contributes": {
-        "commands": [{
+        "commands": [
+            {
                 "command": "example.webview",
                 "title": "Example: WebView"
             },
