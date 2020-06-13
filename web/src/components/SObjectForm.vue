@@ -1,5 +1,5 @@
 <template>
-  <form class="m-2 my-5">
+  <form class="m-2 mb-5">
     <h2 class="text-left text-uppercase mb-3">New Object</h2>
     <div class="form-row">
       <div class="form-group col-12">
@@ -48,6 +48,10 @@
           id="sObjectRecordName"
           v-model="sObjectDefinition.recordName"
         />
+        <small
+          id="passwordHelpBlock"
+          class="form-text text-muted"
+        >The Record Name appears in page layouts, key lists, related lists, lookups, and search results</small>
       </div>
       <div class="form-group col-12">
         <label for="sObjectDataType">Data Type</label>
@@ -56,15 +60,35 @@
           <option>Auto Number</option>
         </select>
       </div>
+      <div v-if="sObjectDefinition.dataType === 'Auto Number'" class="form-group col-12">
+        <label for="sObjectDisplayFormat">Display Format</label>
+        <input
+          type="text"
+          class="form-control"
+          id="sObjectDisplayFormat"
+          v-model="sObjectDefinition.displayFormat"
+        />
+        <small id="passwordHelpBlock" class="form-text text-muted">A-{0000}</small>
+      </div>
+      <div v-if="sObjectDefinition.dataType === 'Auto Number'" class="form-group col-12">
+        <label for="Starting Number">Starting Number</label>
+        <input
+          type="number"
+          class="form-control"
+          id="Starting Number"
+          min="0"
+          v-model="sObjectDefinition.startingNumber"
+        />
+      </div>
       <div class="form-group col-12">
         <div class="form-check">
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowReports"
             v-model="sObjectDefinition.allowReports"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow Reports</label>
+          <label class="form-check-label" for="sObjectAllowReports">Allow Reports</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -72,10 +96,10 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowActivities"
             v-model="sObjectDefinition.allowActivities"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow Activities</label>
+          <label class="form-check-label" for="sObjectAllowActivities">Allow Activities</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -83,10 +107,10 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectTrackFieldHistory"
             v-model="sObjectDefinition.trackFieldHistory"
           />
-          <label class="form-check-label" for="defaultCheck1">Track Field History</label>
+          <label class="form-check-label" for="sObjectTrackFieldHistory">Track Field History</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -94,10 +118,10 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowInChatterGroups"
             v-model="sObjectDefinition.allowInChatterGroups"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow in Chatter Groups</label>
+          <label class="form-check-label" for="sObjectAllowInChatterGroups">Allow in Chatter Groups</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -105,10 +129,10 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowSharing"
             v-model="sObjectDefinition.allowSharing"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow Sharing</label>
+          <label class="form-check-label" for="sObjectAllowSharing">Allow Sharing</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -116,10 +140,10 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowBulkApiAccess"
             v-model="sObjectDefinition.allowBulkApiAccess"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow Bulk API Access</label>
+          <label class="form-check-label" for="sObjectAllowBulkApiAccess">Allow Bulk API Access</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -127,10 +151,13 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowStreamingApiAccess"
             v-model="sObjectDefinition.allowStreamingApiAccess"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow Streaming API Access</label>
+          <label
+            class="form-check-label"
+            for="sObjectAllowStreamingApiAccess"
+          >Allow Streaming API Access</label>
         </div>
       </div>
 
@@ -150,10 +177,10 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAllowSearch"
             v-model="sObjectDefinition.allowSearch"
           />
-          <label class="form-check-label" for="defaultCheck1">Allow Search</label>
+          <label class="form-check-label" for="sObjectAllowSearch">Allow Search</label>
         </div>
       </div>
       <div class="form-group col-12">
@@ -161,25 +188,18 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="defaultCheck1"
+            id="sObjectAddNotesAndAttachments"
             v-model="sObjectDefinition.addNotesAndAttachements"
           />
-          <label class="form-check-label" for="defaultCheck1">Add Notes and Attachments</label>
+          <label
+            class="form-check-label"
+            for="sObjectAddNotesAndAttachments"
+          >Add Notes and Attachments</label>
         </div>
       </div>
-      <div class="form-group col-12">
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="defaultCheck1"
-            v-model="sObjectDefinition.launchCustomTabWizard"
-          />
-          <label class="form-check-label" for="defaultCheck1">Create Custom Tab?</label>
-        </div>
-      </div>
+
+      <button type="submit" class="btn btn-primary col-12" @click="sendFormDataToVSCode()">Create</button>
     </div>
-    <button type="submit" class="btn btn-primary" @click="sendFormDataToVSCode()">Create</button>
   </form>
 </template>
 
@@ -205,7 +225,6 @@ export default {
         allowStreamingApiAccess: false,
         allowSearch: false,
         addNotesAndAttachements: false,
-        launchCustomTabWizard: false,
         deploymentStatus: "Deployed"
       }
     };
@@ -273,6 +292,7 @@ button {
   background-color: var(--vscode-button-background);
   color: var(--vscode-button-foreground);
   border: none;
+  border-radius: 0;
 }
 button:focus,
 button:hover,

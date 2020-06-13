@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row flex-grow">
-      <div id="forms-panel" class="col-3 vh-100">
+      <div id="forms-panel" class="sidenav col-3 h-100">
         <s-object-form></s-object-form>
       </div>
       <div class="col-9"></div>
@@ -44,5 +44,16 @@ export default {
 <style scoped>
 #forms-panel {
   background-color: var(--vscode-sideBar-background) !important;
+}
+
+.sidenav {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
 }
 </style>
