@@ -51,7 +51,7 @@
         <small
           id="passwordHelpBlock"
           class="form-text text-muted"
-        >The Record Name appears in page layouts, key lists, related lists, lookups, and search results</small>
+        >It appears in page layouts, key and related lists, lookups, and search results.</small>
       </div>
       <div class="form-group col-12">
         <label for="sObjectDataType">Data Type</label>
@@ -81,84 +81,88 @@
         />
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowReports">
+          Allow Reports
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowReports"
             v-model="sObjectDefinition.allowReports"
           />
-          <label class="form-check-label" for="sObjectAllowReports">Allow Reports</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowActivities">
+          Allow Activities
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowActivities"
             v-model="sObjectDefinition.allowActivities"
           />
-          <label class="form-check-label" for="sObjectAllowActivities">Allow Activities</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectTrackFieldHistory">
+          Track Field History
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectTrackFieldHistory"
             v-model="sObjectDefinition.trackFieldHistory"
           />
-          <label class="form-check-label" for="sObjectTrackFieldHistory">Track Field History</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowInChatterGroups">
+          Allow in Chatter Groups
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowInChatterGroups"
             v-model="sObjectDefinition.allowInChatterGroups"
           />
-          <label class="form-check-label" for="sObjectAllowInChatterGroups">Allow in Chatter Groups</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowSharing">
+          Allow Sharing
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowSharing"
             v-model="sObjectDefinition.allowSharing"
           />
-          <label class="form-check-label" for="sObjectAllowSharing">Allow Sharing</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowBulkApiAccess">
+          Allow Bulk API Access
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowBulkApiAccess"
             v-model="sObjectDefinition.allowBulkApiAccess"
           />
-          <label class="form-check-label" for="sObjectAllowBulkApiAccess">Allow Bulk API Access</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowStreamingApiAccess">
+          Allow Streaming API Access
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowStreamingApiAccess"
             v-model="sObjectDefinition.allowStreamingApiAccess"
           />
-          <label
-            class="form-check-label"
-            for="sObjectAllowStreamingApiAccess"
-          >Allow Streaming API Access</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
 
       <div class="form-group col-12">
@@ -173,29 +177,28 @@
         </select>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAllowSearch">
+          Allow Search
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAllowSearch"
             v-model="sObjectDefinition.allowSearch"
           />
-          <label class="form-check-label" for="sObjectAllowSearch">Allow Search</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
       <div class="form-group col-12">
-        <div class="form-check">
+        <label class="form-check-label container" for="sObjectAddNotesAndAttachments">
+          Add Notes and Attachments
           <input
             class="form-check-input"
             type="checkbox"
             id="sObjectAddNotesAndAttachments"
             v-model="sObjectDefinition.addNotesAndAttachements"
           />
-          <label
-            class="form-check-label"
-            for="sObjectAddNotesAndAttachments"
-          >Add Notes and Attachments</label>
-        </div>
+          <span class="checkmark"></span>
+        </label>
       </div>
 
       <button type="submit" class="btn btn-primary col-12" @click="sendFormDataToVSCode()">Create</button>
@@ -253,14 +256,18 @@ export default {
 </script>
 
 <style scoped>
-input {
+input,
+textarea,
+select {
   border: 1px solid transparent !important;
   border-radius: 0;
   background-color: var(--vscode-input-background);
   color: var(--vscode-input-foreground);
 }
 
-input:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border: 1px solid var(--vscode-focusBorder) !important;
   background-color: var(--vscode-input-background);
@@ -300,5 +307,71 @@ button:active {
   border: none !important;
   background-color: var(--vscode-button-hoverBackground) !important;
   box-shadow: none !important;
+}
+
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: var(--vscode-settings-checkboxBackground);
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: var(--vscode-settings-checkboxBackground);
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: var(--vscode-settings-checkboxForeground);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 7px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--vscode-settings-checkboxBorder);
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 </style>
