@@ -1,55 +1,50 @@
 {
-    "name": "salesforce-schema-builder",
-    "displayName": "Salesforce Schema Builder",
-    "publisher": "allanoricil",
-    "author": {
-        "name": "Allan Oricil",
-        "email": "allanoricilcos@outlook.com"
-    },
-    "homepage": "https://github.com/AllanOricil/salesforce-schema-builder/blob/master/README.md",
-    "description": "Allow developers to manage Salesforce Objects from Visual Studio Code",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
-    },
-    "icon": ".images/icon.png",
-    "version": "0.0.16",
-    "engines": {
-        "vscode": "^1.32.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:example.webview",
-        "onCommand:example.helloWorld"
-    ],
-    "main": "./src/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "example.webview",
-                "title": "Example: WebView"
-            },
-            {
-                "command": "example.helloWorld",
-                "title": "Example: Hello World"
-            }
-        ]
-    },
-    "scripts": {
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test",
-        "build": "npm run buildweb && vsce package",
-        "buildext": "vsce package",
-        "buildweb": "pushd ./web &> /dev/null && { npm run build;popd &> /dev/null;}",
-        "startweb": "pushd ./web &> /dev/null && { npm run dev;popd &> /dev/null;}"
-    },
-    "devDependencies": {
-        "typescript": "^3.3.1",
-        "vscode": "^1.1.28",
-        "eslint": "^5.13.0",
-        "@types/node": "^10.12.21",
-        "@types/mocha": "^2.2.42"
-    }
+  "name": "salesforce-schema-builder",
+  "displayName": "Salesforce Schema Builder",
+  "publisher": "allanoricil",
+  "author": {
+    "name": "Allan Oricil",
+    "email": "allanoricilcos@outlook.com"
+  },
+  "homepage": "https://github.com/AllanOricil/salesforce-schema-builder/blob/master/README.md",
+  "description": "Allow developers to manage Salesforce Objects from Visual Studio Code",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
+  },
+  "icon": ".images/icon.png",
+  "version": "0.0.16",
+  "engines": {
+    "vscode": "^1.32.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:SFDX.schemaBuilder"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "SFDX.schemaBuilder",
+        "title": "SFDX: Schema Builder"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test",
+    "build": "npm run buildweb && vsce package",
+    "buildext": "vsce package",
+    "buildweb": "pushd ./web &> /dev/null && { npm run build;popd &> /dev/null;}",
+    "startweb": "pushd ./web &> /dev/null && { npm run dev;popd &> /dev/null;}"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28",
+    "eslint": "^5.13.0",
+    "@types/node": "^10.12.21",
+    "@types/mocha": "^2.2.42"
+  }
 }

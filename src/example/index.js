@@ -10,13 +10,13 @@ const webview = new EGWebView();
  */
 const activate = (context) => {
     // example.webview
-    webview.activate(context, name, 'example.webview');
+    webview.activate(context, name, 'SFDX.schemaBuilder');
     // example.helloWorld
-    context.subscriptions.push(
+    /*context.subscriptions.push(
         vscode.commands.registerCommand('example.helloWorld', function() {
             utils.Api.showMessage({ txt: 'Hello World!' });
         })
-    );
+    );*/
 };
 
 const deactivate = () => {
