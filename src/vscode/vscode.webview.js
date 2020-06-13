@@ -2,7 +2,11 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 const BridgeData = require('./vscode.bridge');
-const { Message, ReceivedMessage, Handler } = require('./vscode.message');
+const {
+    Message,
+    ReceivedMessage,
+    Handler
+} = require('./vscode.message');
 const WebviewApi = require('./vscode.webviewApi');
 
 /**
@@ -40,11 +44,21 @@ class WebView {
          */
         this.onDidReceiveMessage = undefined;
     }
-    get name() { return WebviewApi.name; }
-    get handler() { return this._handler; }
-    get panel() { return this._panel; }
-    get bridgeData() { return this._bridgeData; }
-    get uri() { return this._uri; }
+    get name() {
+        return WebviewApi.name;
+    }
+    get handler() {
+        return this._handler;
+    }
+    get panel() {
+        return this._panel;
+    }
+    get bridgeData() {
+        return this._bridgeData;
+    }
+    get uri() {
+        return this._uri;
+    }
 
     /**
      * Show panel
@@ -76,7 +90,7 @@ class WebView {
             this.panel.onDidDispose(() => this.didDispose(), undefined, context.subscriptions);
             // on webview visibility changed or position changed
             this.panel.onDidChangeViewState(state => this.didChangeViewState(state), undefined, context.subscriptions);
-            this.panel.webview.onDidReceiveMessage(message => this.didReceiveMessage(message), undefined, context.subscriptions);
+            this.panel.webview.onDidReceiveMessage(message => this.didReceiveMessage(message, context), undefined, context.subscriptions);
         }
     }
 
@@ -85,10 +99,13 @@ class WebView {
      * @param {ReceivedMessage} message
      * @memberof WebView
      */
-    didReceiveMessage(message) {
+    didReceiveMessage(message, context) {
         this.handler && this.handler.received && this.handler.received(this.panel.webview, message);
         this.onDidReceiveMessage && this.onDidReceiveMessage(message);
         console.log(`Extension(${this.name}) received message: ${message.cmd}`);
+        vscode.window.showInformationMessage('UPDATED');
+        console.log(JSON.stringify(message));
+        console.log(JSON.stringify(context.globalState.get('test')));
     }
 
     /**
@@ -142,8 +159,10 @@ class WebView {
         );
         return this;
     }
-    
-    deactivate() { WebviewApi.deactivate(); }
+
+    deactivate() {
+        WebviewApi.deactivate();
+    }
 
     /**
      *Get html from the file path and replace resources protocol to `vscode-resource`
