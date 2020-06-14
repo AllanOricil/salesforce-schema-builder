@@ -1,0 +1,6 @@
+<nameField>
+    <displayFormat>{{displayFormat}}</displayFormat>
+    <startingNumber>{{startingNumber}}</startingNumber>
+    <label>{{label}}</label>
+    <type>AutoNumber</type>
+</nameField>
