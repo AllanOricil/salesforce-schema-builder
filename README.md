@@ -26,6 +26,6 @@ sfdx force:config:set defaultusername=me@my.org
 sfdx force:config:set defaultusername=me@myhub.org -g
 ```
 
-Open a SFDX Project and press `Ctrl+Shift+P` and then type `SFDX: Schema Builder` and then click on the option.
+Open a SFDX Project and press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and click on the option.
 
 <img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq"></img>
