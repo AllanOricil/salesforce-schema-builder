@@ -18,7 +18,7 @@ This extension goal is to enable developers to manage Salesforce Custom Objects 
 
 ## How to Use
 
-First configure your sfdx default username using one of the following commands
+This extension will always deploy metadata to the default org configured in the sfdx. So, in order to make it work, first configure your sfdx default username using one of the following commands
 
 ```
 sfdx force:config:set defaultusername=scratch_org_alias
