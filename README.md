@@ -18,6 +18,14 @@ This extension goal is to enable developers to manage Salesforce Custom Objects 
 
 ## How to Use
 
+First configure your sfdx default username using one of the following commands
+
+```
+sfdx force:config:set defaultusername=scratch_org_alias
+sfdx force:config:set defaultusername=me@my.org
+sfdx force:config:set defaultusername=me@myhub.org -g
+```
+
 Open a SFDX Project and press `Ctrl+Shift+P` and then type `SFDX: Schema Builder` and then click on the option.
 
 <img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq"></img>
