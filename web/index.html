@@ -2,23 +2,168 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>web</title>
-    <link rel="stylesheet" href="./static/css/vscode.css">
+    <link rel="stylesheet" href="./static/css/vscode.css" />
+    <script src="https://kit.fontawesome.com/cd477b85e2.js" crossorigin="anonymous"></script>
 </head>
 <style>
     html,
     body,
     #app {
         padding: 0;
-        height: 100vh;
         margin: 0;
         background-color: var(--vscode-editor-background) !important;
     }
 
+    .icon {
+        color: var(--vscode-menu-foreground) !important;
+        font-size: 35px !important;
+    }
+
+    .icon:hover {
+        color: var(--vscode-menu-selectionForeground) !important;
+        cursor: pointer;
+    }
+
     .container {
         max-width: 100% !important;
+    }
+
+    .form-group {
+        padding: 0 !important;
+    }
+
+    input,
+    textarea,
+    select {
+        border: 1px solid transparent !important;
+        border-radius: 0 !important;
+        background-color: var(--vscode-input-background) !important;
+        color: var(--vscode-input-foreground) !important;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border: 1px solid var(--vscode-focusBorder) !important;
+        background-color: var(--vscode-input-background) !important;
+        color: var(--vscode-input-foreground) !important;
+        box-shadow: none !important;
+    }
+
+    ::placeholder {
+        /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: var(--vscode-input-placeholderForeground) !important;
+        opacity: 1 !important;
+        /* Firefox */
+    }
+
+    label {
+        color: var(--vscode-menu-foreground) !important;
+        font-family: var(--vscode-font-family) !important;
+        font-weight: var(--vscode-font-weight) !important;
+        font-size: var(--vscode-font-size) !important;
+    }
+
+    h1,
+    h2 {
+        color: var(--vscode-menu-foreground) !important;
+        font-family: var(--vscode-font-family) !important;
+        font-weight: var(--vscode-font-weight) !important;
+        text-transform: uppercase !important;
+    }
+
+    button,
+    button:disabled {
+        background-color: var(--vscode-button-background) !important;
+        color: var(--vscode-button-foreground) !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    button:focus,
+    button:hover,
+    button:hover:disabled,
+    button:active {
+        border: none !important;
+        background-color: var(--vscode-button-hoverBackground) !important;
+        box-shadow: none !important;
+    }
+
+    .custom-checkbox-container {
+        display: block !important;
+        position: relative !important;
+        padding-left: 35px !important;
+        margin-bottom: 12px !important;
+        cursor: pointer !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+    }
+
+    /* Hide the browser's default checkbox */
+    input[type="checkbox"] {
+        position: absolute !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+        height: 0 !important;
+        width: 0 !important;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 20px !important;
+        width: 20px !important;
+        background-color: var(--vscode-settings-checkboxBackground) !important;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .custom-checkbox-container:hover input~.checkmark {
+        background-color: var(--vscode-settings-checkboxBackground) !important;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .custom-checkbox-container input:checked~.checkmark {
+        background-color: var(--vscode-settings-checkboxForeground) !important;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "" !important;
+        position: absolute !important;
+        display: none !important;
+    }
+
+    /* Show the checkmark when checked */
+    .custom-checkbox-container input:checked~.checkmark:after {
+        display: block !important;
+    }
+
+    /* Style the checkmark/indicator */
+    .custom-checkbox-container .checkmark:after {
+        left: 7px !important;
+        top: 4px !important;
+        width: 5px !important;
+        height: 10px !important;
+        border: solid var(--vscode-settings-checkboxBorder) !important;
+        border-width: 0 3px 3px 0 !important;
+        -webkit-transform: rotate(45deg) !important;
+        -ms-transform: rotate(45deg) !important;
+        transform: rotate(45deg) !important;
+    }
+
+    input:invalid,
+    textarea:invalid,
+    select:invalid {
+        background-color: var(--vscode-inputValidation-errorBackground) !important;
+        border-color: var(--vscode-inputValidation-errorBorder) !important;
     }
 
 </style>

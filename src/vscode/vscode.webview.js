@@ -189,6 +189,37 @@ class WebView {
         }
       );
     }
+
+    if (message.cmd === "getAvailableGlobalValueSets") {
+      try {
+        const globalValueSetResult = execSync(
+          `sfdx force:mdapi:listmetadata -m GlobalValueSet --json`,
+          {
+            cwd: vscode.workspace.rootPath,
+          }
+        );
+        const globalValueSetResultObject = JSON.parse(
+          globalValueSetResult.toString()
+        );
+        this.panel.webview.postMessage({
+          name: "globalValueSets",
+          data: globalValueSetResultObject,
+        });
+      } catch (e) {
+        vscode.window
+          .showErrorMessage("Couldn't get GlobalValueSets", "Show Output")
+          .then((selection) => {
+            if (selection === "Show Output") {
+              this.channel.show();
+            }
+          });
+        this._panel.webview.postMessage({
+          name: "globalValueSets",
+          result: "error",
+        });
+        this.channel.appendLine(e);
+      }
+    }
   }
 
   /**
