@@ -38,9 +38,11 @@
                     id="fieldName"
                     maxlength="40"
                     required
+                    pattern="^(?!.*__)(?!.*_$)[A-Za-z]\w*$"
                     v-model="fieldName"
                     @keyup="checkValidity"
                 />
+                <small>API Name: {{ field.fullName }}</small>
             </div>
             <div
                 v-if="
@@ -220,6 +222,7 @@
                     class="form-control"
                     id="fieldValueSetValueSetDefinitionValues"
                     rows="3"
+                    required
                     v-model="field.valueSet.valueSetDefinition.values"
                     @keyup="checkValidity"
                 ></textarea>
@@ -266,7 +269,7 @@
                         class="form-check-input"
                         type="checkbox"
                         id="picklistMakeFirstValueDefault"
-                        v-model="picklistMakeFirstValueDefault"
+                        v-model="field.valueSet.makeFirstValueDefault"
                         @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
@@ -468,6 +471,7 @@
 
 <script>
 import he from "he";
+import { type } from "os";
 export default {
     props: {
         editingField: Object
@@ -484,8 +488,12 @@ export default {
     },
     watch: {
         "field.type"(newValue) {
-            if (newValue === "Checkbox") {
-                this.field.defaultValue = true;
+            if (
+                this.field.type === "Picklist" ||
+                this.field.type === "MultiselectPicklist" ||
+                this.field.type === "Phone"
+            ) {
+                this.field.defaultValue = undefined;
             }
 
             if (
@@ -493,49 +501,81 @@ export default {
                 newValue === "Number" ||
                 newValue === "Percent"
             ) {
-                this.field.scale = 0;
-                this.field.precision = 18;
+                this.field.scale =
+                    typeof this.field.scale === "undefined"
+                        ? 0
+                        : this.field.scale;
+                this.field.precision =
+                    typeof this.field.precision === "undefined"
+                        ? 18
+                        : this.field.precision;
             }
 
             if (newValue === "Location") {
-                this.field.scale = 0;
-                this.field.displayLocationInDecimal = true;
+                this.field.scale =
+                    typeof this.field.scale === "undefined"
+                        ? 0
+                        : this.field.scale;
+                this.field.displayLocationInDecimal =
+                    typeof this.field.displayLocationInDecimal === "undefined"
+                        ? true
+                        : this.field.displayLocationInDecimal;
             }
 
-            if (newValue === "Picklist" || newValue === "MultiselectPicklist") {
-                this.useGlobalPicklistValueSet = 1;
-                this.picklistMakeFirstValueDefault = false;
-                this.field.valueSet.valueSetDefinition.sorted = false;
-                if (newValue === "MultiselectPicklist") {
-                    this.field.visibleLines = 4;
-                }
+            if (newValue === "MultiselectPicklist") {
+                this.field.visibleLines =
+                    typeof this.field.visibleLines === "undefined"
+                        ? 4
+                        : this.field.visibleLines;
             }
             if (newValue === "LongTextArea" || newValue === "Html") {
-                this.field.length = 32768;
-                this.field.visibleLines = 3;
+                this.field.length =
+                    typeof this.field.length === "undefined"
+                        ? 32768
+                        : this.field.length;
+                this.field.visibleLines =
+                    typeof this.field.visibleLines === "undefined"
+                        ? 3
+                        : this.field.visibleLines;
             }
             if (newValue === "Text" || newValue === "EncryptedText") {
-                this.field.length = 1;
+                this.field.length =
+                    typeof this.field.length === "undefined"
+                        ? 1
+                        : this.field.length;
             }
 
             if (newValue === "EncryptedText") {
-                this.field.maskChar = "asterisk";
-                this.field.maskType = "all";
+                this.field.maskChar =
+                    typeof this.field.maskChar === "undefined"
+                        ? "asterisk"
+                        : this.field.maskChar;
+                this.field.maskType =
+                    typeof this.field.maskType === "undefined"
+                        ? "all"
+                        : this.field.maskType;
             }
 
             this.checkValidity();
         },
-        "field.label"() {
-            if (this.field.label) {
-                this.fieldName = this.field.label.replace(/\s/g, "_");
-                this.field.fullName = this.fieldName + "__c";
+        "field.label"(newValue) {
+            if (newValue && typeof this.fieldName === "undefined") {
+                this.fieldName = newValue.replace(/\s/g, "_");
+            }
+        },
+        fieldName(newValue) {
+            newValue = newValue.replace(/\s/g, "_");
+            this.fieldName = newValue;
+            if (newValue) {
+                this.field.fullName = newValue + "__c";
+            } else {
+                this.field.fullName = undefined;
             }
         },
         "field.valueSet.valueSetDefinition.values"(newValue) {
-            this.field.valueSet.valueSetDefinition.values = newValue.replace(
-                /^(?:[\t ]*(?:\r?\n|\r))+/gm,
-                ""
-            );
+            this.field.valueSet.valueSetDefinition.values = newValue
+                ? newValue.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "")
+                : undefined;
         },
         defaultValue() {
             if (typeof this.defaultValue !== "undefined")
@@ -543,13 +583,49 @@ export default {
         },
         editingField(newValue) {
             this.field = newValue;
-            if (typeof this.field.defaultValue !== "undefined")
-                this.defaultValue = he.unescape(
-                    he.decode(String(this.field.defaultValue))
-                );
-            else this.defaultValue = undefined;
+            if (!this.field.fullName)
+                this.fieldName = this.field.label.replace(/\s/g, "_");
+            else this.fieldName = this.field.fullName.replace("__c", "");
+            this.$nextTick(function() {
+                if (typeof this.field.defaultValue !== "undefined")
+                    this.defaultValue = he.unescape(
+                        he.decode(String(this.field.defaultValue))
+                    );
+                else this.defaultValue = undefined;
+
+                if (
+                    typeof this.field.valueSet.valueSetDefinition.values !==
+                    "undefined"
+                ) {
+                    this.useGlobalPicklistValueSet = 2;
+                } else {
+                    this.useGlobalPicklistValueSet = 1;
+                    this.field.valueSet.valueSetDefinition.sorted = undefined;
+                    this.field.valueSet.valueSetDefinition.values = undefined;
+                    this.field.valueSet.makeFirstValueDefault = undefined;
+                    this.field.valueSet.restricted = undefined;
+                }
+            });
+
             this.checkValidity();
+        },
+        useGlobalPicklistValueSet(newValue) {
+            if (newValue == 1) {
+                this.field.valueSet.valueSetDefinition.sorted = undefined;
+                this.field.valueSet.valueSetDefinition.values = undefined;
+                this.field.valueSet.makeFirstValueDefault = undefined;
+                this.field.valueSet.restricted = undefined;
+            } else {
+                this.field.valueSet.valueSetName = undefined;
+            }
+        },
+        "field.unique"(newValue) {
+            if (typeof this.field.caseSensitive !== "undefined")
+                this.field.caseSensitive = undefined;
         }
+    },
+    created() {
+        this.field = this.editingField;
     },
     data() {
         return {
@@ -575,7 +651,8 @@ export default {
                     valueSetDefinition: {
                         sorted: undefined,
                         values: undefined
-                    }
+                    },
+                    makeFirstValueDefault: false
                 },
                 visibleLines: undefined,
                 length: undefined,
@@ -584,8 +661,7 @@ export default {
             },
             fieldName: undefined,
             defaultValue: undefined,
-            useGlobalPicklistValueSet: undefined,
-            picklistMakeFirstValueDefault: undefined,
+            useGlobalPicklistValueSet: 1,
             types: [
                 { name: "Checkbox", value: "Checkbox" },
                 { name: "Currency", value: "Currency" },
@@ -621,7 +697,10 @@ export default {
             window.vscode.post({ cmd: "getAvailableGlobalValueSets" });
         },
         checkValidity() {
-            console.log(this.$refs.fieldForm.checkValidity() !== false);
+            this.$nextTick(function() {
+                this.field._isValid =
+                    this.$refs.fieldForm.checkValidity() !== false;
+            });
         }
     }
 };

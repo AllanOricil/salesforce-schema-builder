@@ -10,6 +10,7 @@
                     maxlength="40"
                     required
                     v-model="sObjectDefinition.label"
+                    @keyup="isFormValid"
                 />
             </div>
             <div class="form-group col-12">
@@ -21,6 +22,7 @@
                     maxlength="40"
                     required
                     v-model="sObjectDefinition.pluralLabel"
+                    @keyup="isFormValid"
                 />
             </div>
             <div class="form-group col-12">
@@ -30,6 +32,7 @@
                     id="sObjecctGender"
                     required
                     v-model="sObjectDefinition.gender"
+                    @change="isFormValid"
                 >
                     <option>Feminine</option>
                     <option>Masculine</option>
@@ -42,6 +45,7 @@
                     id="sObjectDescription"
                     rows="3"
                     v-model="sObjectDefinition.description"
+                    @keyup="isFormValid"
                 ></textarea>
             </div>
             <div class="form-group col-12">
@@ -54,6 +58,7 @@
                     required
                     pattern="^(?!.*__)(?!.*_$)[A-Za-z]\w*$"
                     v-model="sObjectDefinition.objectName"
+                    @keyup="isFormValid"
                 />
             </div>
             <div class="form-group col-12">
@@ -65,6 +70,7 @@
                     maxlength="80"
                     required
                     v-model="sObjectDefinition.recordName"
+                    @keyup="isFormValid"
                 />
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     It appears in page layouts, key and related lists, lookups,
@@ -78,6 +84,7 @@
                     id="sObjectDataType"
                     required
                     v-model="sObjectDefinition.dataType"
+                    @change="isFormValid"
                 >
                     <option value="Text">Text</option>
                     <option value="AutoNumber">Auto Number</option>
@@ -96,6 +103,7 @@
                     required
                     pattern=".{0,20}\{[0]{1,10}\}"
                     v-model="sObjectDefinition.displayFormat"
+                    @keyup="isFormValid"
                 />
                 <small id="passwordHelpBlock" class="form-text text-muted"
                     >A-{0000}</small
@@ -113,6 +121,7 @@
                     min="0"
                     required
                     v-model="sObjectDefinition.startingNumber"
+                    @keyup="isFormValid"
                 />
             </div>
             <div class="form-group col-12">
@@ -126,6 +135,7 @@
                         type="checkbox"
                         id="sObjectAllowReports"
                         v-model="sObjectDefinition.enableReports"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -141,6 +151,7 @@
                         type="checkbox"
                         id="sObjectAllowActivities"
                         v-model="sObjectDefinition.enableActivities"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -156,6 +167,7 @@
                         type="checkbox"
                         id="sObjectTrackFieldHistory"
                         v-model="sObjectDefinition.enableHistory"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -171,6 +183,7 @@
                         type="checkbox"
                         id="sObjectAllowInChatterGroups"
                         v-model="sObjectDefinition.allowInChatterGroups"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -186,6 +199,7 @@
                         type="checkbox"
                         id="sObjectAllowSharing"
                         v-model="sObjectDefinition.enableSharing"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -201,6 +215,7 @@
                         type="checkbox"
                         id="sObjectAllowBulkApiAccess"
                         v-model="sObjectDefinition.enableBulkApi"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -216,6 +231,7 @@
                         type="checkbox"
                         id="sObjectAllowStreamingApiAccess"
                         v-model="sObjectDefinition.enableStreamingApi"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -231,6 +247,7 @@
                         type="checkbox"
                         id="sObjectAllowSearch"
                         v-model="sObjectDefinition.enableSearch"
+                        @keyup="isFormValid"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -242,6 +259,7 @@
                     class="form-control"
                     id="sObjectDeploymentStatus"
                     v-model="sObjectDefinition.deploymentStatus"
+                    @change="isFormValid"
                 >
                     <option value="InDevelopment">In Development</option>
                     <option value="Deployed">Deployed</option>
@@ -301,9 +319,9 @@ export default {
             this.sObjectDefinition.enableStreamingApi = newValue === true;
         }
     },
-    computed: {
+    methods: {
         isFormValid() {
-            return this.$refs.sObjectForm.checkValidity() !== false;
+            return this.$refs.sObjectForm.checkValidity();
         }
     }
 };

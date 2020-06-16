@@ -1,24 +1,27 @@
 <template>
     <div class="container">
         <div class="row justify-content-between">
-            <h2 class="text-uppercase mt-3 ml-3">Custm Object</h2>
+            <h2 class="text-uppercase mt-3 ml-3">Custom Object</h2>
             <span
-                class="tooltip icon fa fa-eye mr-3 mt-3"
-                style="color: grey; font-size: 30px"
-                data-toggle="tooltip"
+                class=" icon fa fa-eye mr-3 mt-3"
+                style="font-size: 30px"
+                data-toggle=""
                 data-placement="top"
                 title="View Metadata"
             ></span>
         </div>
-        <div class="row h-100">
-            <div id="forms-panel" class="col-3">
-                <s-object-form ref="sObjectForm"></s-object-form>
+
+        <fieldset :disabled="areFormsDisabled">
+            <div class="row h-100">
+                <div id="forms-panel" class="col-3">
+                    <s-object-form ref="sObjectForm"></s-object-form>
+                </div>
+                <div class="col-9">
+                    <fields-form ref="fieldsForm"></fields-form>
+                </div>
             </div>
-            <div class="col-9">
-                <fields-form ref="fieldsForm"></fields-form>
-            </div>
-        </div>
-        <div class="row my-2 mb-2">
+        </fieldset>
+        <div class="row my-2 mb-4">
             <button
                 type="button"
                 class="btn btn-primary mx-3 w-100"
@@ -61,7 +64,8 @@ export default {
     data() {
         return {
             msg: "",
-            creatingCustomObject: false
+            creatingCustomObject: false,
+            areFormsDisabled: false
         };
     },
     methods: {
@@ -81,17 +85,23 @@ export default {
             window.vscode.showTxt2Output({ txt: `this is output dialog.` });
         },
         createCustomObject() {
-            console.log(this.$refs.sObjectForm.isFormValid);
-            console.log(this.$refs.fieldsForm.getData());
-            const data = this.$refs.fieldsForm.getData();
-            if (this.$refs.sObjectForm.isFormValid) {
+            if (
+                this.$refs.sObjectForm.isFormValid() &&
+                this.$refs.fieldsForm.isDataValid
+            ) {
+                this.areFormsDisabled = true;
+                const fieldsData = this.$refs.fieldsForm.getData();
+                const sObjectData = this.$refs.sObjectForm.sObjectDefinition;
+                console.log(fieldsData);
+                console.log(sObjectData);
                 this.creatingCustomObject = true;
                 window.vscode.post({
                     cmd: "createCustomObject",
-                    args: data
+                    args: this.$refs.fieldsForm.getData()
                 });
             }
-        }
+        },
+        _generateCustomObjectMetadata() {}
     }
 };
 </script>

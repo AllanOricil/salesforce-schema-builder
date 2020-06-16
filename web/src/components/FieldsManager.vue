@@ -11,11 +11,14 @@
         <div class="row justify-content-between px-3 mb-4">
             <h2 class="text-uppercase">Fields</h2>
             <input
-                type="search"
+                type="text"
                 class="col-12 col-lg-9 w-100 justify-content-end my-lg-1 my-0"
                 style="height: 38px"
-                placeholder="Search Field"
-                @keyup="searchField"
+                placeholder="Search by API Name"
+                @keyup="search"
+                @change="search"
+                @emptied="search"
+                @abort="search"
             />
         </div>
         <div
@@ -26,7 +29,6 @@
                 v-for="(field, index) in filteredFields"
                 :key="index"
                 :field="field"
-                :index="index"
                 class="mb-2"
                 @onEdit="requestEdit"
                 @onRemove="removeEntryFromFields"
@@ -45,24 +47,33 @@ export default {
     data() {
         return {
             fields: [],
-            searchValue: undefined
+            filteredFields: [],
+            searchValue: ""
         };
     },
     computed: {
-        filteredFields() {
-            if (this.searchValue !== undefined) {
-                return this.fields.filter(value => {
-                    return value.fullName.includes(this.searchValue);
-                });
-            } else {
-                return this.fields;
-            }
+        areFieldsValid() {
+            if (this.fields.length) {
+                if (this.fields.length === 1) return this.fields[0]._isValid;
+                else
+                    return this.fields.reduce((previous, currentValue) => {
+                        return previous && currentValue._isValid;
+                    });
+            } else return true;
+        }
+    },
+    watch: {
+        fields(newValue) {
+            this.filteredFields = newValue;
+        },
+        searchValue(newValue) {
+            this.filterFields();
         }
     },
     methods: {
         addField() {
             const field = {
-                _isValid: false,
+                _isValid: true,
                 fullName: `New_Field_${this.fields.length}__c`,
                 externalId: undefined,
                 label: `New_Field_${this.fields.length}`,
@@ -73,7 +84,7 @@ export default {
                 type: "Checkbox",
                 required: false,
                 unique: false,
-                defaultValue: undefined,
+                defaultValue: true,
                 precision: undefined,
                 scale: undefined,
                 caseSensitive: undefined,
@@ -92,16 +103,31 @@ export default {
                 maskType: undefined
             };
             this.fields.push(field);
-            this.$emit("addedField", field);
+            this.$emit("onEdit", field);
         },
-        searchField(e) {
+        search(e) {
             this.searchValue = e.target.value;
+        },
+        filterFields() {
+            if (typeof this.searchValue !== "undefined") {
+                this.filteredFields = this.fields.filter(value => {
+                    return value.fullName
+                        .toUpperCase()
+                        .includes(this.searchValue.toUpperCase());
+                });
+            } else {
+                this.filteredFields = this.fields;
+            }
         },
         requestEdit(e) {
             this.$emit("onEdit", e);
         },
         removeEntryFromFields(e) {
-            this.fields.splice(e, 1);
+            const fieldToRemove = this.fields.find(field => {
+                return field.fullName === e.fullName;
+            });
+
+            this.fields.splice(this.fields.indexOf(fieldToRemove), 1);
         }
     }
 };

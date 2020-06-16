@@ -22,8 +22,13 @@ export default {
     },
     data() {
         return {
-            field: {}
+            field: undefined
         };
+    },
+    computed: {
+        isDataValid() {
+            return this.$refs.fieldsManager.areFieldsValid;
+        }
     },
     methods: {
         setEditingField(field) {

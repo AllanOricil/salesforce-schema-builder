@@ -3,7 +3,7 @@
         <span
             v-if="field._isValid === false"
             class="fas fa-exclamation-triangle my-auto mr-2"
-            style="color: yellow"
+            style="color: var(--vscode-editorOverviewRuler-errorForeground)"
         ></span>
         <span class="my-auto mr-3 w-100 text-truncate" style="color: white;">{{
             field.fullName
@@ -20,8 +20,7 @@
 <script>
 export default {
     props: {
-        field: Object,
-        index: Number
+        field: Object
     },
     watch: {
         field(newValue) {
@@ -38,7 +37,7 @@ export default {
             this.$emit("onEdit", this.field);
         },
         remove() {
-            this.$emit("onRemove", this.index);
+            this.$emit("onRemove", this.field);
         }
     }
 };
