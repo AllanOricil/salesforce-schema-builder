@@ -57,8 +57,10 @@ export default {
             if (
                 this.creatingCustomObject &&
                 message.name === "createCustomObjectResult"
-            )
+            ) {
+                this.areFormsDisabled = false;
                 this.creatingCustomObject = false;
+            }
         });
     },
     data() {
