@@ -18,6 +18,65 @@
                     >
                 </select>
             </div>
+            <div v-if="field.type === 'Formula'" class="form-group col-12">
+                <label for="fieldFormulaType">Formula Type</label>
+                <select
+                    class="form-control"
+                    id="fieldFormulaType"
+                    v-model="field.formulaType"
+                    required
+                    @change="checkValidity"
+                >
+                    <option value="Chekbox">Checkbox</option>
+                    <option value="Currency">Currency</option>
+                    <option value="Date">Date</option>
+                    <option value="DateTime">Date/Time</option>
+                    <option value="Number">Number</option>
+                    <option value="Percent">Percent</option>
+                    <option value="Text">Text</option>
+                    <option value="Time">Time</option>
+                </select>
+            </div>
+            <div
+                v-if="field.type === 'Lookup' || field.type === 'MasterDetail'"
+                class="form-group col-12"
+            >
+                <label for="fieldRelatedTo">Related To</label>
+                <select
+                    class="form-control"
+                    id="fieldRelatedTo"
+                    v-model="field.referenceTo"
+                    required
+                    @change="checkValidity"
+                >
+                    <option
+                        v-for="(object, index) in objects"
+                        :key="index"
+                        :value="object"
+                        >{{ object }}</option
+                    >
+                </select>
+            </div>
+            <div
+                v-if="
+                    field.formulaType === 'Number' ||
+                        field.formulaType === 'Currency' ||
+                        field.formulaType === 'Percent'
+                "
+                class="form-group col-12"
+            >
+                <label for="fieldFormulaPrecision">Precision</label>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="fieldFormulaPrecision"
+                    min="0"
+                    max="18"
+                    required
+                    v-model="field.scale"
+                    @keyup="checkValidity"
+                />
+            </div>
             <div class="form-group col-12">
                 <label for="fieldLabel">Field Label</label>
                 <input
@@ -74,6 +133,33 @@
                     "
                     v-model="field.length"
                     @keyup="checkValidity"
+                />
+            </div>
+            <div v-if="field.type === 'AutoNumber'" class="form-group col-12">
+                <label for="fieldDisplayFormat">Display Format</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="fieldDisplayFormat"
+                    maxlength="32"
+                    pattern=".{0,20}\{[0]{1,10}\}"
+                    v-model="field.displayFormat"
+                    @keyup="isFormValid"
+                />
+                <small id="fieldDisplayFormatHelp" class="form-text text-muted"
+                    >A-{0000}</small
+                >
+            </div>
+            <div v-if="field.type === 'AutoNumber'" class="form-group col-12">
+                <label for="fieldStartingNumber">Starting Number</label>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="fieldStartingNumber"
+                    required
+                    min="0"
+                    v-model="field.startingNumber"
+                    @keyup="isFormValid"
                 />
             </div>
             <div
@@ -332,12 +418,12 @@
                 ></textarea>
             </div>
             <div class="form-group col-12">
-                <label for="fieldHelpText">Help Text</label>
+                <label for="fieldinlineHelpText">Help Text</label>
                 <textarea
                     class="form-control"
-                    id="fieldHelpText"
+                    id="fieldinlineHelpText"
                     rows="2"
-                    v-model="field.helpText"
+                    v-model="field.inlineHelpText"
                     @keyup="checkValidity"
                 ></textarea>
             </div>
@@ -345,7 +431,9 @@
                 v-if="
                     field.type !== 'Checkbox' &&
                         field.type !== 'LongTextArea' &&
-                        field.type !== 'Html'
+                        field.type !== 'Html' &&
+                        field.type !== 'AutoNumber' &&
+                        field.type !== 'Formula'
                 "
                 class="form-group col-12"
             >
@@ -410,7 +498,8 @@
                 v-if="
                     field.type === 'Email' ||
                         field.type === 'Number' ||
-                        field.type === 'Text'
+                        field.type === 'Text' ||
+                        field.type === 'AutoNumber'
                 "
                 class="form-group col-12"
             >
@@ -478,16 +567,36 @@ export default {
     },
     beforeMount() {
         this.getAvailableGlobalValueSets();
+        this.getAvailableObjects();
         window.addEventListener("message", event => {
             const message = event.data;
             if (message.name === "globalValueSets") {
                 this.globalValueSets = message.data.result;
                 console.log(this.globalValueSets);
             }
+
+            if (message.name === "objects") {
+                this.objects = message.data.result;
+                console.log(this.objects);
+            }
         });
     },
     watch: {
         "field.type"(newValue) {
+            if (
+                this.field.type !== "Lookup" &&
+                this.field.type !== "MasterDetail"
+            ) {
+                this.field.referenceTo = undefined;
+                this.field.referenceTo = undefined;
+                this.field.relationshipLabel = undefined;
+                this.field.relationshipName = undefined;
+                this.field.deleteConstraint = undefined;
+                this.field.reparentableMasterDetail = undefined;
+                this.field.writeRequiresMasterRead = undefined;
+                this.field.relationshipOrder = undefined;
+            }
+
             if (
                 this.field.type === "Picklist" ||
                 this.field.type === "MultiselectPicklist" ||
@@ -622,10 +731,19 @@ export default {
         "field.unique"(newValue) {
             if (typeof this.field.caseSensitive !== "undefined")
                 this.field.caseSensitive = undefined;
+        },
+        "field.formulaType"(newValue) {
+            if (
+                newValue === "Number" ||
+                newValue === "Percent" ||
+                newValue === "Currency"
+            ) {
+                this.field.precision = 18;
+            } else {
+                this.field.precision = undefined;
+                this.field.scale = undefined;
+            }
         }
-    },
-    created() {
-        this.field = this.editingField;
     },
     data() {
         return {
@@ -634,7 +752,7 @@ export default {
                 externalId: undefined,
                 label: undefined,
                 description: undefined,
-                helpText: undefined,
+                inlineHelpText: undefined,
                 trackHistory: false,
                 trackTrending: false,
                 type: "Checkbox",
@@ -654,15 +772,29 @@ export default {
                     },
                     makeFirstValueDefault: false
                 },
+                referenceTo: undefined,
+                relationshipLabel: undefined,
+                relationshipName: undefined,
+                deleteConstraint: undefined,
+                reparentableMasterDetail: undefined,
+                writeRequiresMasterRead: undefined,
+                relationshipOrder: undefined,
+                displayFormat: undefined,
+                startingNumber: undefined,
                 visibleLines: undefined,
                 length: undefined,
                 maskChar: undefined,
-                maskType: undefined
+                maskType: undefined,
+                formulaType: undefined
             },
             fieldName: undefined,
             defaultValue: undefined,
             useGlobalPicklistValueSet: 1,
             types: [
+                { name: "Auto Number", value: "AutoNumber" },
+                { name: "Formula", value: "Formula" },
+                { name: "Lookup", value: "Lookup" },
+                { name: "Master Detail", value: "MasterDetail" },
                 { name: "Checkbox", value: "Checkbox" },
                 { name: "Currency", value: "Currency" },
                 { name: "Date", value: "Date" },
@@ -689,12 +821,16 @@ export default {
                 {
                     fullName: "teste"
                 }
-            ]
+            ],
+            objects: []
         };
     },
     methods: {
         getAvailableGlobalValueSets() {
             window.vscode.post({ cmd: "getAvailableGlobalValueSets" });
+        },
+        getAvailableObjects() {
+            window.vscode.post({ cmd: "getAllObjectNames" });
         },
         checkValidity() {
             this.$nextTick(function() {

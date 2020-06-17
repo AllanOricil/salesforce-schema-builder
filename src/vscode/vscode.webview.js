@@ -2,10 +2,18 @@ const vscode = require("vscode");
 const path = require("path");
 const fs = require("fs-extra");
 const BridgeData = require("./vscode.bridge");
-const { execSync } = require("child_process");
-const { Message, ReceivedMessage, Handler } = require("./vscode.message");
+const {
+  execSync
+} = require("child_process");
+const {
+  Message,
+  ReceivedMessage,
+  Handler
+} = require("./vscode.message");
 const WebviewApi = require("./vscode.webviewApi");
-const { templateCustomObjectMetadata } = require("../lib/utils");
+const {
+  templateCustomObjectMetadata
+} = require("../lib/utils");
 
 /**
  * WebView
@@ -149,16 +157,14 @@ class WebView {
               "objects",
               message.args.objectName + "__c.object"
             ),
-            template,
-            {
+            template, {
               encoding: "utf-8",
             }
           );
 
           try {
             const metadataDeployResult = execSync(
-              `sfdx force:mdapi:deploy -d ${metadataPath} -w 90 --json`,
-              {
+              `sfdx force:mdapi:deploy -d ${metadataPath} -w 90 --json`, {
                 cwd: vscode.workspace.rootPath,
               }
             );
@@ -168,7 +174,7 @@ class WebView {
 
             this.channel.appendLine(metadataDeployResult.toString());
             vscode.window.showInformationMessage("Custom Object Created");
-            this._panel.webview.postMessage({
+            this.panel.webview.postMessage({
               name: "createCustomObjectResult",
               result: metadataDeployResultObject,
             });
@@ -180,7 +186,7 @@ class WebView {
                   this.channel.show();
                 }
               });
-            this._panel.webview.postMessage({
+            this.panel.webview.postMessage({
               name: "createCustomObjectResult",
               result: "error",
             });
@@ -193,8 +199,7 @@ class WebView {
     if (message.cmd === "getAvailableGlobalValueSets") {
       try {
         const globalValueSetResult = execSync(
-          `sfdx force:mdapi:listmetadata -m GlobalValueSet --json`,
-          {
+          `sfdx force:mdapi:listmetadata -m GlobalValueSet --json`, {
             cwd: vscode.workspace.rootPath,
           }
         );
@@ -213,8 +218,38 @@ class WebView {
               this.channel.show();
             }
           });
-        this._panel.webview.postMessage({
+        this.panel.webview.postMessage({
           name: "globalValueSets",
+          result: "error",
+        });
+        this.channel.appendLine(e);
+      }
+    }
+
+    if (message.cmd === "getAllObjectNames") {
+      try {
+        const objectsResult = execSync(
+          `sfdx force:schema:sobject:list -c all --json`, {
+            cwd: vscode.workspace.rootPath,
+          }
+        );
+        const objectsResultObject = JSON.parse(
+          objectsResult.toString()
+        );
+        this.panel.webview.postMessage({
+          name: "objects",
+          data: objectsResultObject,
+        });
+      } catch (e) {
+        vscode.window
+          .showErrorMessage("Couldn't get the Objects", "Show Output")
+          .then((selection) => {
+            if (selection === "Show Output") {
+              this.channel.show();
+            }
+          });
+        this.panel.webview.postMessage({
+          name: "objects",
           result: "error",
         });
         this.channel.appendLine(e);
@@ -267,8 +302,7 @@ class WebView {
       vscode.commands.registerCommand(cmdName, (uri) => {
         this._uri = uri;
         this.showPanel(context, htmlPath);
-        this.bridgeData.updateItems(
-          {
+        this.bridgeData.updateItems({
             extensionPath: context.extensionPath,
             rootPath: vscode.workspace.rootPath,
             startPath: uri ? uri.path : vscode.workspace.rootPath,

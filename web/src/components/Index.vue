@@ -3,11 +3,11 @@
         <div class="row justify-content-between">
             <h2 class="text-uppercase mt-3 ml-3">Custom Object</h2>
             <span
-                class=" icon fa fa-eye mr-3 mt-3"
+                class=" icon fa fa-file-code mr-3 mt-3"
                 style="font-size: 30px"
-                data-toggle=""
                 data-placement="top"
                 title="View Metadata"
+                @click="displayMetadata()"
             ></span>
         </div>
 
@@ -39,10 +39,30 @@
                 <span v-else>Save</span>
             </button>
         </div>
+
+        <div
+            v-if="showXML"
+            class="fixed d-flex flex-column m-auto absolute"
+            style="position: absolute; width: 40%; height: 100%; top: 0px; right: 0px; background-color: var(--vscode-editor-background); border-left: thin solid var(--vscode-textSeparator-foreground);"
+        >
+            <button
+                @click="hideMetadata()"
+                class="btn btn-primary"
+                style="min-width: 0px"
+            >
+                Close Preview
+            </button>
+            <pre
+                v-highlightjs
+                class="flex-grow-1"
+            ><code class="html">{{xml}}</code></pre>
+        </div>
     </div>
 </template>
 
 <script>
+import he from "he";
+import format from "xml-formatter";
 import SObjectForm from "./SObjectForm.vue";
 import FieldsForm from "./FieldsForm.vue";
 export default {
@@ -67,7 +87,19 @@ export default {
         return {
             msg: "",
             creatingCustomObject: false,
-            areFormsDisabled: false
+            areFormsDisabled: false,
+            showXML: false,
+            xml: format(
+                `<?xml version="1.0" encoding="UTF-8"?>
+    <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types> <members>*</members>
+        <name>CustomObject</name>     </types>
+    <version>48.0</version> </Package>
+`,
+                {
+                    collapseContent: true
+                }
+            )
         };
     },
     methods: {
@@ -103,7 +135,13 @@ export default {
                 });
             }
         },
-        _generateCustomObjectMetadata() {}
+        _generateCustomObjectMetadata() {},
+        displayMetadata() {
+            this.showXML = true;
+        },
+        hideMetadata() {
+            this.showXML = false;
+        }
     }
 };
 </script>

@@ -7,7 +7,9 @@
             ></fields-manager>
         </div>
         <div class="col-6">
-            <field-form v-if="field" :editingField="field"></field-form>
+            <fieldset :disabled="field === undefined">
+                <field-form :editingField="field"></field-form>
+            </fieldset>
         </div>
     </div>
 </template>
