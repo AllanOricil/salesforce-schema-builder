@@ -2,8 +2,6 @@
 
 This extension goal is to enable developers to manage Salesforce Custom Objects without leaving VS Code.
 
-<img src="https://drive.google.com/uc?id=1R2yZk2vWjogi5Oh3C1CP7hUM52TzhiGl"></img>
-
 ## Features
 
 - [x] Create Custom Objects.
@@ -15,6 +13,10 @@ This extension goal is to enable developers to manage Salesforce Custom Objects 
 
 - sfdx-cli/7.58.2-937f666ed4 win32-x64 node-v10.15.3
 - VS Code 1.32.0
+
+<img src="https://drive.google.com/uc?id=12SxfJ_TqXn-lToUAr0VED31IPdK6FG-H"></img>
+
+<img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-"></img>
 
 ## How to Use
 
