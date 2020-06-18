@@ -50,7 +50,7 @@
                     @change="checkValidity"
                 >
                     <option
-                        v-for="(object, index) in objects"
+                        v-for="(object, index) in referenceAbleObjects"
                         :key="index"
                         :value="object"
                         >{{ object }}</option
@@ -144,7 +144,7 @@
                     maxlength="32"
                     pattern=".{0,20}\{[0]{1,10}\}"
                     v-model="field.displayFormat"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
                 <small id="fieldDisplayFormatHelp" class="form-text text-muted"
                     >A-{0000}</small
@@ -159,7 +159,7 @@
                     required
                     min="0"
                     v-model="field.startingNumber"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
             </div>
             <div
@@ -265,10 +265,11 @@
                     required
                     @change="checkValidity"
                 >
-                    <option value="1">Use global picklist value set </option>
+                    <option value="1">Use global picklist value set</option>
                     <option value="2"
-                        >Enter values, with each value separated by a new line
-                    </option>
+                        >Enter values, with each value separated by a new
+                        line</option
+                    >
                 </select>
             </div>
             <div
@@ -284,7 +285,7 @@
                 <select
                     class="form-control"
                     id="fieldValueSetValueSetName"
-                    v-model="field.valueSet.valueSetName"
+                    v-model="valueSet.valueSetName"
                     required
                     @change="checkValidity"
                 >
@@ -309,7 +310,7 @@
                     id="fieldValueSetValueSetDefinitionValues"
                     rows="3"
                     required
-                    v-model="field.valueSet.valueSetDefinition.values"
+                    v-model="valueSet.valueSetDefinition.value"
                     @keyup="checkValidity"
                 ></textarea>
             </div>
@@ -331,7 +332,7 @@
                         class="form-check-input"
                         type="checkbox"
                         id="fieldValueSetValueSetDefinitionSorted"
-                        v-model="field.valueSet.valueSetDefinition.sorted"
+                        v-model="valueSet.valueSetDefinition.sorted"
                         @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
@@ -355,7 +356,7 @@
                         class="form-check-input"
                         type="checkbox"
                         id="picklistMakeFirstValueDefault"
-                        v-model="field.valueSet.makeFirstValueDefault"
+                        v-model="valueSet.makeFirstValueDefault"
                         @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
@@ -379,7 +380,7 @@
                         class="form-check-input"
                         type="checkbox"
                         id="fieldValueSetRestricted"
-                        v-model="field.valueSet.restricted"
+                        v-model="valueSet.restricted"
                         @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
@@ -554,6 +555,22 @@
                     <option value="X">X</option>
                 </select>
             </div>
+            <div v-if="field.type === 'Formula'" class="form-group col-12">
+                <label
+                    class="form-check-label custom-checkbox-container"
+                    for="fieldTreatBlanksAs"
+                >
+                    Treat blank fields as zeroes?
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="fieldTreatBlanksAs"
+                        v-model="field.formulaTreatBlanksAs"
+                        @keyup="checkValidity"
+                    />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
         </div>
     </form>
 </template>
@@ -581,6 +598,149 @@ export default {
             }
         });
     },
+    computed: {
+        standardObjects() {
+            return this.objects.filter(object => {
+                return !(
+                    /^\w*__x\b$/g.test(object) || /^\w*__c\b$/g.test(object)
+                );
+            });
+        },
+        shareObjets() {
+            return this.objects.filter(object => /^\w*Share\b$/g.test(object));
+        },
+        referenceAbleObjects() {
+            return this.objects.filter(object => {
+                return (
+                    /^\w*__c\b$/g.test(object) ||
+                    !(
+                        /^\w*__c\b$/g.test(object) ||
+                        /^\w*__x\b$/g.test(object) ||
+                        /^\w*Share\b$/g.test(object) ||
+                        /^\w*History\b$/.test(object) ||
+                        /^\w*ChangeEvent\b$/g.test(object) ||
+                        ![
+                            "Account",
+                            "Address",
+                            "Asset",
+                            "AssignedResource",
+                            "AssociatedLocation",
+                            "AuthorizationForm",
+                            "AuthorizationFormConsent",
+                            "AuthorizationFormDataUse",
+                            "AuthorizationFormText",
+                            "BackgroundOperation",
+                            "BusinessHours",
+                            "CalendarModel",
+                            "Campaign",
+                            "ChannelProgram",
+                            "ChannelProgramLevel",
+                            "ChannelProgramMember",
+                            "WorkCoaching",
+                            "CommSubscription",
+                            "CommSubscriptionChannelType",
+                            "CommSubscriptionConsent",
+                            "CommSubscriptionTiming",
+                            "ConsumptionRate",
+                            "ConsumptionSchedule",
+                            "Contact",
+                            "ContactPointConsent",
+                            "ContactPointEmail",
+                            "ContactPointPhone",
+                            "ContactPointTypeConsent",
+                            "ContentFolder",
+                            "Contract",
+                            "DandBCompany",
+                            "DataUseLegalBasis",
+                            "DataUsePurpose",
+                            "EngagementChannelType",
+                            "Product2",
+                            "WorkFeedbackQuestion",
+                            "WorkFeedbackQuestionSet",
+                            "WorkFeedbackRequest",
+                            "Goal",
+                            "GoalLink",
+                            "Idea",
+                            "Individual",
+                            "JobProfile",
+                            "Lead",
+                            "Location",
+                            "Macro",
+                            "MaintenanceAsset",
+                            "MaintenancePlan",
+                            "Case",
+                            "Metric",
+                            "MetricDataLink",
+                            "OperatingHours",
+                            "Opportunity",
+                            "Order",
+                            "OrderItem",
+                            "OrgMetric",
+                            "OrgMetricScanSummary",
+                            "PartnerFundAllocation",
+                            "PartnerFundClaim",
+                            "PartnerFundRequest",
+                            "PartnerMarketingBudget",
+                            "PartyConsent",
+                            "WorkPerformanceCycle",
+                            "Pricebook2",
+                            "ProductConsumed",
+                            "ProductConsumptionSchedule",
+                            "ProductItem",
+                            "ProductRequest",
+                            "ProductRequestLineItem",
+                            "ProductRequired",
+                            "ProductTransfer",
+                            "QuickText",
+                            "Quote",
+                            "QuoteLineItem",
+                            "Recommendation",
+                            "ResourceAbsence",
+                            "ServiceResourceCapacity",
+                            "ReturnOrder",
+                            "ReturnOrderLineItem",
+                            "ServiceAppointment",
+                            "ServiceCrew",
+                            "ServiceCrewMember",
+                            "ServiceResource",
+                            "ServiceTerritory",
+                            "Shift",
+                            "Shipment",
+                            "SocialPersona",
+                            "Solution",
+                            "TimeSheet",
+                            "TimeSheetEntry",
+                            "TimeSlot",
+                            "User",
+                            "UserProvAccount",
+                            "UserProvisioningLog",
+                            "UserProvisioningRequest",
+                            "WorkOrder",
+                            "WorkOrderLineItem",
+                            "WorkType",
+                            "WorkTypeGroup",
+                            "WorkTypeGroupMember",
+                            "Community"
+                        ].includes(object)
+                    )
+                );
+            });
+        },
+        changeEventObjets() {
+            return this.objects.filter(object =>
+                /^\w*ChangeEvent\b$/g.test(object)
+            );
+        },
+        historyObjects() {
+            return this.objects.filter(object => /^\w*History\b$/.test(object));
+        },
+        customObjects() {
+            return this.objects.filter(object => /^\w*__c\b$/g.test(object));
+        },
+        externalObjects() {
+            return this.objects.filter(object => /^\w*__x\b$/g.test(object));
+        }
+    },
     watch: {
         "field.type"(newValue) {
             if (
@@ -597,12 +757,47 @@ export default {
                 this.field.relationshipOrder = undefined;
             }
 
+            if (this.field.type !== "Formula") {
+                this.field.formulaType = undefined;
+                this.field.formulaTreatBlanksAs = undefined;
+            }
+
+            if (
+                this.field.type !== "Picklist" &&
+                this.field.type !== "MultiselectPicklist"
+            ) {
+                this.field.valueSet = undefined;
+                this.valueSet = {
+                    valueSetName: undefined,
+                    restricted: undefined,
+                    valueSetDefinition: {
+                        sorted: undefined,
+                        values: undefined
+                    },
+                    makeFirstValueDefault: false
+                };
+                this.useGlobalPicklistValueSet = undefined;
+            }
+
+            if (this.field.type !== "MultiselectPicklist") {
+                this.field.visibleLines = undefined;
+            }
+
             if (
                 this.field.type === "Picklist" ||
                 this.field.type === "MultiselectPicklist" ||
                 this.field.type === "Phone"
             ) {
                 this.field.defaultValue = undefined;
+            }
+
+            if (this.field.type === "AutoNumber") {
+                this.field.required = undefined;
+                this.field.unique = undefined;
+                this.field.trackHistory = undefined;
+            } else {
+                this.field.displayFormat = undefined;
+                this.field.startingNumber = undefined;
             }
 
             if (
@@ -637,6 +832,7 @@ export default {
                         ? 4
                         : this.field.visibleLines;
             }
+
             if (newValue === "LongTextArea" || newValue === "Html") {
                 this.field.length =
                     typeof this.field.length === "undefined"
@@ -681,8 +877,8 @@ export default {
                 this.field.fullName = undefined;
             }
         },
-        "field.valueSet.valueSetDefinition.values"(newValue) {
-            this.field.valueSet.valueSetDefinition.values = newValue
+        "valueSet.valueSetDefinition.value"(newValue) {
+            this.valueSet.valueSetDefinition.value = newValue
                 ? newValue.replace(/^(?:[\t ]*(?:\r?\n|\r))+/gm, "")
                 : undefined;
         },
@@ -702,17 +898,17 @@ export default {
                     );
                 else this.defaultValue = undefined;
 
-                if (
-                    typeof this.field.valueSet.valueSetDefinition.values !==
-                    "undefined"
-                ) {
-                    this.useGlobalPicklistValueSet = 2;
-                } else {
-                    this.useGlobalPicklistValueSet = 1;
-                    this.field.valueSet.valueSetDefinition.sorted = undefined;
-                    this.field.valueSet.valueSetDefinition.values = undefined;
-                    this.field.valueSet.makeFirstValueDefault = undefined;
-                    this.field.valueSet.restricted = undefined;
+                if (typeof this.field.valueSet !== "undefined") {
+                    this.valueSet = this.field.valueSet;
+                    if (this.valueSet.valueSetDefinition.value) {
+                        this.useGlobalPicklistValueSet = 2;
+                    } else {
+                        this.useGlobalPicklistValueSet = 1;
+                        this.valueSet.valueSetDefinition.sorted = undefined;
+                        this.valueSet.valueSetDefinition.value = undefined;
+                        this.valueSet.makeFirstValueDefault = undefined;
+                        this.valueSet.restricted = undefined;
+                    }
                 }
             });
 
@@ -720,12 +916,12 @@ export default {
         },
         useGlobalPicklistValueSet(newValue) {
             if (newValue == 1) {
-                this.field.valueSet.valueSetDefinition.sorted = undefined;
-                this.field.valueSet.valueSetDefinition.values = undefined;
-                this.field.valueSet.makeFirstValueDefault = undefined;
-                this.field.valueSet.restricted = undefined;
+                this.valueSet.valueSetDefinition.sorted = undefined;
+                this.valueSet.valueSetDefinition.value = undefined;
+                this.valueSet.makeFirstValueDefault = undefined;
+                this.valueSet.restricted = undefined;
             } else {
-                this.field.valueSet.valueSetName = undefined;
+                this.valueSet.valueSetName = undefined;
             }
         },
         "field.unique"(newValue) {
@@ -742,6 +938,33 @@ export default {
             } else {
                 this.field.precision = undefined;
                 this.field.scale = undefined;
+            }
+        },
+        valueSet: {
+            deep: true,
+            handler(newValue) {
+                this.field.valueSet = JSON.parse(JSON.stringify(newValue));
+
+                delete this.field.valueSet.makeFirstValueDefault;
+                if (
+                    newValue.valueSetDefinition &&
+                    newValue.valueSetDefinition.value
+                ) {
+                    let values = newValue.valueSetDefinition.value
+                        .split("\n")
+                        .map((value, index) => {
+                            return {
+                                fullName: value,
+                                label: value,
+                                default:
+                                    index === 0 &&
+                                    newValue.makeFirstValueDefault
+                            };
+                        });
+
+                    this.field.valueSet.valueSetDefinition.value = values;
+                }
+                delete this.field.valueSet.makeFirstValueDefault;
             }
         }
     },
@@ -763,15 +986,7 @@ export default {
                 scale: undefined,
                 caseSensitive: undefined,
                 displayLocationInDecimal: undefined,
-                valueSet: {
-                    valueSetName: undefined,
-                    restricted: undefined,
-                    valueSetDefinition: {
-                        sorted: undefined,
-                        values: undefined
-                    },
-                    makeFirstValueDefault: false
-                },
+                valueSet: undefined,
                 referenceTo: undefined,
                 relationshipLabel: undefined,
                 relationshipName: undefined,
@@ -781,11 +996,21 @@ export default {
                 relationshipOrder: undefined,
                 displayFormat: undefined,
                 startingNumber: undefined,
+                formulaTreatBlanksAs: undefined,
                 visibleLines: undefined,
                 length: undefined,
                 maskChar: undefined,
                 maskType: undefined,
                 formulaType: undefined
+            },
+            valueSet: {
+                valueSetName: undefined,
+                restricted: undefined,
+                valueSetDefinition: {
+                    sorted: undefined,
+                    value: undefined
+                },
+                makeFirstValueDefault: false
             },
             fieldName: undefined,
             defaultValue: undefined,
@@ -822,7 +1047,952 @@ export default {
                     fullName: "teste"
                 }
             ],
-            objects: []
+            objects: [
+                "aHistory__c",
+                "Book__c",
+                "Broker__c",
+                "Camping_Item__c",
+                "Campsite_Reservation__c",
+                "Campsite__c",
+                "Candidate__c",
+                "Cat__c",
+                "DB__c",
+                "E__c",
+                "EinsteinAI_Settings__c",
+                "Energy_Audit__c",
+                "Expense__c",
+                "Favorite__c",
+                "Feedback__c",
+                "Fund__c",
+                "H__c",
+                "Hpe_Plugin_Usage__c",
+                "Interested_Person__c",
+                "JobPosting__c",
+                "Job_Application__c",
+                "LeadAssociation__c",
+                "New_Custom_Object__c",
+                "Phone_Plan__x",
+                "Phone__x",
+                "Position__c",
+                "Product_Statement__c",
+                "Property__c",
+                "Review__c",
+                "Sector__c",
+                "ServiceCredentials__c",
+                "ServiceTokens__c",
+                "Suggestion__c",
+                "Test2__c",
+                "Test3__c",
+                "Test4__c",
+                "Test__c",
+                "Trail__c",
+                "Vehicle__c",
+                "Websites__c",
+                "Work_Part__c",
+                "a__c",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa__c",
+                "b__c",
+                "d__c",
+                "ltnadptn__Lightning_Adoption_Report_Snapshot__c",
+                "sad__c",
+                "AcceptedEventRelation",
+                "Account",
+                "AccountBrand",
+                "AccountBrandShare",
+                "AccountChangeEvent",
+                "AccountCleanInfo",
+                "AccountContactRelation",
+                "AccountContactRole",
+                "AccountContactRoleChangeEvent",
+                "AccountFeed",
+                "AccountHistory",
+                "AccountPartner",
+                "AccountShare",
+                "AccountUserTerritory2View",
+                "ActionLinkGroupTemplate",
+                "ActionLinkTemplate",
+                "ActiveScratchOrg",
+                "ActiveScratchOrgFeed",
+                "ActiveScratchOrgHistory",
+                "ActiveScratchOrgShare",
+                "ActivityHistory",
+                "AdditionalNumber",
+                "Address",
+                "AggregateResult",
+                "Announcement",
+                "ApexClass",
+                "ApexComponent",
+                "ApexEmailNotification",
+                "ApexLog",
+                "ApexPage",
+                "ApexPageInfo",
+                "ApexTestQueueItem",
+                "ApexTestResult",
+                "ApexTestResultLimits",
+                "ApexTestRunResult",
+                "ApexTestSuite",
+                "ApexTrigger",
+                "ApiEvent",
+                "ApiEventStream",
+                "AppAnalyticsQueryRequest",
+                "AppDefinition",
+                "AppExtension",
+                "AppMenuItem",
+                "AppTabMember",
+                "AppleDomainVerification",
+                "Asset",
+                "AssetChangeEvent",
+                "AssetFeed",
+                "AssetHistory",
+                "AssetRelationship",
+                "AssetRelationshipFeed",
+                "AssetRelationshipHistory",
+                "AssetShare",
+                "AssetTokenEvent",
+                "AssignedResource",
+                "AssignedResourceChangeEvent",
+                "AssignedResourceFeed",
+                "AssignmentRule",
+                "AssociatedLocation",
+                "AssociatedLocationHistory",
+                "AsyncApexJob",
+                "AsyncOperationEvent",
+                "AsyncOperationStatus",
+                "AttachedContentDocument",
+                "Attachment",
+                "Audience",
+                "AuraDefinition",
+                "AuraDefinitionBundle",
+                "AuraDefinitionBundleInfo",
+                "AuraDefinitionInfo",
+                "AuthConfig",
+                "AuthConfigProviders",
+                "AuthProvider",
+                "AuthSession",
+                "AuthorizationForm",
+                "AuthorizationFormConsent",
+                "AuthorizationFormConsentChangeEvent",
+                "AuthorizationFormConsentHistory",
+                "AuthorizationFormConsentShare",
+                "AuthorizationFormDataUse",
+                "AuthorizationFormDataUseHistory",
+                "AuthorizationFormDataUseShare",
+                "AuthorizationFormHistory",
+                "AuthorizationFormShare",
+                "AuthorizationFormText",
+                "AuthorizationFormTextHistory",
+                "BackgroundOperation",
+                "BatchApexErrorEvent",
+                "Book__ChangeEvent",
+                "BrandTemplate",
+                "BrandingSet",
+                "BrandingSetProperty",
+                "Broker__ChangeEvent",
+                "BusinessHours",
+                "BusinessProcess",
+                "Calendar",
+                "CalendarView",
+                "CalendarViewShare",
+                "CallCenter",
+                "Campaign",
+                "CampaignChangeEvent",
+                "CampaignFeed",
+                "CampaignHistory",
+                "CampaignMember",
+                "CampaignMemberChangeEvent",
+                "CampaignMemberStatus",
+                "CampaignMemberStatusChangeEvent",
+                "CampaignShare",
+                "Camping_Item__ChangeEvent",
+                "Campsite_Reservation__ChangeEvent",
+                "Campsite__ChangeEvent",
+                "Candidate__ChangeEvent",
+                "Case",
+                "CaseChangeEvent",
+                "CaseComment",
+                "CaseContactRole",
+                "CaseFeed",
+                "CaseHistory",
+                "CaseShare",
+                "CaseSolution",
+                "CaseStatus",
+                "CaseTeamMember",
+                "CaseTeamRole",
+                "CaseTeamTemplate",
+                "CaseTeamTemplateMember",
+                "CaseTeamTemplateRecord",
+                "Cat__ChangeEvent",
+                "CategoryData",
+                "CategoryNode",
+                "ChannelProgram",
+                "ChannelProgramFeed",
+                "ChannelProgramHistory",
+                "ChannelProgramLevel",
+                "ChannelProgramLevelFeed",
+                "ChannelProgramLevelHistory",
+                "ChannelProgramLevelShare",
+                "ChannelProgramMember",
+                "ChannelProgramMemberFeed",
+                "ChannelProgramMemberHistory",
+                "ChannelProgramMemberShare",
+                "ChannelProgramShare",
+                "ChatterActivity",
+                "ChatterExtension",
+                "ChatterExtensionConfig",
+                "ClientBrowser",
+                "CollaborationGroup",
+                "CollaborationGroupFeed",
+                "CollaborationGroupMember",
+                "CollaborationGroupMemberRequest",
+                "CollaborationGroupRecord",
+                "CollaborationInvitation",
+                "ColorDefinition",
+                "CombinedAttachment",
+                "CommSubscription",
+                "CommSubscriptionChannelType",
+                "CommSubscriptionChannelTypeFeed",
+                "CommSubscriptionChannelTypeHistory",
+                "CommSubscriptionChannelTypeShare",
+                "CommSubscriptionConsent",
+                "CommSubscriptionConsentFeed",
+                "CommSubscriptionConsentHistory",
+                "CommSubscriptionConsentShare",
+                "CommSubscriptionFeed",
+                "CommSubscriptionHistory",
+                "CommSubscriptionShare",
+                "CommSubscriptionTiming",
+                "CommSubscriptionTimingFeed",
+                "CommSubscriptionTimingHistory",
+                "Community",
+                "ConferenceNumber",
+                "ConnectedApplication",
+                "ConsumptionRate",
+                "ConsumptionRateHistory",
+                "ConsumptionSchedule",
+                "ConsumptionScheduleFeed",
+                "ConsumptionScheduleHistory",
+                "ConsumptionScheduleShare",
+                "Contact",
+                "ContactChangeEvent",
+                "ContactCleanInfo",
+                "ContactFeed",
+                "ContactHistory",
+                "ContactPointConsent",
+                "ContactPointConsentChangeEvent",
+                "ContactPointConsentHistory",
+                "ContactPointConsentShare",
+                "ContactPointEmail",
+                "ContactPointEmailChangeEvent",
+                "ContactPointEmailHistory",
+                "ContactPointEmailShare",
+                "ContactPointPhone",
+                "ContactPointPhoneChangeEvent",
+                "ContactPointPhoneHistory",
+                "ContactPointPhoneShare",
+                "ContactPointTypeConsent",
+                "ContactPointTypeConsentChangeEvent",
+                "ContactPointTypeConsentHistory",
+                "ContactPointTypeConsentShare",
+                "ContactRequest",
+                "ContactRequestShare",
+                "ContactShare",
+                "ContentAsset",
+                "ContentBody",
+                "ContentDistribution",
+                "ContentDistributionView",
+                "ContentDocument",
+                "ContentDocumentFeed",
+                "ContentDocumentHistory",
+                "ContentDocumentLink",
+                "ContentDocumentSubscription",
+                "ContentFolder",
+                "ContentFolderItem",
+                "ContentFolderLink",
+                "ContentFolderMember",
+                "ContentNotification",
+                "ContentTagSubscription",
+                "ContentUserSubscription",
+                "ContentVersion",
+                "ContentVersionComment",
+                "ContentVersionHistory",
+                "ContentVersionRating",
+                "ContentWorkspace",
+                "ContentWorkspaceDoc",
+                "ContentWorkspaceMember",
+                "ContentWorkspacePermission",
+                "ContentWorkspaceSubscription",
+                "Contract",
+                "ContractChangeEvent",
+                "ContractContactRole",
+                "ContractFeed",
+                "ContractHistory",
+                "ContractStatus",
+                "CorsWhitelistEntry",
+                "CredentialStuffingEvent",
+                "CredentialStuffingEventStore",
+                "CronJobDetail",
+                "CronTrigger",
+                "CspTrustedSite",
+                "CustomBrand",
+                "CustomBrandAsset",
+                "CustomHelpMenuItem",
+                "CustomHelpMenuSection",
+                "CustomHttpHeader",
+                "CustomNotificationType",
+                "CustomObjectUserLicenseMetrics",
+                "CustomPermission",
+                "CustomPermissionDependency",
+                "DB__ChangeEvent",
+                "DB__Share",
+                "DandBCompany",
+                "Dashboard",
+                "DashboardComponent",
+                "DashboardComponentFeed",
+                "DashboardFeed",
+                "DataAssessmentFieldMetric",
+                "DataAssessmentMetric",
+                "DataAssessmentValueMetric",
+                "DataStatistics",
+                "DataType",
+                "DataUseLegalBasis",
+                "DataUseLegalBasisHistory",
+                "DataUseLegalBasisShare",
+                "DataUsePurpose",
+                "DataUsePurposeHistory",
+                "DataUsePurposeShare",
+                "DatacloudAddress",
+                "DatacloudCompany",
+                "DatacloudContact",
+                "DatacloudDandBCompany",
+                "DatacloudOwnedEntity",
+                "DatacloudPurchaseUsage",
+                "DeclinedEventRelation",
+                "DeleteEvent",
+                "DigitalSignature",
+                "Document",
+                "DocumentAttachmentMap",
+                "Domain",
+                "DomainSite",
+                "DuplicateRecordItem",
+                "DuplicateRecordSet",
+                "DuplicateRule",
+                "E__ChangeEvent",
+                "E__Share",
+                "EinsteinAI_Settings__ChangeEvent",
+                "EmailCapture",
+                "EmailDomainFilter",
+                "EmailDomainKey",
+                "EmailMessage",
+                "EmailMessageChangeEvent",
+                "EmailMessageRelation",
+                "EmailRelay",
+                "EmailServicesAddress",
+                "EmailServicesFunction",
+                "EmailStatus",
+                "EmailTemplate",
+                "EmailTemplateChangeEvent",
+                "EmbeddedServiceDetail",
+                "EmbeddedServiceLabel",
+                "Energy_Audit__ChangeEvent",
+                "EngagementChannelType",
+                "EngagementChannelTypeFeed",
+                "EngagementChannelTypeHistory",
+                "EngagementChannelTypeShare",
+                "EnhancedLetterhead",
+                "EnhancedLetterheadFeed",
+                "EntityDefinition",
+                "EntityParticle",
+                "EntitySubscription",
+                "Event",
+                "EventBusSubscriber",
+                "EventChangeEvent",
+                "EventFeed",
+                "EventLogFile",
+                "EventRelation",
+                "EventRelationChangeEvent",
+                "Expense__ChangeEvent",
+                "ExpressionFilter",
+                "ExpressionFilterCriteria",
+                "ExternalDataSource",
+                "ExternalDataUserAuth",
+                "ExternalEvent",
+                "ExternalEventMapping",
+                "ExternalEventMappingShare",
+                "Favorite__ChangeEvent",
+                "FeedAttachment",
+                "FeedComment",
+                "FeedItem",
+                "FeedLike",
+                "FeedPollChoice",
+                "FeedPollVote",
+                "FeedRevision",
+                "FeedSignal",
+                "FeedTrackedChange",
+                "Feedback__ChangeEvent",
+                "Feedback__History",
+                "Feedback__Share",
+                "FieldDefinition",
+                "FieldPermissions",
+                "FieldSecurityClassification",
+                "FieldServiceMobileSettings",
+                "FileSearchActivity",
+                "FiscalYearSettings",
+                "FlexQueueItem",
+                "FlowDefinitionView",
+                "FlowExecutionErrorEvent",
+                "FlowInterview",
+                "FlowInterviewShare",
+                "FlowRecordRelation",
+                "FlowStageRelation",
+                "FlowVariableView",
+                "FlowVersionView",
+                "Folder",
+                "FolderedContentDocument",
+                "ForecastShare",
+                "ForecastingAdjustment",
+                "ForecastingCategoryMapping",
+                "ForecastingDisplayedFamily",
+                "ForecastingFact",
+                "ForecastingItem",
+                "ForecastingOwnerAdjustment",
+                "ForecastingQuota",
+                "ForecastingShare",
+                "ForecastingType",
+                "ForecastingTypeToCategory",
+                "ForecastingUserPreference",
+                "FormulaFunction",
+                "FormulaFunctionAllowedType",
+                "FormulaFunctionCategory",
+                "Fund__ChangeEvent",
+                "GrantedByLicense",
+                "Group",
+                "GroupMember",
+                "H__ChangeEvent",
+                "H__Share",
+                "Holiday",
+                "Hpe_Plugin_Usage__ChangeEvent",
+                "Hpe_Plugin_Usage__Share",
+                "IconDefinition",
+                "Idea",
+                "IdeaComment",
+                "IdentityVerificationEvent",
+                "IdpEventLog",
+                "IframeWhiteListUrl",
+                "Image",
+                "ImageShare",
+                "Individual",
+                "IndividualChangeEvent",
+                "IndividualHistory",
+                "IndividualShare",
+                "InstalledMobileApp",
+                "Interested_Person__ChangeEvent",
+                "JobPosting__ChangeEvent",
+                "JobProfile",
+                "JobProfileFeed",
+                "JobProfileHistory",
+                "JobProfileShare",
+                "Job_Application__ChangeEvent",
+                "KnowledgeableUser",
+                "Lead",
+                "LeadAssociation__ChangeEvent",
+                "LeadChangeEvent",
+                "LeadCleanInfo",
+                "LeadFeed",
+                "LeadHistory",
+                "LeadShare",
+                "LeadStatus",
+                "LightningExitByPageMetrics",
+                "LightningExperienceTheme",
+                "LightningOnboardingConfig",
+                "LightningToggleMetrics",
+                "LightningUriEvent",
+                "LightningUriEventStream",
+                "LightningUsageByAppTypeMetrics",
+                "LightningUsageByBrowserMetrics",
+                "LightningUsageByFlexiPageMetrics",
+                "LightningUsageByPageMetrics",
+                "ListEmail",
+                "ListEmailChangeEvent",
+                "ListEmailIndividualRecipient",
+                "ListEmailRecipientSource",
+                "ListEmailShare",
+                "ListView",
+                "ListViewChart",
+                "ListViewChartInstance",
+                "ListViewEvent",
+                "ListViewEventStream",
+                "Location",
+                "LocationChangeEvent",
+                "LocationFeed",
+                "LocationHistory",
+                "LocationShare",
+                "LoginAsEvent",
+                "LoginAsEventStream",
+                "LoginEvent",
+                "LoginEventStream",
+                "LoginGeo",
+                "LoginHistory",
+                "LoginIp",
+                "LogoutEvent",
+                "LogoutEventStream",
+                "LookedUpFromActivity",
+                "Macro",
+                "MacroChangeEvent",
+                "MacroHistory",
+                "MacroInstruction",
+                "MacroInstructionChangeEvent",
+                "MacroShare",
+                "MacroUsage",
+                "MacroUsageShare",
+                "MailmergeTemplate",
+                "MaintenanceAsset",
+                "MaintenanceAssetChangeEvent",
+                "MaintenanceAssetFeed",
+                "MaintenanceAssetHistory",
+                "MaintenancePlan",
+                "MaintenancePlanChangeEvent",
+                "MaintenancePlanFeed",
+                "MaintenancePlanHistory",
+                "MaintenancePlanShare",
+                "MatchingInformation",
+                "MatchingRule",
+                "MatchingRuleItem",
+                "MobileApplicationDetail",
+                "MobileSettingsAssignment",
+                "MutingPermissionSet",
+                "MyDomainDiscoverableLogin",
+                "Name",
+                "NamedCredential",
+                "NamespaceRegistry",
+                "NamespaceRegistryFeed",
+                "NamespaceRegistryHistory",
+                "NavigationLinkSet",
+                "NavigationMenuItem",
+                "Network",
+                "NetworkActivityAudit",
+                "NetworkAffinity",
+                "NetworkDiscoverableLogin",
+                "NetworkMember",
+                "NetworkMemberGroup",
+                "NetworkModeration",
+                "NetworkPageOverride",
+                "NetworkSelfRegistration",
+                "NetworkUserHistoryRecent",
+                "New_Custom_Object__ChangeEvent",
+                "New_Custom_Object__History",
+                "New_Custom_Object__Share",
+                "Note",
+                "NoteAndAttachment",
+                "OauthCustomScope",
+                "OauthToken",
+                "ObjectPermissions",
+                "ObjectTerritory2AssignmentRule",
+                "ObjectTerritory2AssignmentRuleItem",
+                "ObjectTerritory2Association",
+                "OnboardingMetrics",
+                "OpenActivity",
+                "OperatingHours",
+                "OperatingHoursFeed",
+                "Opportunity",
+                "OpportunityChangeEvent",
+                "OpportunityCompetitor",
+                "OpportunityContactRole",
+                "OpportunityContactRoleChangeEvent",
+                "OpportunityFeed",
+                "OpportunityFieldHistory",
+                "OpportunityHistory",
+                "OpportunityLineItem",
+                "OpportunityPartner",
+                "OpportunityShare",
+                "OpportunityStage",
+                "Order",
+                "OrderChangeEvent",
+                "OrderFeed",
+                "OrderHistory",
+                "OrderItem",
+                "OrderItemChangeEvent",
+                "OrderItemFeed",
+                "OrderItemHistory",
+                "OrderShare",
+                "OrderStatus",
+                "OrgDeleteRequest",
+                "OrgDeleteRequestShare",
+                "OrgLifecycleNotification",
+                "OrgMetric",
+                "OrgMetricScanResult",
+                "OrgMetricScanSummary",
+                "OrgWideEmailAddress",
+                "Organization",
+                "OutgoingEmail",
+                "OutgoingEmailRelation",
+                "OwnedContentDocument",
+                "OwnerChangeOptionInfo",
+                "PackageLicense",
+                "Partner",
+                "PartnerFundAllocation",
+                "PartnerFundAllocationFeed",
+                "PartnerFundAllocationHistory",
+                "PartnerFundAllocationShare",
+                "PartnerFundClaim",
+                "PartnerFundClaimFeed",
+                "PartnerFundClaimHistory",
+                "PartnerFundClaimShare",
+                "PartnerFundRequest",
+                "PartnerFundRequestFeed",
+                "PartnerFundRequestHistory",
+                "PartnerFundRequestShare",
+                "PartnerMarketingBudget",
+                "PartnerMarketingBudgetFeed",
+                "PartnerMarketingBudgetHistory",
+                "PartnerMarketingBudgetShare",
+                "PartnerRole",
+                "PartyConsent",
+                "PartyConsentChangeEvent",
+                "PartyConsentFeed",
+                "PartyConsentHistory",
+                "PartyConsentShare",
+                "Period",
+                "PermissionSet",
+                "PermissionSetAssignment",
+                "PermissionSetGroup",
+                "PermissionSetGroupComponent",
+                "PermissionSetLicense",
+                "PermissionSetLicenseAssign",
+                "PermissionSetTabSetting",
+                "PersonalizationTargetInfo",
+                "PicklistValueInfo",
+                "PlatformAction",
+                "PlatformCachePartition",
+                "PlatformCachePartitionType",
+                "PlatformStatusAlertEvent",
+                "PortalDelegablePermissionSet",
+                "Position__ChangeEvent",
+                "Pricebook2",
+                "Pricebook2ChangeEvent",
+                "Pricebook2History",
+                "PricebookEntry",
+                "PricebookEntryHistory",
+                "ProcessDefinition",
+                "ProcessInstance",
+                "ProcessInstanceHistory",
+                "ProcessInstanceNode",
+                "ProcessInstanceStep",
+                "ProcessInstanceWorkitem",
+                "ProcessNode",
+                "Product2",
+                "Product2ChangeEvent",
+                "Product2Feed",
+                "Product2History",
+                "ProductConsumed",
+                "ProductConsumedChangeEvent",
+                "ProductConsumedFeed",
+                "ProductConsumedHistory",
+                "ProductConsumptionSchedule",
+                "ProductItem",
+                "ProductItemChangeEvent",
+                "ProductItemFeed",
+                "ProductItemHistory",
+                "ProductItemShare",
+                "ProductItemTransaction",
+                "ProductItemTransactionFeed",
+                "ProductItemTransactionHistory",
+                "ProductRequest",
+                "ProductRequestChangeEvent",
+                "ProductRequestFeed",
+                "ProductRequestHistory",
+                "ProductRequestLineItem",
+                "ProductRequestLineItemChangeEvent",
+                "ProductRequestLineItemFeed",
+                "ProductRequestLineItemHistory",
+                "ProductRequestShare",
+                "ProductRequired",
+                "ProductRequiredFeed",
+                "ProductRequiredHistory",
+                "ProductTransfer",
+                "ProductTransferChangeEvent",
+                "ProductTransferFeed",
+                "ProductTransferHistory",
+                "ProductTransferShare",
+                "Product_Statement__ChangeEvent",
+                "Product_Statement__Share",
+                "Profile",
+                "Prompt",
+                "PromptAction",
+                "PromptActionShare",
+                "PromptVersion",
+                "Property__ChangeEvent",
+                "Property__Feed",
+                "Property__History",
+                "Publisher",
+                "PushTopic",
+                "QueueSobject",
+                "QuickText",
+                "QuickTextChangeEvent",
+                "QuickTextHistory",
+                "QuickTextShare",
+                "QuickTextUsage",
+                "QuickTextUsageShare",
+                "Quote",
+                "QuoteChangeEvent",
+                "QuoteDocument",
+                "QuoteFeed",
+                "QuoteLineItem",
+                "QuoteLineItemChangeEvent",
+                "QuoteShare",
+                "QuoteTemplateRichTextData",
+                "RecentlyViewed",
+                "Recommendation",
+                "RecommendationChangeEvent",
+                "RecordAction",
+                "RecordActionHistory",
+                "RecordType",
+                "RedirectWhitelistUrl",
+                "RelationshipDomain",
+                "RelationshipInfo",
+                "RemoteKeyCalloutEvent",
+                "Report",
+                "ReportAnomalyEvent",
+                "ReportAnomalyEventStore",
+                "ReportEvent",
+                "ReportEventStream",
+                "ReportFeed",
+                "ReputationLevel",
+                "ReputationPointsRule",
+                "ResourceAbsence",
+                "ResourceAbsenceChangeEvent",
+                "ResourceAbsenceFeed",
+                "ResourceAbsenceHistory",
+                "ResourcePreference",
+                "ResourcePreferenceFeed",
+                "ResourcePreferenceHistory",
+                "ReturnOrder",
+                "ReturnOrderChangeEvent",
+                "ReturnOrderFeed",
+                "ReturnOrderHistory",
+                "ReturnOrderLineItem",
+                "ReturnOrderLineItemChangeEvent",
+                "ReturnOrderLineItemFeed",
+                "ReturnOrderLineItemHistory",
+                "ReturnOrderShare",
+                "RevenueElement",
+                "Review__ChangeEvent",
+                "RuleTerritory2Association",
+                "SamlSsoConfig",
+                "Scontrol",
+                "ScratchOrgInfo",
+                "ScratchOrgInfoFeed",
+                "ScratchOrgInfoHistory",
+                "ScratchOrgInfoShare",
+                "SearchLayout",
+                "SearchPromotionRule",
+                "Sector__ChangeEvent",
+                "SecureAgent",
+                "SecureAgentPlugin",
+                "SecureAgentPluginProperty",
+                "SecureAgentsCluster",
+                "SecurityCustomBaseline",
+                "ServiceAppointment",
+                "ServiceAppointmentChangeEvent",
+                "ServiceAppointmentFeed",
+                "ServiceAppointmentHistory",
+                "ServiceAppointmentShare",
+                "ServiceAppointmentStatus",
+                "ServiceCredentials__ChangeEvent",
+                "ServiceCrew",
+                "ServiceCrewChangeEvent",
+                "ServiceCrewFeed",
+                "ServiceCrewHistory",
+                "ServiceCrewMember",
+                "ServiceCrewMemberChangeEvent",
+                "ServiceCrewMemberFeed",
+                "ServiceCrewMemberHistory",
+                "ServiceCrewShare",
+                "ServiceReport",
+                "ServiceReportHistory",
+                "ServiceReportLayout",
+                "ServiceResource",
+                "ServiceResourceCapacity",
+                "ServiceResourceCapacityFeed",
+                "ServiceResourceCapacityHistory",
+                "ServiceResourceChangeEvent",
+                "ServiceResourceFeed",
+                "ServiceResourceHistory",
+                "ServiceResourceShare",
+                "ServiceResourceSkill",
+                "ServiceResourceSkillFeed",
+                "ServiceResourceSkillHistory",
+                "ServiceTerritory",
+                "ServiceTerritoryChangeEvent",
+                "ServiceTerritoryFeed",
+                "ServiceTerritoryHistory",
+                "ServiceTerritoryLocation",
+                "ServiceTerritoryLocationFeed",
+                "ServiceTerritoryLocationHistory",
+                "ServiceTerritoryMember",
+                "ServiceTerritoryMemberChangeEvent",
+                "ServiceTerritoryMemberFeed",
+                "ServiceTerritoryMemberHistory",
+                "ServiceTerritoryShare",
+                "ServiceTokens__ChangeEvent",
+                "SessionHijackingEvent",
+                "SessionHijackingEventStore",
+                "SessionPermSetActivation",
+                "SetupAuditTrail",
+                "SetupEntityAccess",
+                "Shift",
+                "ShiftFeed",
+                "ShiftHistory",
+                "ShiftShare",
+                "ShiftStatus",
+                "Shipment",
+                "ShipmentChangeEvent",
+                "ShipmentFeed",
+                "ShipmentHistory",
+                "ShipmentShare",
+                "Site",
+                "SiteDetail",
+                "SiteFeed",
+                "SiteHistory",
+                "SiteIframeWhiteListUrl",
+                "Skill",
+                "SkillRequirement",
+                "SkillRequirementFeed",
+                "SkillRequirementHistory",
+                "Solution",
+                "SolutionFeed",
+                "SolutionHistory",
+                "SolutionStatus",
+                "Stamp",
+                "StampAssignment",
+                "StaticResource",
+                "StreamingChannel",
+                "StreamingChannelShare",
+                "Suggestion__ChangeEvent",
+                "TabDefinition",
+                "Task",
+                "TaskChangeEvent",
+                "TaskFeed",
+                "TaskPriority",
+                "TaskStatus",
+                "TenantUsageEntitlement",
+                "Territory2",
+                "Territory2Model",
+                "Territory2ModelFeed",
+                "Territory2ModelHistory",
+                "Territory2Type",
+                "Test2__ChangeEvent",
+                "Test2__History",
+                "Test2__Share",
+                "Test3__ChangeEvent",
+                "Test3__History",
+                "Test3__Share",
+                "Test4__ChangeEvent",
+                "Test4__History",
+                "Test4__Share",
+                "TestSuiteMembership",
+                "Test__ChangeEvent",
+                "Test__History",
+                "Test__Share",
+                "ThirdPartyAccountLink",
+                "TimeSheet",
+                "TimeSheetChangeEvent",
+                "TimeSheetEntry",
+                "TimeSheetEntryChangeEvent",
+                "TimeSheetEntryFeed",
+                "TimeSheetEntryHistory",
+                "TimeSheetFeed",
+                "TimeSheetHistory",
+                "TimeSheetShare",
+                "TimeSlot",
+                "TodayGoal",
+                "TodayGoalShare",
+                "Topic",
+                "TopicAssignment",
+                "TopicFeed",
+                "TopicUserEvent",
+                "Trail__ChangeEvent",
+                "TransactionSecurityPolicy",
+                "Translation",
+                "UiFormulaCriterion",
+                "UiFormulaRule",
+                "UndecidedEventRelation",
+                "UriEvent",
+                "UriEventStream",
+                "User",
+                "UserAppInfo",
+                "UserAppMenuCustomization",
+                "UserAppMenuCustomizationShare",
+                "UserAppMenuItem",
+                "UserChangeEvent",
+                "UserCustomBadge",
+                "UserEmailPreferredPerson",
+                "UserEmailPreferredPersonShare",
+                "UserEntityAccess",
+                "UserFeed",
+                "UserFieldAccess",
+                "UserLicense",
+                "UserListView",
+                "UserListViewCriterion",
+                "UserLogin",
+                "UserPackageLicense",
+                "UserPermissionAccess",
+                "UserPreference",
+                "UserProvAccount",
+                "UserProvAccountStaging",
+                "UserProvMockTarget",
+                "UserProvisioningConfig",
+                "UserProvisioningLog",
+                "UserProvisioningRequest",
+                "UserProvisioningRequestShare",
+                "UserRecordAccess",
+                "UserRole",
+                "UserSetupEntityAccess",
+                "UserShare",
+                "UserTerritory2Association",
+                "Vehicle__ChangeEvent",
+                "Vehicle__History",
+                "VerificationHistory",
+                "VisualforceAccessMetrics",
+                "Vote",
+                "WebLink",
+                "Websites__ChangeEvent",
+                "WorkOrder",
+                "WorkOrderChangeEvent",
+                "WorkOrderFeed",
+                "WorkOrderHistory",
+                "WorkOrderLineItem",
+                "WorkOrderLineItemChangeEvent",
+                "WorkOrderLineItemFeed",
+                "WorkOrderLineItemHistory",
+                "WorkOrderLineItemStatus",
+                "WorkOrderShare",
+                "WorkOrderStatus",
+                "WorkType",
+                "WorkTypeChangeEvent",
+                "WorkTypeFeed",
+                "WorkTypeGroup",
+                "WorkTypeGroupFeed",
+                "WorkTypeGroupHistory",
+                "WorkTypeGroupMember",
+                "WorkTypeGroupMemberFeed",
+                "WorkTypeGroupMemberHistory",
+                "WorkTypeGroupShare",
+                "WorkTypeHistory",
+                "WorkTypeShare",
+                "Work_Part__ChangeEvent",
+                "Work_Part__History",
+                "a__ChangeEvent",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa__ChangeEvent",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa__History",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa__Share",
+                "b__ChangeEvent",
+                "b__Share",
+                "d__ChangeEvent",
+                "d__Share",
+                "ltnadptn__Lightning_Adoption_Report_Snapshot__ChangeEvent",
+                "sad__ChangeEvent",
+                "sad__Share"
+            ]
         };
     },
     methods: {

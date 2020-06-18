@@ -71,12 +71,18 @@ const activate = (context) => {
       });
     }
 
-    // example.helloWorld
-    /*context.subscriptions.push(
-          vscode.commands.registerCommand('example.helloWorld', function() {
-              utils.Api.showMessage({ txt: 'Hello World!' });
-          })
-      );*/
+    try {
+      exec(
+        `sfdx force:mdapi:listmetadata -m GlobalValueSet -u ${org.username} --json > ${path.join(scratchOrgFolder, 'globalValueSets.json')}`, {
+          encoding: 'utf-8',
+          cwd: vscode.workspace.rootPath,
+        }
+      );
+    } catch (e) {
+      fs.writeFileSync(path.join(scratchOrgFolder, 'error.json'), JSON.stringify(e), {
+        encoding: 'utf-8'
+      });
+    }
   });
 };
 

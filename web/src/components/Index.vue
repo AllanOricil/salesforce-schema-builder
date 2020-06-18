@@ -55,7 +55,7 @@
             <pre
                 v-highlightjs
                 class="flex-grow-1"
-            ><code class="html">{{xml}}</code></pre>
+            ><code class="html">{{data}}</code></pre>
         </div>
     </div>
 </template>
@@ -65,11 +65,31 @@ import he from "he";
 import format from "xml-formatter";
 import SObjectForm from "./SObjectForm.vue";
 import FieldsForm from "./FieldsForm.vue";
+import xml2js from "xml2js";
+
+const xmldBuilder = new xml2js.Builder();
 export default {
     name: "Index",
     components: {
         SObjectForm,
         FieldsForm
+    },
+    computed: {
+        data() {
+            return xmldBuilder.buildObject(
+                JSON.parse(
+                    JSON.stringify({
+                        CustomObject: {
+                            $: {
+                                xmlns: "http://soap.sforce.com/2006/04/metadata"
+                            },
+                            ...this.$refs.sObjectForm.sObjectDefinition,
+                            fields: this.$refs.fieldsForm.data
+                        }
+                    })
+                )
+            );
+        }
     },
     created() {
         window.addEventListener("message", event => {

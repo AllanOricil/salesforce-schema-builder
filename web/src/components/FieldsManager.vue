@@ -29,11 +29,11 @@
                 v-for="(field, index) in filteredFields"
                 :key="index"
                 :field="field"
+                :isEditing="field._isEditing"
                 class="mb-2"
                 @onEdit="requestEdit"
                 @onRemove="removeEntryFromFields"
-            >
-            </field-manager-field-entry>
+            ></field-manager-field-entry>
         </div>
     </div>
 </template>
@@ -47,7 +47,6 @@ export default {
     data() {
         return {
             fields: [],
-            filteredFields: [],
             searchValue: ""
         };
     },
@@ -60,19 +59,23 @@ export default {
                         return previous && currentValue._isValid;
                     });
             } else return true;
-        }
-    },
-    watch: {
-        fields(newValue) {
-            this.filteredFields = newValue;
         },
-        searchValue(newValue) {
-            this.filterFields();
+        filteredFields() {
+            if (typeof this.searchValue !== "undefined" && this.fields.length) {
+                return this.fields.filter(value => {
+                    return value.fullName
+                        .toUpperCase()
+                        .includes(this.searchValue.toUpperCase());
+                });
+            } else {
+                return this.fields;
+            }
         }
     },
     methods: {
         addField() {
             const field = {
+                _isEditing: false,
                 _isValid: true,
                 fullName: `New_Field_${this.fields.length}__c`,
                 externalId: undefined,
@@ -84,19 +87,12 @@ export default {
                 type: "Checkbox",
                 required: false,
                 unique: false,
-                defaultValue: true,
+                defaultValue: undefined,
                 precision: undefined,
                 scale: undefined,
                 caseSensitive: undefined,
                 displayLocationInDecimal: undefined,
-                valueSet: {
-                    valueSetName: undefined,
-                    restricted: undefined,
-                    valueSetDefinition: {
-                        sorted: undefined,
-                        values: undefined
-                    }
-                },
+                valueSet: undefined,
                 visibleLines: undefined,
                 length: undefined,
                 maskChar: undefined,
@@ -104,30 +100,27 @@ export default {
             };
             this.fields.push(field);
             this.$emit("onEdit", field);
+            this.requestEdit(field);
         },
         search(e) {
             this.searchValue = e.target.value;
         },
-        filterFields() {
-            if (typeof this.searchValue !== "undefined") {
-                this.filteredFields = this.fields.filter(value => {
-                    return value.fullName
-                        .toUpperCase()
-                        .includes(this.searchValue.toUpperCase());
-                });
-            } else {
-                this.filteredFields = this.fields;
-            }
-        },
         requestEdit(e) {
             this.$emit("onEdit", e);
+            this._changeAllFieldsToNotEditing();
+            e._isEditing = true;
         },
         removeEntryFromFields(e) {
-            const fieldToRemove = this.fields.find(field => {
-                return field.fullName === e.fullName;
+            this.fields.splice(this._findFieldInArray(e), 1);
+        },
+        _findFieldInArray(lookingField) {
+            const fieldFound = this.fields.find(field => {
+                return field.fullName === lookingField.fullName;
             });
-
-            this.fields.splice(this.fields.indexOf(fieldToRemove), 1);
+            return this.fields.indexOf(fieldFound);
+        },
+        _changeAllFieldsToNotEditing() {
+            this.fields.forEach(field => (field._isEditing = false));
         }
     }
 };

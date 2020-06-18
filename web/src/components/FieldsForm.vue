@@ -30,14 +30,14 @@ export default {
     computed: {
         isDataValid() {
             return this.$refs.fieldsManager.areFieldsValid;
+        },
+        data() {
+            return this.$refs.fieldsManager.fields;
         }
     },
     methods: {
         setEditingField(field) {
             this.field = field;
-        },
-        getData() {
-            return this.$refs.fieldsManager.fields;
         }
     }
 };

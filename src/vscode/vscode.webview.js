@@ -227,6 +227,7 @@ class WebView {
     }
 
     if (message.cmd === "getAllObjectNames") {
+
       try {
         const objectsResult = execSync(
           `sfdx force:schema:sobject:list -c all --json`, {
