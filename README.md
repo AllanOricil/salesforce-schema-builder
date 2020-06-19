@@ -5,9 +5,9 @@ This extension goal is to enable developers to manage Salesforce Custom Objects 
 ## Features
 
 - [x] Create Custom Objects and fields.
-- [x] Preview the generate XML.
+- [x] Preview and Copy to Clipboard the Metadata XML.
 - [ ] Edit Custom Objects when clicking Right Click on .object or object-meta.xml files.
-- [ ] Create Validation Rules. -> Depends on the implementation of the Formula Editor.
+- [ ] Create Validation Rules. ----> Depends on the implementation of the Formula Editor. <-----
 - [ ] Interactive 2D Schema Visualization.
 
 ## Requirements
@@ -46,3 +46,5 @@ If you want to see the generate metadata just click on the button on the top rig
 When you finish to configure your new Custom Object, click on the Save button and just wait a few seconds. If everything deployed correctly VS Code will display a Success message on the bottom right corner of the screen.
 
 <img src="https://drive.google.com/uc?id=1aWDJIVW5ApN4CViJnL_dO1e09cGONvCG" widht="900px">></img>
+
+The generated metadata is saved inside the folder `./schema/defaultusername/customObjects/{CUSTOM_OBJECT_NAME}`
