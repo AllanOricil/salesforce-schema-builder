@@ -70,6 +70,28 @@ export default {
             } else {
                 return this.fields;
             }
+        },
+        computedFields() {
+            const computedFields = JSON.parse(JSON.stringify(this.fields));
+            computedFields.forEach(field => {
+                delete field._isValid;
+                delete field._isEditing;
+                if (field.type === "Formula") {
+                    if (field.formulaType === "Cunrrecy") {
+                        field.precision = 18;
+                    }
+                    field.type = field.formulaType;
+                    delete field.formulaType;
+                    field.formula = field.defaultValue;
+                    delete field.defaultValue;
+                    if (field.formulaTreatBlanksAs) {
+                        field.formulaTreatBlanksAs = "BlankAsZero";
+                    } else {
+                        field.formulaTreatBlanksAs = "BlankAsBlank";
+                    }
+                }
+            });
+            return computedFields;
         }
     },
     methods: {

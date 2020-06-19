@@ -10,7 +10,7 @@
                     maxlength="40"
                     required
                     v-model="sObjectDefinition.label"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
             </div>
             <div class="form-group col-12">
@@ -22,7 +22,7 @@
                     maxlength="40"
                     required
                     v-model="sObjectDefinition.pluralLabel"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
             </div>
             <div class="form-group col-12">
@@ -32,7 +32,7 @@
                     id="sObjecctGender"
                     required
                     v-model="sObjectDefinition.gender"
-                    @change="isFormValid"
+                    @change="checkValidity"
                 >
                     <option>Feminine</option>
                     <option>Masculine</option>
@@ -45,7 +45,7 @@
                     id="sObjectDescription"
                     rows="3"
                     v-model="sObjectDefinition.description"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 ></textarea>
             </div>
             <div class="form-group col-12">
@@ -58,7 +58,7 @@
                     required
                     pattern="^(?!.*__)(?!.*_$)[A-Za-z]\w*$"
                     v-model="sObjectDefinition.objectName"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
             </div>
             <div class="form-group col-12">
@@ -70,7 +70,7 @@
                     maxlength="80"
                     required
                     v-model="sObjectDefinition.recordName"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     It appears in page layouts, key and related lists, lookups,
@@ -84,7 +84,7 @@
                     id="sObjectDataType"
                     required
                     v-model="sObjectDefinition.dataType"
-                    @change="isFormValid"
+                    @change="checkValidity"
                 >
                     <option value="Text">Text</option>
                     <option value="AutoNumber">Auto Number</option>
@@ -103,10 +103,10 @@
                     required
                     pattern=".{0,20}\{[0]{1,10}\}"
                     v-model="sObjectDefinition.displayFormat"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
                 <small id="passwordHelpBlock" class="form-text text-muted"
-                    >A-{0000}</small
+                    >Example: A-{0000}</small
                 >
             </div>
             <div
@@ -121,7 +121,7 @@
                     min="0"
                     required
                     v-model="sObjectDefinition.startingNumber"
-                    @keyup="isFormValid"
+                    @keyup="checkValidity"
                 />
             </div>
             <div class="form-group col-12">
@@ -135,7 +135,7 @@
                         type="checkbox"
                         id="sObjectAllowReports"
                         v-model="sObjectDefinition.enableReports"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -151,7 +151,7 @@
                         type="checkbox"
                         id="sObjectAllowActivities"
                         v-model="sObjectDefinition.enableActivities"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -167,7 +167,7 @@
                         type="checkbox"
                         id="sObjectTrackFieldHistory"
                         v-model="sObjectDefinition.enableHistory"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -183,7 +183,7 @@
                         type="checkbox"
                         id="sObjectAllowInChatterGroups"
                         v-model="sObjectDefinition.allowInChatterGroups"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -199,7 +199,7 @@
                         type="checkbox"
                         id="sObjectAllowSharing"
                         v-model="sObjectDefinition.enableSharing"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -215,7 +215,7 @@
                         type="checkbox"
                         id="sObjectAllowBulkApiAccess"
                         v-model="sObjectDefinition.enableBulkApi"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -231,7 +231,7 @@
                         type="checkbox"
                         id="sObjectAllowStreamingApiAccess"
                         v-model="sObjectDefinition.enableStreamingApi"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -247,7 +247,7 @@
                         type="checkbox"
                         id="sObjectAllowSearch"
                         v-model="sObjectDefinition.enableSearch"
-                        @keyup="isFormValid"
+                        @keyup="checkValidity"
                     />
                     <span class="checkmark"></span>
                 </label>
@@ -259,7 +259,7 @@
                     class="form-control"
                     id="sObjectDeploymentStatus"
                     v-model="sObjectDefinition.deploymentStatus"
-                    @change="isFormValid"
+                    @change="checkValidity"
                 >
                     <option value="InDevelopment">In Development</option>
                     <option value="Deployed">Deployed</option>
@@ -270,6 +270,7 @@
 </template>
 
 <script>
+import he from "he";
 export default {
     data() {
         return {
@@ -283,7 +284,7 @@ export default {
                 recordName: undefined,
                 dataType: "Text",
                 displayFormat: undefined,
-                startingNumber: 0,
+                startingNumber: undefined,
                 enableReports: false,
                 enableActivities: false,
                 enableHistory: false,
@@ -295,6 +296,37 @@ export default {
                 deploymentStatus: "Deployed"
             }
         };
+    },
+    computed: {
+        sObjecComputedData() {
+            return {
+                nameField: {
+                    label: this.sObjectDefinition.recordName,
+                    displayFormat: this.sObjectDefinition.displayFormat,
+                    startingNumber: this.sObjectDefinition.startingNumber,
+                    trackHistory: false,
+                    type: this.sObjectDefinition.dataType
+                },
+                label: this.sObjectDefinition.label,
+                description: this.sObjectDefinition.description,
+                pluralLabel: this.sObjectDefinition.pluralLabel,
+                gender: this.sObjectDefinition.gender,
+                enableReports: this.sObjectDefinition.enableReports,
+                enableActivities: this.sObjectDefinition.enableActivities,
+                enableHistory: this.sObjectDefinition.enableHistory,
+                allowInChatterGroups: this.sObjectDefinition
+                    .allowInChatterGroups,
+                enableSharing: this.sObjectDefinition.enableSharing,
+                enableBulkApi: this.sObjectDefinition.enableBulkApi,
+                enableStreamingApi: this.sObjectDefinition.enableStreamingApi,
+                enableSearch: this.sObjectDefinition.enableSearch,
+                deploymentStatus: this.sObjectDefinition.deploymentStatus,
+                sharingModel: "ReadWrite"
+            };
+        },
+        isValid() {
+            return this.$refs.sObjectForm.checkValidity();
+        }
     },
     watch: {
         "sObjectDefinition.label"(newValue, oldValue) {
@@ -319,8 +351,8 @@ export default {
             this.sObjectDefinition.enableStreamingApi = newValue === true;
         }
     },
-    methods: {
-        isFormValid() {
+    methods:{
+        checkValidity(){
             return this.$refs.sObjectForm.checkValidity();
         }
     }

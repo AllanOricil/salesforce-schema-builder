@@ -27,7 +27,7 @@
                     required
                     @change="checkValidity"
                 >
-                    <option value="Chekbox">Checkbox</option>
+                    <option value="Checkbox">Checkbox</option>
                     <option value="Currency">Currency</option>
                     <option value="Date">Date</option>
                     <option value="DateTime">Date/Time</option>
@@ -57,26 +57,6 @@
                     >
                 </select>
             </div>
-            <div
-                v-if="
-                    field.formulaType === 'Number' ||
-                        field.formulaType === 'Currency' ||
-                        field.formulaType === 'Percent'
-                "
-                class="form-group col-12"
-            >
-                <label for="fieldFormulaPrecision">Precision</label>
-                <input
-                    type="number"
-                    class="form-control"
-                    id="fieldFormulaPrecision"
-                    min="0"
-                    max="18"
-                    required
-                    v-model="field.scale"
-                    @keyup="checkValidity"
-                />
-            </div>
             <div class="form-group col-12">
                 <label for="fieldLabel">Field Label</label>
                 <input
@@ -102,6 +82,26 @@
                     @keyup="checkValidity"
                 />
                 <small>API Name: {{ field.fullName }}</small>
+            </div>
+            <div
+                v-if="
+                    field.formulaType === 'Number' ||
+                        field.formulaType === 'Currency' ||
+                        field.formulaType === 'Percent'
+                "
+                class="form-group col-12"
+            >
+                <label for="fieldFormulaPrecision">Decimal Places</label>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="fieldFormulaPrecision"
+                    min="0"
+                    max="18"
+                    required
+                    v-model="field.scale"
+                    @keyup="checkValidity"
+                />
             </div>
             <div
                 v-if="
@@ -177,6 +177,7 @@
                     id="fieldDefaultValue"
                     rows="2"
                     v-model="defaultValue"
+                    :required="field.type === 'Formula'"
                     @keyup="checkValidity"
                 ></textarea>
             </div>
@@ -266,10 +267,9 @@
                     @change="checkValidity"
                 >
                     <option value="1">Use global picklist value set</option>
-                    <option value="2"
-                        >Enter values, with each value separated by a new
-                        line</option
-                    >
+                    <option value="2">
+                        Enter values, with each value separated by a new line
+                    </option>
                 </select>
             </div>
             <div
@@ -760,6 +760,7 @@ export default {
             if (this.field.type !== "Formula") {
                 this.field.formulaType = undefined;
                 this.field.formulaTreatBlanksAs = undefined;
+                this.field.formula = undefined;
             }
 
             if (
@@ -897,22 +898,55 @@ export default {
                         he.decode(String(this.field.defaultValue))
                     );
                 else this.defaultValue = undefined;
-
-                if (typeof this.field.valueSet !== "undefined") {
-                    this.valueSet = this.field.valueSet;
-                    if (this.valueSet.valueSetDefinition.value) {
-                        this.useGlobalPicklistValueSet = 2;
-                    } else {
-                        this.useGlobalPicklistValueSet = 1;
-                        this.valueSet.valueSetDefinition.sorted = undefined;
-                        this.valueSet.valueSetDefinition.value = undefined;
-                        this.valueSet.makeFirstValueDefault = undefined;
-                        this.valueSet.restricted = undefined;
-                    }
-                }
             });
 
-            this.checkValidity();
+            if (
+                this.field.type === "Picklist" ||
+                this.field.type === "MultiselectPicklist"
+            ) {
+                if (
+                    this.field.valueSet.restricted === null ||
+                    typeof this.field.valueSet.restricted === "undefined"
+                )
+                    this.field.valueSet.restricted = true;
+                this.valueSet.restricted = this.field.valueSet.restricted;
+
+                if (this.field.valueSet.valueSetDefinition.value) {
+                    this.useGlobalPicklistValueSet = 2;
+                    this.field.valueSet.value;
+                    this.valueSet.valueSetDefinition.value = this.field.valueSet.valueSetDefinition.value.reduce(
+                        (previous, current, index) => {
+                            return (
+                                previous +
+                                (index === 0 ? "" : "\n") +
+                                current.fullName
+                            );
+                        },
+                        ""
+                    );
+                } else {
+                    this.useGlobalPicklistValueSet = 1;
+                    this.valueSet.valueSetName = this.field.valueSet.valueSetName;
+                    this.field.valueSet.valueSetDefinition = undefined;
+                }
+
+                if (
+                    this.field.valueSet.valueSetDefinition &&
+                    this.field.valueSet.valueSetDefinition.value &&
+                    this.field.valueSet.valueSetDefinition.value.length
+                ) {
+                    this.valueSet.makeFirstValueDefault = this.field.valueSet.valueSetDefinition.value[0].default;
+                    this.valueSet.valueSetDefinition.sorted = this.field.valueSet.valueSetDefinition.sorted;
+                }
+            } else {
+                this.field.valueSet = undefined;
+            }
+        },
+        field: {
+            deep: true,
+            handler() {
+                this.checkValidity();
+            }
         },
         useGlobalPicklistValueSet(newValue) {
             if (newValue == 1) {
@@ -943,28 +977,36 @@ export default {
         valueSet: {
             deep: true,
             handler(newValue) {
-                this.field.valueSet = JSON.parse(JSON.stringify(newValue));
-
-                delete this.field.valueSet.makeFirstValueDefault;
                 if (
-                    newValue.valueSetDefinition &&
-                    newValue.valueSetDefinition.value
+                    this.field.type === "Picklist" ||
+                    this.field.type === "MultiselectPicklist"
                 ) {
-                    let values = newValue.valueSetDefinition.value
-                        .split("\n")
-                        .map((value, index) => {
-                            return {
-                                fullName: value,
-                                label: value,
-                                default:
-                                    index === 0 &&
-                                    newValue.makeFirstValueDefault
-                            };
-                        });
+                    this.field.valueSet = JSON.parse(JSON.stringify(newValue));
 
-                    this.field.valueSet.valueSetDefinition.value = values;
+                    if (typeof newValue.restricted === "undefined")
+                        this.field.valueSet.restricted = true;
+                    else this.field.valueSet.restricted = newValue.restricted;
+
+                    if (
+                        newValue.valueSetDefinition &&
+                        newValue.valueSetDefinition.value
+                    ) {
+                        this.field.valueSet.valueSetDefinition.value = newValue.valueSetDefinition.value
+                            .split("\n")
+                            .map((value, index) => {
+                                return {
+                                    fullName: value,
+                                    label: value,
+                                    default:
+                                        index === 0 &&
+                                        newValue.makeFirstValueDefault
+                                };
+                            });
+                    } else {
+                        this.field.valueSet.valueSetDefinition = undefined;
+                    }
+                    delete this.field.valueSet.makeFirstValueDefault;
                 }
-                delete this.field.valueSet.makeFirstValueDefault;
             }
         }
     },

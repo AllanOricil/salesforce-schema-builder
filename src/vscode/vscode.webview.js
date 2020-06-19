@@ -53,6 +53,8 @@ class WebView {
     this.templatesPath = undefined;
 
     this.channel = undefined;
+
+    this.sfdxConfig = undefined;
   }
   get name() {
     return WebviewApi.name;
@@ -128,6 +130,10 @@ class WebView {
         undefined,
         context.subscriptions
       );
+
+      this.sfdxConfig = JSON.parse(fs.readFileSync(path.join(vscode.workspace.rootPath, '.schema', 'sfdxConfig.json'), {
+        encoding: 'utf-8'
+      }));
     }
   }
 
@@ -143,58 +149,74 @@ class WebView {
     this.onDidReceiveMessage && this.onDidReceiveMessage(message);
     console.log(`Extension(${this.name}) received message: ${message.cmd}`);
 
+
     if (message.cmd === "createCustomObject") {
-      const metadataPath = path.join(vscode.workspace.rootPath, "metadata");
-      fs.mkdirp(metadataPath);
-      fs.mkdirp(path.join(metadataPath, "objects"));
-      templateCustomObjectMetadata(this.templatesPath, message.args).then(
-        (template) => {
-          console.log(template);
-          fs.writeFileSync(
-            path.join(
-              vscode.workspace.rootPath,
-              "metadata",
-              "objects",
-              message.args.objectName + "__c.object"
-            ),
-            template, {
-              encoding: "utf-8",
-            }
-          );
+      const customObjectXml = message.args.xml;
+      const customObjectName = message.args.objectName;
+      const customObjectsFolder = path.join(vscode.workspace.rootPath, ".schema", "defaultusername", "customObjects");
 
-          try {
-            const metadataDeployResult = execSync(
-              `sfdx force:mdapi:deploy -d ${metadataPath} -w 90 --json`, {
-                cwd: vscode.workspace.rootPath,
-              }
-            );
-            const metadataDeployResultObject = JSON.parse(
-              metadataDeployResult.toString()
-            );
+      console.log(customObjectXml);
+      console.log(customObjectName);
+      const customObjectFolder = path.join(
+        customObjectsFolder,
+        customObjectName + "__c"
+      );
+      fs.mkdirpSync(customObjectFolder);
 
-            this.channel.appendLine(metadataDeployResult.toString());
-            vscode.window.showInformationMessage("Custom Object Created");
-            this.panel.webview.postMessage({
-              name: "createCustomObjectResult",
-              result: metadataDeployResultObject,
-            });
-          } catch (e) {
-            vscode.window
-              .showErrorMessage("Deploy Failed", "Show Output")
-              .then((selection) => {
-                if (selection === "Show Output") {
-                  this.channel.show();
-                }
-              });
-            this.panel.webview.postMessage({
-              name: "createCustomObjectResult",
-              result: "error",
-            });
-            this.channel.appendLine(e);
-          }
+      fs.writeFileSync(path.join(customObjectFolder, "package.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+  <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+      <types>
+          <members>*</members>
+          <name>CustomObject</name>
+      </types>
+      <version>48.0</version>
+  </Package>
+  `, {
+        encoding: 'utf-8'
+      });
+
+      fs.writeFileSync(
+        path.join(
+          customObjectFolder,
+          customObjectName + "__c.object"
+        ),
+        customObjectXml, {
+          encoding: "utf-8",
         }
       );
+
+      try {
+        const metadataDeployResult = execSync(
+          `sfdx force:mdapi:deploy -d ${customObjectFolder} -w 90 --json`, {
+            cwd: vscode.workspace.rootPath,
+          }
+        );
+        const metadataDeployResultObject = JSON.parse(
+          metadataDeployResult.toString()
+        );
+
+        this.channel.appendLine(metadataDeployResult.toString());
+        vscode.window.showInformationMessage("Custom Object Created");
+        this.panel.webview.postMessage({
+          name: "createCustomObjectResult",
+          result: metadataDeployResultObject,
+        });
+      } catch (e) {
+        vscode.window
+          .showErrorMessage("Deploy Failed", "Show Output")
+          .then((selection) => {
+            if (selection === "Show Output") {
+              this.channel.show();
+            }
+          });
+        this.panel.webview.postMessage({
+          name: "createCustomObjectResult",
+          result: "error",
+        });
+        this.channel.appendLine(e);
+      }
     }
+
 
     if (message.cmd === "getAvailableGlobalValueSets") {
       try {

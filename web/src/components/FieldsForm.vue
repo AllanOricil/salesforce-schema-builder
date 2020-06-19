@@ -28,11 +28,11 @@ export default {
         };
     },
     computed: {
-        isDataValid() {
+        isValid() {
             return this.$refs.fieldsManager.areFieldsValid;
         },
-        data() {
-            return this.$refs.fieldsManager.fields;
+        fieldsComputedData() {
+            return this.$refs.fieldsManager.computedFields;
         }
     },
     methods: {

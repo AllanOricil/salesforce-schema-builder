@@ -13,9 +13,6 @@ const webview = new EGWebView();
  * @param {vscode.ExtensionContext} context
  */
 const activate = (context) => {
-  // example.webview
-  webview.activate(context, name, "SFDX.schemaBuilder");
-
   const schemaFolder = path.join(vscode.workspace.rootPath, '.schema');
 
   fs.ensureDir(path.join(vscode.workspace.rootPath, '.schema'));
@@ -33,6 +30,9 @@ const activate = (context) => {
   fs.writeFile(path.join(schemaFolder, 'sfdxConfig.json'), sfdxConfigList, {
     encoding: 'utf-8'
   });
+
+  const customObjectsFolder = path.join(schemaFolder, "defaultusername", "customObjects");
+  fs.mkdirpSync(customObjectsFolder);
 
   let orgs = undefined;
   if (sfdxOrgsResult)
@@ -84,6 +84,9 @@ const activate = (context) => {
       });
     }
   });
+
+  webview.activate(context, name, "SFDX.schemaBuilder");
+
 };
 
 const deactivate = () => {

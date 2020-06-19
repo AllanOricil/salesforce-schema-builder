@@ -45,17 +45,28 @@
             class="fixed d-flex flex-column m-auto absolute"
             style="position: absolute; width: 40%; height: 100%; top: 0px; right: 0px; background-color: var(--vscode-editor-background); border-left: thin solid var(--vscode-textSeparator-foreground);"
         >
-            <button
-                @click="hideMetadata()"
-                class="btn btn-primary"
-                style="min-width: 0px"
-            >
-                Close Preview
-            </button>
+            <div class="d-flex">
+                <button
+                    @click="hideMetadata()"
+                    class="btn btn-primary flex-grow-1"
+                    style="min-width: 0px"
+                >
+                    Close Preview
+                </button>
+                <button
+                    v-clipboard="xml"
+                    v-clipboard:success="clipboardSuccessHandler"
+                    v-clipboard:error="clipboardErrorHandler"
+                    class="btn btn-primary flex-grow-1"
+                    style="min-width: 0px"
+                >
+                    Copy to Clipboard
+                </button>
+            </div>
             <pre
-                v-highlightjs
+                v-highlightjs="xml"
                 class="flex-grow-1"
-            ><code class="html">{{data}}</code></pre>
+            ><code class="html"></code></pre>
         </div>
     </div>
 </template>
@@ -75,7 +86,7 @@ export default {
         FieldsForm
     },
     computed: {
-        data() {
+        xml() {
             return xmldBuilder.buildObject(
                 JSON.parse(
                     JSON.stringify({
@@ -83,8 +94,8 @@ export default {
                             $: {
                                 xmlns: "http://soap.sforce.com/2006/04/metadata"
                             },
-                            ...this.$refs.sObjectForm.sObjectDefinition,
-                            fields: this.$refs.fieldsForm.data
+                            ...this.$refs.sObjectForm.sObjecComputedData,
+                            fields: this.$refs.fieldsForm.fieldsComputedData
                         }
                     })
                 )
@@ -108,18 +119,7 @@ export default {
             msg: "",
             creatingCustomObject: false,
             areFormsDisabled: false,
-            showXML: false,
-            xml: format(
-                `<?xml version="1.0" encoding="UTF-8"?>
-    <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <types> <members>*</members>
-        <name>CustomObject</name>     </types>
-    <version>48.0</version> </Package>
-`,
-                {
-                    collapseContent: true
-                }
-            )
+            showXML: false
         };
     },
     methods: {
@@ -140,18 +140,21 @@ export default {
         },
         createCustomObject() {
             if (
-                this.$refs.sObjectForm.isFormValid() &&
-                this.$refs.fieldsForm.isDataValid
+                this.$refs.sObjectForm.isValid &&
+                this.$refs.fieldsForm.isValid
             ) {
                 this.areFormsDisabled = true;
-                const fieldsData = this.$refs.fieldsForm.getData();
-                const sObjectData = this.$refs.sObjectForm.sObjectDefinition;
+                const fieldsData = this.$refs.fieldsForm.fieldsComputedData;
+                const sObjectData = this.$refs.sObjectForm.sObjecComputedData;
                 console.log(fieldsData);
                 console.log(sObjectData);
                 this.creatingCustomObject = true;
                 window.vscode.post({
                     cmd: "createCustomObject",
-                    args: this.$refs.fieldsForm.getData()
+                    args: {
+                        objectName: this.$refs.sObjectForm.sObjectDefinition.objectName,
+                        xml: this.xml
+                    }
                 });
             }
         },
@@ -161,7 +164,9 @@ export default {
         },
         hideMetadata() {
             this.showXML = false;
-        }
+        },
+        clipboardSuccessHandler() {},
+        clipboardErrorHandler() {}
     }
 };
 </script>

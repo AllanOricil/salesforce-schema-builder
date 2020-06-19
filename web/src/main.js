@@ -5,10 +5,7 @@ import App from "./App";
 import router from "./router";
 import example from "./utils/example/e.g.index";
 
-import {
-    BootstrapVue,
-    IconsPlugin
-} from "bootstrap-vue";
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 
 // Install BootstrapVue
 Vue.use(BootstrapVue);
@@ -22,7 +19,7 @@ example.activate();
 
 Vue.config.productionTip = false;
 
-import VueHighlightJS from 'vue-highlightjs'
+import VueHighlightJS from "vue-highlightjs";
 
 /*
  * Import Highlight.js theme
@@ -31,7 +28,10 @@ import VueHighlightJS from 'vue-highlightjs'
 import "highlight.js/styles/vs2015.css";
 
 // Tell Vue.js to use vue-highlightjs
-Vue.use(VueHighlightJS)
+Vue.use(VueHighlightJS);
+
+import Clipboard from "v-clipboard";
+Vue.use(Clipboard);
 
 /* eslint-disable no-new */
 // @ts-ignore
