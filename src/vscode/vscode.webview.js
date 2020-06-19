@@ -196,7 +196,11 @@ class WebView {
         );
 
         this.channel.appendLine(metadataDeployResult.toString());
-        vscode.window.showInformationMessage("Custom Object Created");
+        vscode.window.showInformationMessage("Custom Object Created", "Show Output").then((selection) => {
+          if (selection === "Show Output") {
+            this.channel.show();
+          }
+        });
         this.panel.webview.postMessage({
           name: "createCustomObjectResult",
           result: metadataDeployResultObject,

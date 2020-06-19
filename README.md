@@ -4,10 +4,9 @@ This extension goal is to enable developers to manage Salesforce Custom Objects 
 
 ## Features
 
-- [x] Create Custom Objects.
-- [ ] Create Custom Fields.
+- [x] Create Custom Objects and fields.
+- [x] Preview the generate XML.
 - [ ] 2D Schema Visualization.
-- [ ] Drag and Drop to create Custom Objects and Fields.
 
 ## Requirements
 
