@@ -40,3 +40,7 @@ If you want to see the generate metadata just click on the button on the top rig
 <img src="https://drive.google.com/uc?id=1yZJWrRdDjXfXEnuKUcinVidZEzE_ppsA" width="900px"></img>
 
 <img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="900px"></img>
+
+When you finish to configure your new Custom Object, click on the Save button and just wait a few seconds. If everything deployed correctly VS Code will display a Success message on the bottom right corner of the screen.
+
+<img src="https://drive.google.com/uc?id=1aWDJIVW5ApN4CViJnL_dO1e09cGONvCG" widht="900px">></img>

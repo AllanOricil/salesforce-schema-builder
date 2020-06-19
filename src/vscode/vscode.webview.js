@@ -162,6 +162,10 @@ class WebView {
         customObjectName + "__c"
       );
       fs.mkdirpSync(customObjectFolder);
+      fs.mkdirpSync(path.join(
+        customObjectFolder,
+        "objects"
+      ));
 
       fs.writeFileSync(path.join(customObjectFolder, "package.xml"), `<?xml version="1.0" encoding="UTF-8"?>
   <Package xmlns="http://soap.sforce.com/2006/04/metadata">
@@ -178,6 +182,7 @@ class WebView {
       fs.writeFileSync(
         path.join(
           customObjectFolder,
+          "objects",
           customObjectName + "__c.object"
         ),
         customObjectXml, {
