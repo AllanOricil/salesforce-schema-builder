@@ -6,7 +6,9 @@ This extension goal is to enable developers to manage Salesforce Custom Objects 
 
 - [x] Create Custom Objects and fields.
 - [x] Preview the generate XML.
-- [ ] 2D Schema Visualization.
+- [ ] Edit Custom Objects when clicking Right Click on .object or object-meta.xml files.
+- [ ] Create Validation Rules. -> Depends on the implementation of the Formula Editor.
+- [ ] Interactive 2D Schema Visualization.
 
 ## Requirements
 
