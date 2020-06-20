@@ -1,4 +1,6 @@
-import { WebviewData } from '../vscode.web';
+import {
+    WebviewData
+} from '../vscode.web';
 
 class EGData extends WebviewData {
     constructor(vscode) {

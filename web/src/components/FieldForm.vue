@@ -10,12 +10,30 @@
                     required
                     @change="checkValidity"
                 >
-                    <option
-                        v-for="(type, index) in types"
-                        :key="index"
-                        :value="type.value"
-                        >{{ type.name }}</option
+                    <option value="AutoNumber">Auto Number</option>
+                    <option value="Formula">Formula</option>
+                    <option value="Lookup">Lookup</option>
+                    <option value="MasterDetail">Master Detail</option>
+                    <option value="Checkbox">Checkbox</option>
+                    <option value="Currency">Currency</option>
+                    <option value="Date">Date</option>
+                    <option value="DateTime">Date/Time</option>
+                    <option value="Email">Email</option>
+                    <option value="Location">Geolocation</option>
+                    <option value="Number">Number</option>
+                    <option value="Percent">Percent</option>
+                    <option value="Phone">Phone</option>
+                    <option value="Picklist">Picklist</option>
+                    <option value="MultiselectPicklist"
+                        >Picklist (Multi-Select)</option
                     >
+                    <option value="Text">Text</option>
+                    <option value="TextArea">Text Area</option>
+                    <option value="LongTextArea">Text Area (Long)</option>
+                    <option value="Html">Text Area (Rich)</option>
+                    <option value="EncryptedText"></option>
+                    <option value="Time">Time</option>
+                    <option value="Url">URL</option>
                 </select>
             </div>
             <div v-if="field.type === 'Formula'" class="form-group col-12">
@@ -82,6 +100,39 @@
                     @keyup="checkValidity"
                 />
                 <small>API Name: {{ field.fullName }}</small>
+            </div>
+            <div
+                v-if="field.type === 'Lookup' || field.type === 'MasterDetail'"
+                class="form-group col-12"
+            >
+                <label for="fieldRelationshipName"
+                    >Child Relationship Name</label
+                >
+                <input
+                    type="text"
+                    class="form-control"
+                    id="fieldRelationshipName"
+                    maxlength="40"
+                    required
+                    pattern="^(?!.*__)(?!.*_$)[A-Za-z]\w*$"
+                    v-model="field.relationshipName"
+                    @keyup="checkValidity"
+                />
+            </div>
+            <div
+                v-if="field.type === 'Lookup' || field.type === 'MasterDetail'"
+                class="form-group col-12"
+            >
+                <label for="fieldRelationshipLabel">Related List Name</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="fieldRelationshipLabel"
+                    maxlength="40"
+                    required
+                    v-model="field.relationshipLabel"
+                    @keyup="checkValidity"
+                />
             </div>
             <div
                 v-if="
@@ -167,11 +218,15 @@
                     field.type !== 'Checkbox' &&
                         field.type !== 'Phone' &&
                         field.type !== 'Picklist' &&
-                        field.type !== 'MultiselectPicklist'
+                        field.type !== 'MultiselectPicklist' &&
+                        field.type !== 'Lookup' &&
+                        field.type !== 'MasterDetail'
                 "
                 class="form-group col-12"
             >
-                <label for="fieldDefaultValue">Default Value</label>
+                <label for="fieldDefaultValue">{{
+                    field.type === "Formula" ? "Formula" : "Default Value"
+                }}</label>
                 <textarea
                     class="form-control"
                     id="fieldDefaultValue"
@@ -247,8 +302,8 @@
                     required
                     @change="checkValidity"
                 >
-                    <option :value="true">Degrees, Minutes, Seconds</option>
-                    <option :value="false">Decimal</option>
+                    <option :value="false">Degrees, Minutes, Seconds</option>
+                    <option :value="true">Decimal</option>
                 </select>
             </div>
             <div
@@ -267,9 +322,10 @@
                     @change="checkValidity"
                 >
                     <option value="1">Use global picklist value set</option>
-                    <option value="2">
-                        Enter values, with each value separated by a new line
-                    </option>
+                    <option value="2"
+                        >Enter values, with each value separated by a new
+                        line</option
+                    >
                 </select>
             </div>
             <div
@@ -434,7 +490,8 @@
                         field.type !== 'LongTextArea' &&
                         field.type !== 'Html' &&
                         field.type !== 'AutoNumber' &&
-                        field.type !== 'Formula'
+                        field.type !== 'Formula' &&
+                        field.type !== 'MasterDetail'
                 "
                 class="form-group col-12"
             >
@@ -571,6 +628,56 @@
                     <span class="checkmark"></span>
                 </label>
             </div>
+            <div v-if="field.type === 'MasterDetail'" class="form-group col-12">
+                <label
+                    class="form-check-label custom-checkbox-container"
+                    for="fieldWriteRequiresMasterRead"
+                >
+                    Read/Write access to the Master Record to modify the Detail
+                    Record?
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="fieldWriteRequiresMasterRead"
+                        v-model="field.writeRequiresMasterRead"
+                        @keyup="checkValidity"
+                    />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div v-if="field.type === 'MasterDetail'" class="form-group col-12">
+                <label
+                    class="form-check-label custom-checkbox-container"
+                    for="fieldReparentableMasterDetail"
+                >
+                    Child Records can be Reparented?
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="fieldReparentableMasterDetail"
+                        v-model="field.reparentableMasterDetail"
+                        @keyup="checkValidity"
+                    />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div v-if="field.type === 'Lookup'" class="form-group col-12">
+                <label
+                    class="form-check-label custom-checkbox-container"
+                    for="fieldDeleteConstraint"
+                >
+                    Clear the lookup value on delete?
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="fieldDeleteConstraint"
+                        v-model="field.deleteConstraint"
+                        :disabled="field.required"
+                        @keyup="checkValidity"
+                    />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
         </div>
     </form>
 </template>
@@ -585,17 +692,11 @@ export default {
     beforeMount() {
         this.getAvailableGlobalValueSets();
         this.getAvailableObjects();
-        window.addEventListener("message", event => {
-            const message = event.data;
-            if (message.name === "globalValueSets") {
-                this.globalValueSets = message.data.result;
-                console.log(this.globalValueSets);
-            }
-
-            if (message.name === "objects") {
-                this.objects = message.data.result;
-                console.log(this.objects);
-            }
+        window.vscode.onReceiveGlobalValueSets(message => {
+            this.globalValueSets = message.data.result;
+        });
+        window.vscode.onReceiveObjects(message => {
+            this.objects = message.data.result;
         });
     },
     computed: {
@@ -748,10 +849,17 @@ export default {
                 this.field.type !== "MasterDetail"
             ) {
                 this.field.referenceTo = undefined;
-                this.field.referenceTo = undefined;
                 this.field.relationshipLabel = undefined;
                 this.field.relationshipName = undefined;
+            }
+
+            if (this.field.type !== "Lookup") {
                 this.field.deleteConstraint = undefined;
+            } else {
+                this.field.required = this.field.required || false;
+            }
+
+            if (this.field.type !== "MasterDetail") {
                 this.field.reparentableMasterDetail = undefined;
                 this.field.writeRequiresMasterRead = undefined;
                 this.field.relationshipOrder = undefined;
@@ -862,7 +970,40 @@ export default {
                         : this.field.maskType;
             }
 
+            if (
+                this.field.type === "Checkbox" ||
+                this.field.type === "LongTextArea" ||
+                this.field.type === "Html" ||
+                this.field.type === "AutoNumber" ||
+                this.field.type === "Formula" ||
+                this.field.type === "MasterDetail"
+            ) {
+                this.field.required = undefined;
+            }
+
+            if (
+                this.field.type !== "Email" &&
+                this.field.type !== "Number" &&
+                this.field.type !== "Text" &&
+                this.field.type !== "AutoNumber"
+            ) {
+                this.field.externalId = undefined;
+            }
+
+            if (
+                this.field.type !== "Email" &&
+                this.field.type !== "Number" &&
+                this.field.type !== "Text"
+            ) {
+                this.field.unique = undefined;
+            }
+
             this.checkValidity();
+        },
+        "field.required"(newValue) {
+            if (this.field.type === "Lookup" && newValue) {
+                this.field.deleteConstraint = false;
+            }
         },
         "field.label"(newValue) {
             if (newValue && typeof this.fieldName === "undefined") {
@@ -959,8 +1100,11 @@ export default {
             }
         },
         "field.unique"(newValue) {
-            if (typeof this.field.caseSensitive !== "undefined")
+            if (this.field.type === "Text" && !newValue)
                 this.field.caseSensitive = undefined;
+            if (this.field.type === "Email" && newValue)
+                this.field.caseSensitive = newValue;
+            else this.field.caseSensitive = undefined;
         },
         "field.formulaType"(newValue) {
             if (
@@ -1057,33 +1201,6 @@ export default {
             fieldName: undefined,
             defaultValue: undefined,
             useGlobalPicklistValueSet: 1,
-            types: [
-                { name: "Auto Number", value: "AutoNumber" },
-                { name: "Formula", value: "Formula" },
-                { name: "Lookup", value: "Lookup" },
-                { name: "Master Detail", value: "MasterDetail" },
-                { name: "Checkbox", value: "Checkbox" },
-                { name: "Currency", value: "Currency" },
-                { name: "Date", value: "Date" },
-                { name: "DateTime", value: "DateTime" },
-                { name: "Email", value: "Email" },
-                { name: "Geolocation", value: "Location" },
-                { name: "Number", value: "Number" },
-                { name: "Percent", value: "Percent" },
-                { name: "Phone", value: "Phone" },
-                { name: "Picklist", value: "Picklist" },
-                {
-                    name: "Picklist (Multi-Select)",
-                    value: "MultiselectPicklist"
-                },
-                { name: "Text", value: "Text" },
-                { name: "Text Area", value: "TextArea" },
-                { name: "Text Area (Long)", value: "LongTextArea" },
-                { name: "Text Area (Rich)", value: "Html" },
-                { name: "Text (Encrypted)", value: "EncryptedText" },
-                { name: "Time", value: "Time" },
-                { name: "URL", value: "Url" }
-            ],
             globalValueSets: [
                 {
                     fullName: "teste"

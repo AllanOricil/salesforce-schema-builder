@@ -38,7 +38,7 @@ class EGWebView extends WebView {
                         globalValueSetResult.toString()
                     );
                     this.panel.webview.postMessage({
-                        name: "globalValueSets",
+                        cmd: "globalValueSets",
                         data: globalValueSetResultObject,
                     });
                 } catch (e) {
@@ -50,7 +50,7 @@ class EGWebView extends WebView {
                             }
                         });
                     this.panel.webview.postMessage({
-                        name: "globalValueSets",
+                        cmd: "globalValueSets",
                         result: "error",
                     });
                     this.channel.appendLine(e);
@@ -80,7 +80,7 @@ class EGWebView extends WebView {
                     }
 
                     this.panel.webview.postMessage({
-                        name: "objects",
+                        cmd: "objects",
                         data: sObjects,
                     });
                 } catch (e) {
@@ -92,7 +92,7 @@ class EGWebView extends WebView {
                             }
                         });
                     this.panel.webview.postMessage({
-                        name: "objects",
+                        cmd: "objects",
                         result: "error",
                     });
                     this.channel.appendLine(e);
@@ -140,10 +140,8 @@ class EGWebView extends WebView {
                     const metadataDeployResult = execSync(
                         `sfdx force:mdapi:deploy -d ${customObjectFolder} -w 90 --json`, {
                             cwd: vscode.workspace.rootPath,
+                            encoding: "utf8"
                         }
-                    );
-                    const metadataDeployResultObject = JSON.parse(
-                        metadataDeployResult.toString()
                     );
 
                     this.channel.appendLine(metadataDeployResult.toString());
@@ -153,10 +151,10 @@ class EGWebView extends WebView {
                         }
                     });
                     this.panel.webview.postMessage({
-                        name: "createCustomObjectResult",
-                        result: metadataDeployResultObject,
+                        cmd: "customObjectCreated"
                     });
                 } catch (e) {
+                    this.channel.appendLine(e.stdout);
                     vscode.window
                         .showErrorMessage("Deploy Failed", "Show Output")
                         .then((selection) => {
@@ -165,10 +163,8 @@ class EGWebView extends WebView {
                             }
                         });
                     this.panel.webview.postMessage({
-                        name: "createCustomObjectResult",
-                        result: "error",
+                        cmd: "customObjectCreated"
                     });
-                    this.channel.appendLine(e);
                 }
             }
         });

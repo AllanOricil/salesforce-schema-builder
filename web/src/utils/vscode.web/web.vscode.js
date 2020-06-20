@@ -53,8 +53,12 @@ class Vscode {
                             console.log("Not Found: 'acquireVsCodeApi'");
                         }
                     },
-                    setState: (key, value) => { console.log("Not Found: 'acquireVsCodeApi'"); },
-                    getState: (key) => { console.log("Not Found: 'acquireVsCodeApi'"); }
+                    setState: (key, value) => {
+                        console.log("Not Found: 'acquireVsCodeApi'");
+                    },
+                    getState: (key) => {
+                        console.log("Not Found: 'acquireVsCodeApi'");
+                    }
                 };
             }
         })();
@@ -68,7 +72,9 @@ class Vscode {
         // @ts-ignore
         window && window.addEventListener && window.addEventListener('message', this.received);
     }
-    get messageCenter() { return this._messageCenter; }
+    get messageCenter() {
+        return this._messageCenter;
+    }
 
     // Lift Cycle
     onWebviewDidPose(callBack) { // init webview
@@ -101,7 +107,9 @@ class Vscode {
      * @type {() => Promise<{data: any}>}
      */
     getBridgeData = () => {
-        return this.post({ cmd: `getBridgeData` });
+        return this.post({
+            cmd: `getBridgeData`
+        });
     }
 
     /**
@@ -109,7 +117,11 @@ class Vscode {
      * @type {{data: any} =>  void}
      */
     updateBridgeData = (data) => {
-        this.post({ cmd: `updateBridgeData`, args: data, reply: false });
+        this.post({
+            cmd: `updateBridgeData`,
+            args: data,
+            reply: false
+        });
     }
 
     /**
@@ -117,7 +129,9 @@ class Vscode {
      * @type {() => Promise<{data: string}>}
      */
     getExtensionPath = () => {
-        return this.post({ cmd: `getExtensionPath` });
+        return this.post({
+            cmd: `getExtensionPath`
+        });
     }
 
     /**
@@ -125,7 +139,9 @@ class Vscode {
      * @type {() => Promise<{data: string}>}
      */
     getWorkspacePath = () => {
-        return this.post({ cmd: `getWorkspacePath` });
+        return this.post({
+            cmd: `getWorkspacePath`
+        });
     }
 
     /**
@@ -133,7 +149,9 @@ class Vscode {
      * @type {() => Promise<{data: string}>}
      */
     getStoragePath = () => {
-        return this.post({ cmd: `getStoragePath` });
+        return this.post({
+            cmd: `getStoragePath`
+        });
     }
 
     /**
@@ -141,7 +159,9 @@ class Vscode {
      * @type {() => Promise<{data: string}>}
      */
     getGlobalStoragePath = () => {
-        return this.post({ cmd: `getGlobalStoragePath` });
+        return this.post({
+            cmd: `getGlobalStoragePath`
+        });
     }
 
     /**
@@ -149,7 +169,9 @@ class Vscode {
      * @type {() => Promise<{data: any}>}
      */
     getWorkspaceState = () => {
-        return this.post({ cmd: `getWorkspaceState` });
+        return this.post({
+            cmd: `getWorkspaceState`
+        });
     }
 
     /**
@@ -157,7 +179,11 @@ class Vscode {
      * @type {(states: any) => void}
      */
     updateWorkspaceState = (states) => {
-        this.post({ cmd: `updateWorkspaceState`, args: states, reply: false });
+        this.post({
+            cmd: `updateWorkspaceState`,
+            args: states,
+            reply: false
+        });
     }
 
     /**
@@ -165,7 +191,9 @@ class Vscode {
      * @type {() => Promise<{data: any}>}
      */
     getGlobalState = () => {
-        return this.post({ cmd: `getGlobalState` });
+        return this.post({
+            cmd: `getGlobalState`
+        });
     }
 
     /**
@@ -173,15 +201,28 @@ class Vscode {
      * @type {(states: any) => void}
      */
     updateGlobalState = (states) => {
-        this.post({ cmd: `updateGlobalState`, args: states, reply: false });
+        this.post({
+            cmd: `updateGlobalState`,
+            args: states,
+            reply: false
+        });
     }
 
     /**
      * Find file in current workspace
      * @type {({include, exclude}: {include: string, exclude?: string}) => Promise<{data?: string[]}>}
      */
-    findFileInWorkspace = ({ include, exclude = undefined }) => {
-        return this.post({ cmd: `findFileInWorkspace`, args: { include, exclude } });
+    findFileInWorkspace = ({
+        include,
+        exclude = undefined
+    }) => {
+        return this.post({
+            cmd: `findFileInWorkspace`,
+            args: {
+                include,
+                exclude
+            }
+        });
     }
 
     /**
@@ -189,37 +230,78 @@ class Vscode {
      * @type {() => Promise<{data: 'aix'|'android'|'darwin'|'freebsd'|'linux'|'openbsd'|'sunos'|'win32'|'cygwin'|'netbsd'}>}
      */
     getPlatform = () => {
-        return this.post({ cmd: `getPlatform` });
+        return this.post({
+            cmd: `getPlatform`
+        });
     }
 
     /**
      * Show message alert
      * @type {({txt, btns}: {txt: string, btns?: string[]}) => Promise<{data: string}>}
      */
-    showMessage = ({ txt, ouput = false, btns = undefined }) => {
-        ouput && this.showTxt2Output({ txt });
-        return this.post({ cmd: `showMessage`, args: { txt, btns }, reply: !!btns });
+    showMessage = ({
+        txt,
+        ouput = false,
+        btns = undefined
+    }) => {
+        ouput && this.showTxt2Output({
+            txt
+        });
+        return this.post({
+            cmd: `showMessage`,
+            args: {
+                txt,
+                btns
+            },
+            reply: !!btns
+        });
     }
 
     /**
      * Show error alert
      * @type {({txt, btns}: {txt: string, btns?: string[]}) => Promise<{data: string}>}
      */
-    showError = ({ txt, ouput = false, btns = undefined }) => {
+    showError = ({
+        txt,
+        ouput = false,
+        btns = undefined
+    }) => {
         if (txt && typeof txt !== 'string') {
             txt = txt['message'] || txt.toString();
         }
-        ouput && this.showTxt2Output({ txt });
-        return this.post({ cmd: `showError`, args: { txt, btns }, reply: !!btns });
+        ouput && this.showTxt2Output({
+            txt
+        });
+        return this.post({
+            cmd: `showError`,
+            args: {
+                txt,
+                btns
+            },
+            reply: !!btns
+        });
     }
 
     /**
      * Show warn alert
      * @type {({txt, btns}: {txt: string, btns?: string[]}) => Promise<{data: string}>}
      */
-    showWarn = ({ txt, ouput = false, btns = undefined }) => {
-        ouput && this.showTxt2Output({ txt });
-        return this.post({ cmd: `showWarn`, args: { txt, btns }, reply: !!btns });
+    showWarn = ({
+        txt,
+        ouput = false,
+        btns = undefined
+    }) => {
+        ouput && this.showTxt2Output({
+            txt
+        });
+        return this.post({
+            cmd: `showWarn`,
+            args: {
+                txt,
+                btns
+            },
+            reply: !!btns
+        });
     }
 
     /**
@@ -229,8 +311,23 @@ class Vscode {
      * @property {{[name: string]: string[]}} filters e.g.: `{'Images': ['png', 'jpg'], 'TypeScript': ['ts', 'tsx']}`
      * @returns {Promise<{data?: string[]}>}
      */
-    showOpenDialog = ({ canSelectFiles = true, canSelectFolders = false, canSelectMany = false, defaultUri = undefined, filters = undefined }) => {
-        return this.post({ cmd: `showOpenDialog`, args: { canSelectFiles, canSelectFolders, canSelectMany, defaultUri, filters } });
+    showOpenDialog = ({
+        canSelectFiles = true,
+        canSelectFolders = false,
+        canSelectMany = false,
+        defaultUri = undefined,
+        filters = undefined
+    }) => {
+        return this.post({
+            cmd: `showOpenDialog`,
+            args: {
+                canSelectFiles,
+                canSelectFolders,
+                canSelectMany,
+                defaultUri,
+                filters
+            }
+        });
     }
 
     /**
@@ -238,76 +335,169 @@ class Vscode {
      * @type {({defaultUri, filters, saveLabel}: {defaultUri?: string, filters?: {string: string[]}, saveLabel?: string}) => Promise<{data?: string}>}
      * @property filters e.g.: {'Images': ['png', 'jpg'], 'TypeScript': ['ts', 'tsx']}
      */
-    showSaveDialog = ({ defaultUri = undefined, filters = undefined, saveLabel = undefined }) => {
-        return this.post({ cmd: `showSaveDialog`, args: { defaultUri, filters, saveLabel } });
+    showSaveDialog = ({
+        defaultUri = undefined,
+        filters = undefined,
+        saveLabel = undefined
+    }) => {
+        return this.post({
+            cmd: `showSaveDialog`,
+            args: {
+                defaultUri,
+                filters,
+                saveLabel
+            }
+        });
     }
 
     /**
      * Show file
      * @type {({filePath, viewColumn, preserveFocus, preview}: {filePath: string, viewColumn?: number, preserveFocus?: boolean, preview?: boolean}) => void}
      */
-    showTextDocument = ({ filePath, viewColumn = 1, preserveFocus = false, preview = false }) => {
-        const args = { filePath };
+    showTextDocument = ({
+        filePath,
+        viewColumn = 1,
+        preserveFocus = false,
+        preview = false
+    }) => {
+        const args = {
+            filePath
+        };
         viewColumn && (args.viewColumn = viewColumn);
         preserveFocus && (args.preserveFocus = preserveFocus);
         preview && (args.preview = preview);
-        this.post({ cmd: `showTextDocument`, args, reply: false });
+        this.post({
+            cmd: `showTextDocument`,
+            args,
+            reply: false
+        });
     }
 
     /**
      * Show txt to output
      * @type {({txt, preserveFocus, line}: {txt: string, preserveFocus?: boolean, line?: boolean}) => void}
      */
-    showTxt2Output = ({ txt, preserveFocus = false }) => {
-        this.post({ cmd: `showTxt2Output`, args: { txt, preserveFocus }, reply: false });
+    showTxt2Output = ({
+        txt,
+        preserveFocus = false
+    }) => {
+        this.post({
+            cmd: `showTxt2Output`,
+            args: {
+                txt,
+                preserveFocus
+            },
+            reply: false
+        });
     }
 
     /**
      * Send cmd to terminal
      * @type {({cmd, addNewLine, preserveFocus}: {cmd: string, addNewLine?: boolean, preserveFocus?: boolean}) => void}
      */
-    sendCmd2Terminal = ({ cmd, addNewLine = true, preserveFocus = false }) => {
-        this.post({ cmd: `sendCmd2Terminal`, args: { cmd, addNewLine, preserveFocus }, reply: false });
+    sendCmd2Terminal = ({
+        cmd,
+        addNewLine = true,
+        preserveFocus = false
+    }) => {
+        this.post({
+            cmd: `sendCmd2Terminal`,
+            args: {
+                cmd,
+                addNewLine,
+                preserveFocus
+            },
+            reply: false
+        });
     }
 
     /**
      * a File or folder if exists
      * @type {({path}: {path: string}) => Promise<{data: boolean}>}
      */
-    exists4Path = ({ path }) => {
-        return this.post({ cmd: `exists4Path`, args: { path } });
+    exists4Path = ({
+        path
+    }) => {
+        return this.post({
+            cmd: `exists4Path`,
+            args: {
+                path
+            }
+        });
     }
 
     /**
      * Get stat for path
      * @type {({path}: {path: string}) => Promise<{data: {error?: string, data: undefined|{isFile: boolean, isDirectory: boolean, isSymbolicLink: boolean}}>}
      */
-    getStat4Path = ({ path }) => {
-        return this.post({ cmd: `getStat4Path`, args: { path } });
+    getStat4Path = ({
+        path
+    }) => {
+        return this.post({
+            cmd: `getStat4Path`,
+            args: {
+                path
+            }
+        });
     }
 
     /**
      * Read file
      * @type {({path, options}: {path: string, options?: 'hex'|'json'|'string'}) => Promise<{data: {error?: string, data: any}}>}
      */
-    readFile = ({ path, options = undefined }) => {
-        return this.post({ cmd: `readFile`, args: { path, options } });
+    readFile = ({
+        path,
+        options = undefined
+    }) => {
+        return this.post({
+            cmd: `readFile`,
+            args: {
+                path,
+                options
+            }
+        });
     }
 
     /**
      * Write file
      * @type {({path, data, options}: {path: string, data: string|[]|{}, options?: {encoding?: string|undefined, mode?: number|string, flag?: string}|string|undefined}) => Promise<{data: {error?: string|undefined}}>}
      */
-    writeFile = ({ path, data, options = undefined }) => {
-        return this.post({ cmd: `writeFile`, args: { path, data, options } });
+    writeFile = ({
+        path,
+        data,
+        options = undefined
+    }) => {
+        return this.post({
+            cmd: `writeFile`,
+            args: {
+                path,
+                data,
+                options
+            }
+        });
     }
 
     /**
      * Request
      * @type {({}: {url: string, method?: string, data?: {}, headers?: {}}) => Promise<{data: {error?: string, body: any, statusCode: number, statusMessage:string}}>}
      */
-    request = ({ url, method = 'POST', data = undefined, headers = { "content-type": "application/json" } }) => {
-        return this.post({ cmd: `request`, args: { url, method, data, headers } });
+    request = ({
+        url,
+        method = 'POST',
+        data = undefined,
+        headers = {
+            "content-type": "application/json"
+        }
+    }) => {
+        return this.post({
+            cmd: `request`,
+            args: {
+                url,
+                method,
+                data,
+                headers
+            }
+        });
     }
 }
 
