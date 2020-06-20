@@ -44,6 +44,33 @@
           "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
         }
       ]
+    },
+    "configuration": {
+      "title": "Salesforce Schema Builder",
+      "properties": {
+        "salesforceSchemaBuilder.outputDirectory": {
+          "type": "string",
+          "default": "./schema",
+          "description": "It is where the metadata will be saved. It is relative to the current Workspace."
+        },
+        "salesforceSchemaBuilder.formatType": {
+          "type": "string",
+          "enum": [
+            "Metadata",
+            "Source"
+          ],
+          "enumDescriptions": [
+            "The resulted file is saved using the SFDX project Source format.",
+            "The resulted file is saved as plain Metadata."
+          ],
+          "default": "Metadata"
+        },
+        "salesforceSchemaBuilder.autoUpdateAvailableObjects": {
+          "type": "boolean",
+          "default": "true",
+          "description": "Schema Builder will retrieve the Schema Information from your Default Org automatically."
+        }
+      }
     }
   },
   "scripts": {

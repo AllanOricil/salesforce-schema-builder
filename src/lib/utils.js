@@ -1,6 +1,16 @@
+// @ts-nocheck
+const vscode = require("vscode");
 const fs = require("fs-extra");
 const path = require("path");
-const { execSync } = require("child_process");
+const {
+  execSync,
+  exec
+} = require("child_process");
+const HOME_DIR = require("os").homedir();
+const GLOBAL_STORAGE_DIR = path.resolve(
+  path.join(HOME_DIR, ".vscode", "extensions", ".schema")
+);
+const ORG_LIST_PATH = path.resolve(path.join(GLOBAL_STORAGE_DIR, "orgList.json"));
 
 const templateCustomObjectMetadata = (templatesPath, data) => {
   return new Promise((resolve) => {
@@ -10,9 +20,9 @@ const templateCustomObjectMetadata = (templatesPath, data) => {
 
     template = templateCustomObjectNameField(
       template,
-      data.dataType === "Text"
-        ? "SObjectNameFieldText.xml"
-        : "SObjectNameFieldAutoNumber.xml",
+      data.dataType === "Text" ?
+      "SObjectNameFieldText.xml" :
+      "SObjectNameFieldAutoNumber.xml",
       templatesPath
     );
 
@@ -46,7 +56,80 @@ const sfdxSpawn = (cmd, dir) => {
   });
 };
 
+const setupSchemaGlobalDirectory = () => {
+  try {
+    const stdout = JSON.parse(execSync(
+      "sfdx force:org:list --all --json", {
+        encoding: "utf-8",
+        cwd: vscode.workspace.rootPath,
+      }));
+
+    fs.writeFile(ORG_LIST_PATH, JSON.stringify(stdout), {
+      encoding: "utf-8"
+    });
+    let orgs = undefined;
+    if (
+      stdout.result &&
+      (stdout.result.nonScratchOrgs ||
+        stdout.result.scratchOrgs)
+    ) {
+      orgs = joinOrgLists(stdout);
+      orgs.forEach((org) => {
+        const orgDir = path.resolve(
+          path.join(GLOBAL_STORAGE_DIR, org.username)
+        );
+        fs.ensureDir(orgDir);
+        fs.ensureDir(path.resolve(path.join(orgDir, "customObjects")));
+      });
+    }
+  } catch (error) {
+    vscode.window.showErrorMessage(
+      "Could not get Org List. Ensure you can run 'sfdx force:org:list --all --json' before opening the extension."
+    );
+    return;
+  }
+};
+
+const getSObjectsNamesGivenUsername = (username) => {
+  execSync(
+    `sfdx force:schema:sobject:list -u ${username} -c all --json > ${path.resolve(path.join(GLOBAL_STORAGE_DIR, username,'sObjects.json'))}`, {
+      encoding: 'utf-8',
+      cwd: vscode.workspace.rootPath,
+    }
+  );
+};
+
+const getGlobalValueSetsGivenUsername = (username) => {
+  execSync(
+    `sfdx force:mdapi:listmetadata -m GlobalValueSet -u ${username} --json > ${path.resolve(path.join(GLOBAL_STORAGE_DIR, username, 'globalValueSets.json'))}`, {
+      encoding: 'utf-8',
+      cwd: vscode.workspace.rootPath,
+    }
+  );
+};
+
+const getDefaultOrg = () => {
+  const orgFile = JSON.parse(fs.readFileSync(ORG_LIST_PATH, {
+    encoding: 'utf-8'
+  }));
+  const orgs = joinOrgLists(orgFile);
+  return orgs.find(org => org.isDefaultUsername);
+};
+
+const joinOrgLists = (orgResponse) => {
+  return orgResponse.result.nonScratchOrgs && orgResponse.result.scratchOrgs ? orgResponse.result.nonScratchOrgs.concat(
+    orgResponse.result.scratchOrgs
+  ) : (orgResponse.result.nonScratchOrgs ? orgResponse.result.nonScratchOrgs : orgResponse.result.scratchOrgs);
+};
+
 module.exports = {
   templateCustomObjectMetadata,
   sfdxSpawn,
+  setupSchemaGlobalDirectory,
+  getSObjectsNamesGivenUsername,
+  getGlobalValueSetsGivenUsername,
+  getDefaultOrg,
+  HOME_DIR,
+  GLOBAL_STORAGE_DIR,
+  ORG_LIST_PATH
 };

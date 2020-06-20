@@ -1,19 +1,14 @@
+/* eslint-disable no-unused-vars */
 const vscode = require("vscode");
 const path = require("path");
 const fs = require("fs-extra");
 const BridgeData = require("./vscode.bridge");
-const {
-  execSync
-} = require("child_process");
 const {
   Message,
   ReceivedMessage,
   Handler
 } = require("./vscode.message");
 const WebviewApi = require("./vscode.webviewApi");
-const {
-  templateCustomObjectMetadata
-} = require("../lib/utils");
 
 /**
  * WebView
@@ -126,7 +121,7 @@ class WebView {
         context.subscriptions
       );
       this.panel.webview.onDidReceiveMessage(
-        (message) => this.didReceiveMessage(message, context),
+        (message) => this.didReceiveMessage(message),
         undefined,
         context.subscriptions
       );
@@ -142,151 +137,11 @@ class WebView {
    * @param {ReceivedMessage} message
    * @memberof WebView
    */
-  didReceiveMessage(message, context) {
+  didReceiveMessage(message) {
     this.handler &&
       this.handler.received &&
       this.handler.received(this.panel.webview, message);
     this.onDidReceiveMessage && this.onDidReceiveMessage(message);
-    console.log(`Extension(${this.name}) received message: ${message.cmd}`);
-
-
-    if (message.cmd === "createCustomObject") {
-      const customObjectXml = message.args.xml;
-      const customObjectName = message.args.objectName;
-      const customObjectsFolder = path.join(vscode.workspace.rootPath, ".schema", "defaultusername", "customObjects");
-
-      console.log(customObjectXml);
-      console.log(customObjectName);
-      const customObjectFolder = path.join(
-        customObjectsFolder,
-        customObjectName + "__c"
-      );
-      fs.mkdirpSync(customObjectFolder);
-      fs.mkdirpSync(path.join(
-        customObjectFolder,
-        "objects"
-      ));
-
-      fs.writeFileSync(path.join(customObjectFolder, "package.xml"), `<?xml version="1.0" encoding="UTF-8"?>
-  <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-      <types>
-          <members>*</members>
-          <name>CustomObject</name>
-      </types>
-      <version>48.0</version>
-  </Package>
-  `, {
-        encoding: 'utf-8'
-      });
-
-      fs.writeFileSync(
-        path.join(
-          customObjectFolder,
-          "objects",
-          customObjectName + "__c.object"
-        ),
-        customObjectXml, {
-          encoding: "utf-8",
-        }
-      );
-
-      try {
-        const metadataDeployResult = execSync(
-          `sfdx force:mdapi:deploy -d ${customObjectFolder} -w 90 --json`, {
-            cwd: vscode.workspace.rootPath,
-          }
-        );
-        const metadataDeployResultObject = JSON.parse(
-          metadataDeployResult.toString()
-        );
-
-        this.channel.appendLine(metadataDeployResult.toString());
-        vscode.window.showInformationMessage("Custom Object Created", "Show Output").then((selection) => {
-          if (selection === "Show Output") {
-            this.channel.show();
-          }
-        });
-        this.panel.webview.postMessage({
-          name: "createCustomObjectResult",
-          result: metadataDeployResultObject,
-        });
-      } catch (e) {
-        vscode.window
-          .showErrorMessage("Deploy Failed", "Show Output")
-          .then((selection) => {
-            if (selection === "Show Output") {
-              this.channel.show();
-            }
-          });
-        this.panel.webview.postMessage({
-          name: "createCustomObjectResult",
-          result: "error",
-        });
-        this.channel.appendLine(e);
-      }
-    }
-
-
-    if (message.cmd === "getAvailableGlobalValueSets") {
-      try {
-        const globalValueSetResult = execSync(
-          `sfdx force:mdapi:listmetadata -m GlobalValueSet --json`, {
-            cwd: vscode.workspace.rootPath,
-          }
-        );
-        const globalValueSetResultObject = JSON.parse(
-          globalValueSetResult.toString()
-        );
-        this.panel.webview.postMessage({
-          name: "globalValueSets",
-          data: globalValueSetResultObject,
-        });
-      } catch (e) {
-        vscode.window
-          .showErrorMessage("Couldn't get GlobalValueSets", "Show Output")
-          .then((selection) => {
-            if (selection === "Show Output") {
-              this.channel.show();
-            }
-          });
-        this.panel.webview.postMessage({
-          name: "globalValueSets",
-          result: "error",
-        });
-        this.channel.appendLine(e);
-      }
-    }
-
-    if (message.cmd === "getAllObjectNames") {
-
-      try {
-        const objectsResult = execSync(
-          `sfdx force:schema:sobject:list -c all --json`, {
-            cwd: vscode.workspace.rootPath,
-          }
-        );
-        const objectsResultObject = JSON.parse(
-          objectsResult.toString()
-        );
-        this.panel.webview.postMessage({
-          name: "objects",
-          data: objectsResultObject,
-        });
-      } catch (e) {
-        vscode.window
-          .showErrorMessage("Couldn't get the Objects", "Show Output")
-          .then((selection) => {
-            if (selection === "Show Output") {
-              this.channel.show();
-            }
-          });
-        this.panel.webview.postMessage({
-          name: "objects",
-          result: "error",
-        });
-        this.channel.appendLine(e);
-      }
-    }
   }
 
   /**
