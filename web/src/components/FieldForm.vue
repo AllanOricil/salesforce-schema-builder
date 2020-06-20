@@ -31,7 +31,7 @@
                     <option value="TextArea">Text Area</option>
                     <option value="LongTextArea">Text Area (Long)</option>
                     <option value="Html">Text Area (Rich)</option>
-                    <option value="EncryptedText"></option>
+                    <option value="EncryptedText">Text (Encrypted)</option>
                     <option value="Time">Time</option>
                     <option value="Url">URL</option>
                 </select>

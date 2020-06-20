@@ -1,8 +1,4 @@
 TODO
-Query Available Objects
-Add lookup
-Add Master Detail
-Add External Object look up
 validate if object already exists
 validate if field already exists
 Allow edit source
