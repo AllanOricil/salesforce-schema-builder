@@ -9,9 +9,10 @@ const {
 const path = require("path");
 const fs = require("fs-extra");
 const {
-    GLOBAL_STORAGE_DIR,
-    getDefaultOrg,
-    getSObjectsNamesGivenUsername
+    getGlobalValueSets,
+    refreshGlobalValueSets,
+    getSObjectsNames,
+    refreshSObjectsNames
 } = require('../lib/utils.js');
 /**
  *Add business
@@ -29,17 +30,10 @@ class EGWebView extends WebView {
         this.handler.addApi({
             getAvailableGlobalValueSets: () => {
                 try {
-                    const globalValueSetResult = execSync(
-                        `sfdx force:mdapi:listmetadata -m GlobalValueSet --json`, {
-                            cwd: vscode.workspace.rootPath,
-                        }
-                    );
-                    const globalValueSetResultObject = JSON.parse(
-                        globalValueSetResult.toString()
-                    );
+                    const globalValuesets = getGlobalValueSets();
                     this.panel.webview.postMessage({
                         cmd: "globalValueSets",
-                        data: globalValueSetResultObject,
+                        data: globalValuesets,
                     });
                 } catch (e) {
                     vscode.window
@@ -58,27 +52,7 @@ class EGWebView extends WebView {
             },
             getAllObjectNames: () => {
                 try {
-                    const defaultOrg = getDefaultOrg();
-                    let sObjectsFile = undefined;
-
-                    const sObjectsFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, 'sObjects.json'));
-                    //check if the files is already retrieved for the default org
-                    try {
-                        sObjectsFile = fs.readFileSync(sObjectsFilePath, {
-                            encoding: 'utf-8'
-                        });
-                    } catch (e) {}
-
-                    //if there is no file or the file is emtpy call sfdx and save the result in the default org directory
-                    let sObjects = sObjectsFile ? JSON.parse(sObjectsFile) : undefined;
-                    if (!(sObjects && sObjects.result && sObjects.result.length)) {
-                        getSObjectsNamesGivenUsername(defaultOrg.username);
-                        sObjectsFile = fs.readFileSync(sObjectsFilePath, {
-                            encoding: 'utf-8'
-                        });
-                        sObjects = JSON.parse(sObjectsFile);
-                    }
-
+                    const sObjects = getSObjectsNames();
                     this.panel.webview.postMessage({
                         cmd: "objects",
                         data: sObjects,
@@ -165,6 +139,36 @@ class EGWebView extends WebView {
                     this.panel.webview.postMessage({
                         cmd: "customObjectCreated"
                     });
+                }
+            },
+            refreshGlobalValueSetsAndObjectsMetadata: () => {
+                try {
+                    const globalValuesets = refreshGlobalValueSets();
+                    this.panel.webview.postMessage({
+                        cmd: "globalValueSets",
+                        data: globalValuesets,
+                    });
+                    const sObjects = refreshSObjectsNames();
+                    this.panel.webview.postMessage({
+                        cmd: "objects",
+                        data: sObjects,
+                    });
+                    this.panel.webview.postMessage({
+                        cmd: "refreshedMetadata"
+                    });
+                } catch (e) {
+                    vscode.window
+                        .showErrorMessage("Couldn't Refresh Metadata", "Show Output")
+                        .then((selection) => {
+                            if (selection === "Show Output") {
+                                this.channel.show();
+                            }
+                        });
+                    this.panel.webview.postMessage({
+                        cmd: "refreshedMetadata",
+                        result: "error",
+                    });
+                    this.channel.appendLine(e);
                 }
             }
         });

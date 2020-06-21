@@ -346,7 +346,8 @@
                     @change="checkValidity"
                 >
                     <option
-                        v-for="(globalValueSet, index) in globalValueSets"
+                        v-for="(globalValueSet,
+                        index) in orderedGlobalValueSets"
                         :key="index"
                         >{{ globalValueSet.fullName }}</option
                     >
@@ -369,6 +370,10 @@
                     v-model="valueSet.valueSetDefinition.value"
                     @keyup="checkValidity"
                 ></textarea>
+                <small class="form-text text-muted"
+                    >Enter values, with each value separated by a new
+                    line</small
+                >
             </div>
             <div
                 v-if="
@@ -694,9 +699,15 @@ export default {
         this.getAvailableObjects();
         window.vscode.onReceiveGlobalValueSets(message => {
             this.globalValueSets = message.data.result;
+            window.vscode.showMessage({
+                txt: "Global Value Sets Refreshed"
+            });
         });
         window.vscode.onReceiveObjects(message => {
             this.objects = message.data.result;
+            window.vscode.showMessage({
+                txt: "SOjbects Refreshed Refreshed"
+            });
         });
     },
     computed: {
@@ -711,121 +722,125 @@ export default {
             return this.objects.filter(object => /^\w*Share\b$/g.test(object));
         },
         referenceAbleObjects() {
-            return this.objects.filter(object => {
-                return (
-                    /^\w*__c\b$/g.test(object) ||
-                    !(
+            return this.objects
+                .filter(object => {
+                    return (
                         /^\w*__c\b$/g.test(object) ||
-                        /^\w*__x\b$/g.test(object) ||
-                        /^\w*Share\b$/g.test(object) ||
-                        /^\w*History\b$/.test(object) ||
-                        /^\w*ChangeEvent\b$/g.test(object) ||
-                        ![
-                            "Account",
-                            "Address",
-                            "Asset",
-                            "AssignedResource",
-                            "AssociatedLocation",
-                            "AuthorizationForm",
-                            "AuthorizationFormConsent",
-                            "AuthorizationFormDataUse",
-                            "AuthorizationFormText",
-                            "BackgroundOperation",
-                            "BusinessHours",
-                            "CalendarModel",
-                            "Campaign",
-                            "ChannelProgram",
-                            "ChannelProgramLevel",
-                            "ChannelProgramMember",
-                            "WorkCoaching",
-                            "CommSubscription",
-                            "CommSubscriptionChannelType",
-                            "CommSubscriptionConsent",
-                            "CommSubscriptionTiming",
-                            "ConsumptionRate",
-                            "ConsumptionSchedule",
-                            "Contact",
-                            "ContactPointConsent",
-                            "ContactPointEmail",
-                            "ContactPointPhone",
-                            "ContactPointTypeConsent",
-                            "ContentFolder",
-                            "Contract",
-                            "DandBCompany",
-                            "DataUseLegalBasis",
-                            "DataUsePurpose",
-                            "EngagementChannelType",
-                            "Product2",
-                            "WorkFeedbackQuestion",
-                            "WorkFeedbackQuestionSet",
-                            "WorkFeedbackRequest",
-                            "Goal",
-                            "GoalLink",
-                            "Idea",
-                            "Individual",
-                            "JobProfile",
-                            "Lead",
-                            "Location",
-                            "Macro",
-                            "MaintenanceAsset",
-                            "MaintenancePlan",
-                            "Case",
-                            "Metric",
-                            "MetricDataLink",
-                            "OperatingHours",
-                            "Opportunity",
-                            "Order",
-                            "OrderItem",
-                            "OrgMetric",
-                            "OrgMetricScanSummary",
-                            "PartnerFundAllocation",
-                            "PartnerFundClaim",
-                            "PartnerFundRequest",
-                            "PartnerMarketingBudget",
-                            "PartyConsent",
-                            "WorkPerformanceCycle",
-                            "Pricebook2",
-                            "ProductConsumed",
-                            "ProductConsumptionSchedule",
-                            "ProductItem",
-                            "ProductRequest",
-                            "ProductRequestLineItem",
-                            "ProductRequired",
-                            "ProductTransfer",
-                            "QuickText",
-                            "Quote",
-                            "QuoteLineItem",
-                            "Recommendation",
-                            "ResourceAbsence",
-                            "ServiceResourceCapacity",
-                            "ReturnOrder",
-                            "ReturnOrderLineItem",
-                            "ServiceAppointment",
-                            "ServiceCrew",
-                            "ServiceCrewMember",
-                            "ServiceResource",
-                            "ServiceTerritory",
-                            "Shift",
-                            "Shipment",
-                            "SocialPersona",
-                            "Solution",
-                            "TimeSheet",
-                            "TimeSheetEntry",
-                            "TimeSlot",
-                            "User",
-                            "UserProvAccount",
-                            "UserProvisioningLog",
-                            "UserProvisioningRequest",
-                            "WorkOrder",
-                            "WorkOrderLineItem",
-                            "WorkType",
-                            "WorkTypeGroup",
-                            "WorkTypeGroupMember",
-                            "Community"
-                        ].includes(object)
-                    )
-                );
-            });
+                        !(
+                            /^\w*__c\b$/g.test(object) ||
+                            /^\w*__x\b$/g.test(object) ||
+                            /^\w*Share\b$/g.test(object) ||
+                            /^\w*History\b$/.test(object) ||
+                            /^\w*ChangeEvent\b$/g.test(object) ||
+                            ![
+                                "Account",
+                                "Address",
+                                "Asset",
+                                "AssignedResource",
+                                "AssociatedLocation",
+                                "AuthorizationForm",
+                                "AuthorizationFormConsent",
+                                "AuthorizationFormDataUse",
+                                "AuthorizationFormText",
+                                "BackgroundOperation",
+                                "BusinessHours",
+                                "CalendarModel",
+                                "Campaign",
+                                "ChannelProgram",
+                                "ChannelProgramLevel",
+                                "ChannelProgramMember",
+                                "WorkCoaching",
+                                "CommSubscription",
+                                "CommSubscriptionChannelType",
+                                "CommSubscriptionConsent",
+                                "CommSubscriptionTiming",
+                                "ConsumptionRate",
+                                "ConsumptionSchedule",
+                                "Contact",
+                                "ContactPointConsent",
+                                "ContactPointEmail",
+                                "ContactPointPhone",
+                                "ContactPointTypeConsent",
+                                "ContentFolder",
+                                "Contract",
+                                "DandBCompany",
+                                "DataUseLegalBasis",
+                                "DataUsePurpose",
+                                "EngagementChannelType",
+                                "Product2",
+                                "WorkFeedbackQuestion",
+                                "WorkFeedbackQuestionSet",
+                                "WorkFeedbackRequest",
+                                "Goal",
+                                "GoalLink",
+                                "Idea",
+                                "Individual",
+                                "JobProfile",
+                                "Lead",
+                                "Location",
+                                "Macro",
+                                "MaintenanceAsset",
+                                "MaintenancePlan",
+                                "Case",
+                                "Metric",
+                                "MetricDataLink",
+                                "OperatingHours",
+                                "Opportunity",
+                                "Order",
+                                "OrderItem",
+                                "OrgMetric",
+                                "OrgMetricScanSummary",
+                                "PartnerFundAllocation",
+                                "PartnerFundClaim",
+                                "PartnerFundRequest",
+                                "PartnerMarketingBudget",
+                                "PartyConsent",
+                                "WorkPerformanceCycle",
+                                "Pricebook2",
+                                "ProductConsumed",
+                                "ProductConsumptionSchedule",
+                                "ProductItem",
+                                "ProductRequest",
+                                "ProductRequestLineItem",
+                                "ProductRequired",
+                                "ProductTransfer",
+                                "QuickText",
+                                "Quote",
+                                "QuoteLineItem",
+                                "Recommendation",
+                                "ResourceAbsence",
+                                "ServiceResourceCapacity",
+                                "ReturnOrder",
+                                "ReturnOrderLineItem",
+                                "ServiceAppointment",
+                                "ServiceCrew",
+                                "ServiceCrewMember",
+                                "ServiceResource",
+                                "ServiceTerritory",
+                                "Shift",
+                                "Shipment",
+                                "SocialPersona",
+                                "Solution",
+                                "TimeSheet",
+                                "TimeSheetEntry",
+                                "TimeSlot",
+                                "User",
+                                "UserProvAccount",
+                                "UserProvisioningLog",
+                                "UserProvisioningRequest",
+                                "WorkOrder",
+                                "WorkOrderLineItem",
+                                "WorkType",
+                                "WorkTypeGroup",
+                                "WorkTypeGroupMember",
+                                "Community"
+                            ].includes(object)
+                        )
+                    );
+                })
+                .sort(function(a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
         },
         changeEventObjets() {
             return this.objects.filter(object =>
@@ -840,6 +855,11 @@ export default {
         },
         externalObjects() {
             return this.objects.filter(object => /^\w*__x\b$/g.test(object));
+        },
+        orderedGlobalValueSets() {
+            return this.globalValueSets.sort(function(a, b) {
+                return a.toLowerCase().localeCompare(b.toLowerCase());
+            });
         }
     },
     watch: {

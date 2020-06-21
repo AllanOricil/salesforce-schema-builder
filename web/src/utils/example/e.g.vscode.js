@@ -20,6 +20,9 @@ class EGVscode extends Vscode {
     onCustomObjectCreated(callback) {
         this.on('customObjectCreated', callback, 0);
     }
+    onFinishRefreshMetadata(callback) {
+        this.on('refreshedMetadata', callback, 0);
+    }
 }
 
 export default EGVscode;

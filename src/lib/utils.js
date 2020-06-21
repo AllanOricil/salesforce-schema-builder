@@ -3,8 +3,7 @@ const vscode = require("vscode");
 const fs = require("fs-extra");
 const path = require("path");
 const {
-  execSync,
-  exec
+  execSync
 } = require("child_process");
 const HOME_DIR = require("os").homedir();
 const GLOBAL_STORAGE_DIR = path.resolve(
@@ -90,22 +89,100 @@ const setupSchemaGlobalDirectory = () => {
   }
 };
 
-const getSObjectsNamesGivenUsername = (username) => {
-  execSync(
-    `sfdx force:schema:sobject:list -u ${username} -c all --json > ${path.resolve(path.join(GLOBAL_STORAGE_DIR, username,'sObjects.json'))}`, {
-      encoding: 'utf-8',
-      cwd: vscode.workspace.rootPath,
+const getSObjectsNames = () => {
+  try {
+    const defaultOrg = getDefaultOrg();
+    let sObjectsFile = undefined;
+
+    const sObjectsFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, 'sObjects.json'));
+    //check if the files is already retrieved for the default org
+    try {
+      sObjectsFile = fs.readFileSync(sObjectsFilePath, {
+        encoding: 'utf-8'
+      });
+    } catch (e) {}
+
+    //if there is no file or the file is emtpy call sfdx and save the result in the default org directory
+    let sObjects = sObjectsFile ? JSON.parse(sObjectsFile) : undefined;
+    if (!(sObjects && sObjects.result && sObjects.result.length)) {
+      sObjects = refreshSObjectsNames();
     }
-  );
+
+    return sObjects;
+  } catch (e) {
+    throw e;
+  }
 };
 
-const getGlobalValueSetsGivenUsername = (username) => {
-  execSync(
-    `sfdx force:mdapi:listmetadata -m GlobalValueSet -u ${username} --json > ${path.resolve(path.join(GLOBAL_STORAGE_DIR, username, 'globalValueSets.json'))}`, {
-      encoding: 'utf-8',
-      cwd: vscode.workspace.rootPath,
+const refreshSObjectsNames = () => {
+  try {
+    const defaultOrg = getDefaultOrg();
+    let sObjectsFile = undefined;
+
+    const sObjectsFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, 'sObjects.json'));
+    let sObjects = undefined;
+    execSync(
+      `sfdx force:schema:sobject:list -u ${defaultOrg.username} -c all --json > ${path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username,'sObjects.json'))}`, {
+        encoding: 'utf-8',
+        cwd: vscode.workspace.rootPath,
+      }
+    );
+    sObjectsFile = fs.readFileSync(sObjectsFilePath, {
+      encoding: 'utf-8'
+    });
+    sObjects = JSON.parse(sObjectsFile);
+
+    return sObjects;
+  } catch (e) {
+    throw e;
+  }
+};
+
+const getGlobalValueSets = () => {
+  try {
+    const defaultOrg = getDefaultOrg();
+    let globalValuesetsFile = undefined;
+    const globalValuesetsPath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, 'globalValuesets.json'));
+
+    try {
+      globalValuesetsFile = fs.readFileSync(globalValuesetsPath, {
+        encoding: 'utf-8'
+      });
+    } catch (e) {}
+
+    //if there is no file or the file is emtpy call sfdx and save the result in the default org directory
+    let globalValuesets = globalValuesetsFile ? JSON.parse(globalValuesetsFile) : undefined;
+    if (!(globalValuesets && globalValuesets.result && globalValuesets.result.length)) {
+      globalValuesets = refreshGlobalValueSets();
     }
-  );
+
+    return globalValuesets;
+  } catch (e) {
+    throw e;
+  }
+};
+
+const refreshGlobalValueSets = () => {
+  try {
+    const defaultOrg = getDefaultOrg();
+    let globalValuesetsFile = undefined;
+    const globalValuesetsPath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, 'globalValuesets.json'));
+    let globalValuesets = undefined;
+    execSync(
+      `sfdx force:mdapi:listmetadata -m GlobalValueSet -u ${defaultOrg.username} --json > ${path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, 'globalValueSets.json'))}`, {
+        encoding: 'utf-8',
+        cwd: vscode.workspace.rootPath,
+      }
+    );
+    globalValuesetsFile = fs.readFileSync(globalValuesetsPath, {
+      encoding: 'utf-8'
+    });
+    globalValuesets = JSON.parse(globalValuesetsFile);
+
+    return globalValuesets;
+  } catch (e) {
+    throw e;
+  }
 };
 
 const getDefaultOrg = () => {
@@ -126,8 +203,10 @@ module.exports = {
   templateCustomObjectMetadata,
   sfdxSpawn,
   setupSchemaGlobalDirectory,
-  getSObjectsNamesGivenUsername,
-  getGlobalValueSetsGivenUsername,
+  getSObjectsNames,
+  refreshSObjectsNames,
+  getGlobalValueSets,
+  refreshGlobalValueSets,
   getDefaultOrg,
   HOME_DIR,
   GLOBAL_STORAGE_DIR,

@@ -2,13 +2,25 @@
     <div class="container">
         <div class="row justify-content-between">
             <h2 class="text-uppercase mt-3 ml-3">Custom Object</h2>
-            <span
-                class="icon fa fa-file-code mr-3 mt-3"
-                style="font-size: 30px"
-                data-placement="top"
-                title="View Metadata"
-                @click="displayMetadata()"
-            ></span>
+            <div>
+                <span
+                    :class="[
+                        'icon fa fa-sync mr-3 mt-3',
+                        isRefreshingMetadata ? 'fa-spin' : ''
+                    ]"
+                    style="font-size: 30px"
+                    data-placement="top"
+                    title="Refresh Metadata"
+                    @click="refreshMetadata()"
+                ></span>
+                <span
+                    class="icon fa fa-file-code mr-3 mt-3"
+                    style="font-size: 30px"
+                    data-placement="top"
+                    title="View Metadata"
+                    @click="displayMetadata()"
+                ></span>
+            </div>
         </div>
 
         <fieldset :disabled="areFormsDisabled">
@@ -109,28 +121,20 @@ export default {
             this.areFormsDisabled = false;
             this.creatingCustomObject = false;
         });
+        window.vscode.onFinishRefreshMetadata(message => {
+            this.isRefreshingMetadata = false;
+        });
     },
     data() {
         return {
             msg: "",
             creatingCustomObject: false,
             areFormsDisabled: false,
-            showXML: false
+            showXML: false,
+            isRefreshingMetadata: false
         };
     },
     methods: {
-        getRootPath() {
-            window.vscode.updateGlobalState({ test: "BATATA" });
-            this.msg = window.webviewData.rootPath;
-        },
-        selectFile() {
-            window.vscode.updateGlobalState({ test: "BATATA" });
-            window.vscode.showOpenDialog({ canSelectFiles: true }).then(msg => {
-                if (msg && msg.data) {
-                    this.msg = msg.data[0];
-                }
-            });
-        },
         output() {
             window.vscode.showTxt2Output({ txt: `this is output dialog.` });
         },
@@ -162,6 +166,12 @@ export default {
         _generateCustomObjectMetadata() {},
         displayMetadata() {
             this.showXML = true;
+        },
+        refreshMetadata() {
+            window.vscode.post({
+                cmd: "refreshGlobalValueSetsAndObjectsMetadata"
+            });
+            this.isRefreshingMetadata = true;
         },
         hideMetadata() {
             this.showXML = false;
