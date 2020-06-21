@@ -698,6 +698,8 @@ export default {
         this.getAvailableGlobalValueSets();
         this.getAvailableObjects();
         window.vscode.onReceiveGlobalValueSets(message => {
+            console.log("ALLAN");
+            console.log(message);
             this.globalValueSets = message.data.result;
             window.vscode.showMessage({
                 txt: "Global Value Sets Refreshed"
@@ -858,7 +860,9 @@ export default {
         },
         orderedGlobalValueSets() {
             return this.globalValueSets.sort(function(a, b) {
-                return a.toLowerCase().localeCompare(b.toLowerCase());
+                return a.fullName
+                    .toLowerCase()
+                    .localeCompare(b.fullName.toLowerCase());
             });
         }
     },
