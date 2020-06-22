@@ -2,7 +2,10 @@
 const vscode = require("vscode");
 const fs = require("fs-extra");
 const path = require("path");
-const { execSync } = require("child_process");
+const {
+  execSync
+} = require("child_process");
+const axios = require("axios");
 const HOME_DIR = require("os").homedir();
 const GLOBAL_STORAGE_DIR = path.resolve(
   path.join(HOME_DIR, ".vscode", "extensions", ".schema")
@@ -19,9 +22,9 @@ const templateCustomObjectMetadata = (templatesPath, data) => {
 
     template = templateCustomObjectNameField(
       template,
-      data.dataType === "Text"
-        ? "SObjectNameFieldText.xml"
-        : "SObjectNameFieldAutoNumber.xml",
+      data.dataType === "Text" ?
+      "SObjectNameFieldText.xml" :
+      "SObjectNameFieldAutoNumber.xml",
       templatesPath
     );
 
@@ -130,8 +133,7 @@ const refreshSObjectsNames = () => {
         defaultOrg.username
       } -c all --json > ${path.resolve(
         path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sObjects.json")
-      )}`,
-      {
+      )}`, {
         encoding: "utf-8",
         cwd: vscode.workspace.rootPath,
       }
@@ -162,9 +164,9 @@ const getGlobalValueSets = () => {
     } catch (e) {}
 
     //if there is no file or the file is emtpy call sfdx and save the result in the default org directory
-    let globalValuesets = globalValuesetsFile
-      ? JSON.parse(globalValuesetsFile)
-      : undefined;
+    let globalValuesets = globalValuesetsFile ?
+      JSON.parse(globalValuesetsFile) :
+      undefined;
     if (
       !(
         globalValuesets &&
@@ -198,8 +200,7 @@ const refreshGlobalValueSets = () => {
           defaultOrg.username,
           "globalValueSets.json"
         )
-      )}`,
-      {
+      )}`, {
         encoding: "utf-8",
         cwd: vscode.workspace.rootPath,
       }
@@ -215,6 +216,38 @@ const refreshGlobalValueSets = () => {
   }
 };
 
+const getOrgDisplay = () => {
+  try {
+    const stdout = JSON.parse(execSync(`sfdx force:org:display --json`, {
+      encoding: "utf-8",
+      cwd: vscode.workspace.rootPath,
+    }));
+    return stdout.result;
+  } catch (e) {
+    throw e;
+  }
+};
+
+const getGlobalDescribe = () => {
+  const orgDisplay = getOrgDisplay();
+  return axios
+    .get(`${orgDisplay.instanceUrl}/services/data/v48.0/sobjects/`, {
+      headers: {
+        Authorization: `Bearer ${orgDisplay.accessToken}`,
+      },
+    });
+};
+
+const callSObjectDescribe = (sObjectName) => {
+  const orgDisplay = getOrgDisplay();
+  return axios
+    .get(`${orgDisplay.instanceUrl}/services/data/v48.0/sobjects/${sObjectName}/describe/`, {
+      headers: {
+        Authorization: `Bearer ${orgDisplay.accessToken}`,
+      },
+    });
+};
+
 const getDefaultOrg = () => {
   const orgFile = JSON.parse(
     fs.readFileSync(ORG_LIST_PATH, {
@@ -226,11 +259,11 @@ const getDefaultOrg = () => {
 };
 
 const joinOrgLists = (orgResponse) => {
-  return orgResponse.result.nonScratchOrgs && orgResponse.result.scratchOrgs
-    ? orgResponse.result.nonScratchOrgs.concat(orgResponse.result.scratchOrgs)
-    : orgResponse.result.nonScratchOrgs
-    ? orgResponse.result.nonScratchOrgs
-    : orgResponse.result.scratchOrgs;
+  return orgResponse.result.nonScratchOrgs && orgResponse.result.scratchOrgs ?
+    orgResponse.result.nonScratchOrgs.concat(orgResponse.result.scratchOrgs) :
+    orgResponse.result.nonScratchOrgs ?
+    orgResponse.result.nonScratchOrgs :
+    orgResponse.result.scratchOrgs;
 };
 
 module.exports = {
@@ -242,6 +275,9 @@ module.exports = {
   getGlobalValueSets,
   refreshGlobalValueSets,
   getDefaultOrg,
+  getOrgDisplay,
+  getGlobalDescribe,
+  callSObjectDescribe,
   HOME_DIR,
   GLOBAL_STORAGE_DIR,
   ORG_LIST_PATH,

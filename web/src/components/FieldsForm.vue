@@ -20,11 +20,11 @@ import FieldsManager from "./FieldsManager.vue";
 export default {
     components: {
         FieldForm,
-        FieldsManager
+        FieldsManager,
     },
     data() {
         return {
-            field: undefined
+            field: undefined,
         };
     },
     computed: {
@@ -33,13 +33,13 @@ export default {
         },
         fieldsComputedData() {
             return this.$refs.fieldsManager.computedFields;
-        }
+        },
     },
     methods: {
         setEditingField(field) {
             this.field = field;
-        }
-    }
+        },
+    },
 };
 </script>
 

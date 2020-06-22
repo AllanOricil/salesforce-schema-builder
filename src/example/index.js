@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 const path = require("path");
 const EGWebView = require("./e.g.webview");
 const {
-  setupSchemaGlobalDirectory,
+  setupSchemaGlobalDirectory
 } = require("../lib/utils.js");
 
 const name = "Schema Builder";

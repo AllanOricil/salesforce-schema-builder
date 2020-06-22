@@ -125,10 +125,6 @@ class WebView {
         undefined,
         context.subscriptions
       );
-
-      this.sfdxConfig = JSON.parse(fs.readFileSync(path.join(vscode.workspace.rootPath, '.schema', 'sfdxConfig.json'), {
-        encoding: 'utf-8'
-      }));
     }
   }
 

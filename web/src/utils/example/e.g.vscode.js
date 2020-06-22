@@ -23,6 +23,9 @@ class EGVscode extends Vscode {
     onFinishRefreshMetadata(callback) {
         this.on('refreshedMetadata', callback, 0);
     }
+    onReceiveSObjectDescription(callback) {
+        this.on('receiveSObjectDescription', callback, 0);
+    }
 }
 
 export default EGVscode;

@@ -1,6 +1,7 @@
+// @ts-nocheck
 const {
     WebView
-} = require('../vscode/vscode.webview');
+} = require("../vscode/vscode.webview");
 const vscode = require("vscode");
 const {
     execSync
@@ -12,19 +13,24 @@ const {
     getGlobalValueSets,
     refreshGlobalValueSets,
     getSObjectsNames,
-    refreshSObjectsNames
-} = require('../lib/utils.js');
+    refreshSObjectsNames,
+    getOrgDisplay,
+    getGlobalDescribe,
+    callSObjectDescribe
+} = require("../lib/utils.js");
 /**
  *Add business
  *
  * @class EGWebView
  * @extends {WebView}
  */
+
 class EGWebView extends WebView {
     /**
      * Creates an instance of EGWebView.
      * @memberof EGWebView
      */
+
     constructor() {
         super();
         this.handler.addApi({
@@ -52,10 +58,11 @@ class EGWebView extends WebView {
             },
             getAllObjectNames: () => {
                 try {
-                    const sObjects = getSObjectsNames();
-                    this.panel.webview.postMessage({
-                        cmd: "objects",
-                        data: sObjects,
+                    getGlobalDescribe().then(response => {
+                        this.panel.webview.postMessage({
+                            cmd: "objects",
+                            data: response.data.sobjects,
+                        });
                     });
                 } catch (e) {
                     vscode.window
@@ -75,19 +82,23 @@ class EGWebView extends WebView {
             createCustomObject: (data) => {
                 const customObjectXml = data.xml;
                 const customObjectName = data.objectName;
-                const customObjectsFolder = path.join(vscode.workspace.rootPath, ".schema", "defaultusername", "customObjects");
+                const customObjectsFolder = path.join(
+                    vscode.workspace.rootPath,
+                    ".schema",
+                    "defaultusername",
+                    "customObjects"
+                );
 
                 const customObjectFolder = path.join(
                     customObjectsFolder,
                     customObjectName + "__c"
                 );
                 fs.mkdirpSync(customObjectFolder);
-                fs.mkdirpSync(path.join(
-                    customObjectFolder,
-                    "objects"
-                ));
+                fs.mkdirpSync(path.join(customObjectFolder, "objects"));
 
-                fs.writeFileSync(path.join(customObjectFolder, "package.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+                fs.writeFileSync(
+                    path.join(customObjectFolder, "package.xml"),
+                    `<?xml version="1.0" encoding="UTF-8"?>
   <Package xmlns="http://soap.sforce.com/2006/04/metadata">
       <types>
           <members>*</members>
@@ -96,8 +107,9 @@ class EGWebView extends WebView {
       <version>48.0</version>
   </Package>
   `, {
-                    encoding: 'utf8'
-                });
+                        encoding: "utf8",
+                    }
+                );
 
                 fs.writeFileSync(
                     path.join(
@@ -114,18 +126,20 @@ class EGWebView extends WebView {
                     const metadataDeployResult = execSync(
                         `sfdx force:mdapi:deploy -d ${customObjectFolder} -w 90 --json`, {
                             cwd: vscode.workspace.rootPath,
-                            encoding: "utf8"
+                            encoding: "utf8",
                         }
                     );
 
                     this.channel.appendLine(metadataDeployResult.toString());
-                    vscode.window.showInformationMessage("Custom Object Created", "Show Output").then((selection) => {
-                        if (selection === "Show Output") {
-                            this.channel.show();
-                        }
-                    });
+                    vscode.window
+                        .showInformationMessage("Custom Object Created", "Show Output")
+                        .then((selection) => {
+                            if (selection === "Show Output") {
+                                this.channel.show();
+                            }
+                        });
                     this.panel.webview.postMessage({
-                        cmd: "customObjectCreated"
+                        cmd: "customObjectCreated",
                     });
                 } catch (e) {
                     this.channel.appendLine(e.stdout);
@@ -137,7 +151,7 @@ class EGWebView extends WebView {
                             }
                         });
                     this.panel.webview.postMessage({
-                        cmd: "customObjectCreated"
+                        cmd: "customObjectCreated",
                     });
                 }
             },
@@ -154,7 +168,7 @@ class EGWebView extends WebView {
                         data: sObjects,
                     });
                     this.panel.webview.postMessage({
-                        cmd: "refreshedMetadata"
+                        cmd: "refreshedMetadata",
                     });
                 } catch (e) {
                     vscode.window
@@ -170,6 +184,14 @@ class EGWebView extends WebView {
                     });
                     this.channel.appendLine(e);
                 }
+            },
+            getSObjectDescribe: (sObject) => {
+                callSObjectDescribe(sObject).then((response) => {
+                    this.panel.webview.postMessage({
+                        cmd: 'receiveSObjectDescription',
+                        data: response.data,
+                    });
+                });
             }
         });
     }
