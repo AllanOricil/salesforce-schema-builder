@@ -3,7 +3,8 @@ const vscode = require("vscode");
 const fs = require("fs-extra");
 const path = require("path");
 const {
-  execSync
+  execSync,
+  exec
 } = require("child_process");
 const axios = require("axios");
 const HOME_DIR = require("os").homedir();
@@ -94,7 +95,7 @@ const setupSchemaGlobalDirectory = () => {
 
 const getSObjectsNames = () => {
   try {
-    const defaultOrg = getDefaultOrg();
+    const defaultOrg = getOrgDisplay();
     let sObjectsFile = undefined;
 
     const sObjectsFilePath = path.resolve(
@@ -110,7 +111,7 @@ const getSObjectsNames = () => {
     //if there is no file or the file is emtpy call sfdx and save the result in the default org directory
     let sObjects = sObjectsFile ? JSON.parse(sObjectsFile) : undefined;
     if (!(sObjects && sObjects.result && sObjects.result.length)) {
-      sObjects = refreshSObjectsNames();
+      sObjects = refreshSObjects();
     }
 
     return sObjects;
@@ -119,42 +120,31 @@ const getSObjectsNames = () => {
   }
 };
 
-const refreshSObjectsNames = () => {
-  try {
-    const defaultOrg = getDefaultOrg();
-    let sObjectsFile = undefined;
+const refreshSObjects = (panel) => {
+  const defaultOrg = getOrgDisplay();
+  return new Promise((resolve) => {
+    getGlobalDescribe(defaultOrg).then(response => {
+      const sObjectsFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sObjects.json"));
+      fs.writeFile(sObjectsFilePath, response.data.sobjects, {
+        encoding: 'utf-8'
+      });
 
-    const sObjectsFilePath = path.resolve(
-      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sObjects.json")
-    );
-    let sObjects = undefined;
-    execSync(
-      `sfdx force:schema:sobject:list -u ${
-        defaultOrg.username
-      } -c all --json > ${path.resolve(
-        path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sObjects.json")
-      )}`, {
-        encoding: "utf-8",
-        cwd: vscode.workspace.rootPath,
-      }
-    );
-    sObjectsFile = fs.readFileSync(sObjectsFilePath, {
-      encoding: "utf-8",
+      if (panel)
+        panel.webview.postMessage({
+          cmd: "objects",
+          data: response.data.sobjects,
+        });
+      resolve(response);
     });
-    sObjects = JSON.parse(sObjectsFile);
-
-    return sObjects;
-  } catch (e) {
-    throw e;
-  }
+  });
 };
 
 const getGlobalValueSets = () => {
   try {
-    const defaultOrg = getDefaultOrg();
+    const defaultOrg = getOrgDisplay();
     let globalValuesetsFile = undefined;
     const globalValuesetsPath = path.resolve(
-      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "globalValueSets.json")
+      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "globalvalueset.json")
     );
 
     try {
@@ -174,7 +164,7 @@ const getGlobalValueSets = () => {
         globalValuesets.result.length
       )
     ) {
-      globalValuesets = refreshGlobalValueSets();
+      globalValuesets = listMetadata('GlobalValueSet');
     }
 
     return globalValuesets;
@@ -183,37 +173,46 @@ const getGlobalValueSets = () => {
   }
 };
 
-const refreshGlobalValueSets = () => {
-  try {
-    const defaultOrg = getDefaultOrg();
-    let globalValuesetsFile = undefined;
-    const globalValuesetsPath = path.resolve(
-      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "globalValueSets.json")
+const refreshGlobalValueSets = (panel) => {
+  return listMetadata('GlobalValueSet', panel);
+};
+
+const listMetadata = (metadataName, panel) => {
+  return new Promise((resolve, reject) => {
+    const defaultOrg = getOrgDisplay();
+    const metadataFileName = `${metadataName.toLowerCase()}.json`;
+    const metadataFilePath = path.resolve(
+      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, metadataFileName)
     );
-    let globalValuesets = undefined;
-    execSync(
-      `sfdx force:mdapi:listmetadata -m GlobalValueSet -u ${
-        defaultOrg.username
-      } --json > ${path.resolve(
-        path.join(
-          GLOBAL_STORAGE_DIR,
-          defaultOrg.username,
-          "globalValueSets.json"
-        )
-      )}`, {
+    exec(
+      `sfdx force:mdapi:listmetadata -m ${metadataName} --json`, {
         encoding: "utf-8",
         cwd: vscode.workspace.rootPath,
+      }, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+
+        fs.writeFile(metadataFilePath, stdout, {
+          encoding: 'utf-8'
+        });
+
+        if (stdout) {
+          if (panel)
+            panel.webview.postMessage({
+              cmd: "globalValueSets",
+              data: JSON.parse(stdout),
+            });
+          resolve(JSON.parse(stdout));
+        }
+
+        if (stderr) {
+          reject(JSON.parse(stderr));
+        }
       }
     );
-    globalValuesetsFile = fs.readFileSync(globalValuesetsPath, {
-      encoding: "utf-8",
-    });
-    globalValuesets = JSON.parse(globalValuesetsFile);
-
-    return globalValuesets;
-  } catch (e) {
-    throw e;
-  }
+  });
 };
 
 const getOrgDisplay = () => {
@@ -228,8 +227,8 @@ const getOrgDisplay = () => {
   }
 };
 
-const getGlobalDescribe = () => {
-  const orgDisplay = getOrgDisplay();
+const getGlobalDescribe = (orgInfo) => {
+  const orgDisplay = orgInfo || getOrgDisplay();
   return axios
     .get(`${orgDisplay.instanceUrl}/services/data/v48.0/sobjects/`, {
       headers: {
@@ -238,24 +237,14 @@ const getGlobalDescribe = () => {
     });
 };
 
-const callSObjectDescribe = (sObjectName) => {
-  const orgDisplay = getOrgDisplay();
+const callSObjectDescribe = (sObjectName, orgInfo) => {
+  const orgDisplay = orgInfo || getOrgDisplay();
   return axios
     .get(`${orgDisplay.instanceUrl}/services/data/v48.0/sobjects/${sObjectName}/describe/`, {
       headers: {
         Authorization: `Bearer ${orgDisplay.accessToken}`,
       },
     });
-};
-
-const getDefaultOrg = () => {
-  const orgFile = JSON.parse(
-    fs.readFileSync(ORG_LIST_PATH, {
-      encoding: "utf-8",
-    })
-  );
-  const orgs = joinOrgLists(orgFile);
-  return orgs.find((org) => org.isDefaultUsername);
 };
 
 const joinOrgLists = (orgResponse) => {
@@ -271,10 +260,9 @@ module.exports = {
   sfdxSpawn,
   setupSchemaGlobalDirectory,
   getSObjectsNames,
-  refreshSObjectsNames,
+  refreshSObjects,
   getGlobalValueSets,
   refreshGlobalValueSets,
-  getDefaultOrg,
   getOrgDisplay,
   getGlobalDescribe,
   callSObjectDescribe,

@@ -13,10 +13,11 @@ const {
     getGlobalValueSets,
     refreshGlobalValueSets,
     getSObjectsNames,
-    refreshSObjectsNames,
+    refreshSObjects,
     getOrgDisplay,
     getGlobalDescribe,
-    callSObjectDescribe
+    callSObjectDescribe,
+    GLOBAL_STORAGE_DIR
 } = require("../lib/utils.js");
 /**
  *Add business
@@ -51,7 +52,7 @@ class EGWebView extends WebView {
                         });
                     this.panel.webview.postMessage({
                         cmd: "globalValueSets",
-                        result: "error",
+                        data: e,
                     });
                     this.channel.appendLine(e);
                 }
@@ -74,18 +75,18 @@ class EGWebView extends WebView {
                         });
                     this.panel.webview.postMessage({
                         cmd: "objects",
-                        result: "error",
+                        data: e,
                     });
                     this.channel.appendLine(e);
                 }
             },
             createCustomObject: (data) => {
+                const defaultOrg = getOrgDisplay();
                 const customObjectXml = data.xml;
                 const customObjectName = data.objectName;
                 const customObjectsFolder = path.join(
-                    vscode.workspace.rootPath,
-                    ".schema",
-                    "defaultusername",
+                    GLOBAL_STORAGE_DIR,
+                    defaultOrg.username,
                     "customObjects"
                 );
 
@@ -152,25 +153,19 @@ class EGWebView extends WebView {
                         });
                     this.panel.webview.postMessage({
                         cmd: "customObjectCreated",
+                        data: e
                     });
                 }
             },
             refreshGlobalValueSetsAndObjectsMetadata: () => {
-                try {
-                    const globalValuesets = refreshGlobalValueSets();
-                    this.panel.webview.postMessage({
-                        cmd: "globalValueSets",
-                        data: globalValuesets,
-                    });
-                    const sObjects = refreshSObjectsNames();
-                    this.panel.webview.postMessage({
-                        cmd: "objects",
-                        data: sObjects,
-                    });
+                Promise.all([
+                    refreshGlobalValueSets(this.panel),
+                    refreshSObjects(this.panel)
+                ]).then(() => {
                     this.panel.webview.postMessage({
                         cmd: "refreshedMetadata",
                     });
-                } catch (e) {
+                }).catch(e => {
                     vscode.window
                         .showErrorMessage("Couldn't Refresh Metadata", "Show Output")
                         .then((selection) => {
@@ -180,10 +175,10 @@ class EGWebView extends WebView {
                         });
                     this.panel.webview.postMessage({
                         cmd: "refreshedMetadata",
-                        result: "error",
+                        data: e,
                     });
                     this.channel.appendLine(e);
-                }
+                });
             },
             getSObjectDescribe: (sObject) => {
                 callSObjectDescribe(sObject).then((response) => {
