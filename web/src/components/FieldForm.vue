@@ -868,6 +868,10 @@ export default {
                 this.field.unique = undefined;
             }
 
+            if(newValue !== "Checkbox"){
+              this.field.defaultValue = undefined;
+            }
+
             this.checkValidity();
         },
         "field.required"(newValue) {
