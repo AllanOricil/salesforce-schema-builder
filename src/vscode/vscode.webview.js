@@ -107,6 +107,12 @@ class WebView {
           ],
         }
       );
+
+      const onDiskPath = vscode.Uri.file(
+        path.join(context.extensionPath, ".images", "webview_icon.png")
+      );
+      this.panel.iconPath = onDiskPath;
+
       // load html
       this.panel.webview.html = WebView.getHtml4Path(htmlPath);
       this.panel.onDidDispose(
