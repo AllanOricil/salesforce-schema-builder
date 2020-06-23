@@ -7,7 +7,7 @@ This extension enable developers to manage Salesforce Custom Objects without hav
 - [x] Create and Edit Custom Objects and fields.
 - [x] Preview and Copy to Clipboard the Metadata XML.
 - [ ] Create and Edit Validation Rules. ----> Depends on the implementation of the Formula Editor. <-----
-- [ ] Interactive 2D Schema Visualization.
+- [ ] [Interactive 2D Schema Visualization.](#poc-schema-builder)
 
 ## Requirements
 
@@ -44,6 +44,10 @@ If you want to see the generate metadata just click on the button on the top rig
 
 When you finish to configure your new Custom Object, click on the Save button and just wait a few seconds. If everything was deployed correctly, VS Code will display a Success message.
 
-<img src="https://drive.google.com/uc?id=1aWDJIVW5ApN4CViJnL_dO1e09cGONvCG" widht="900px">></img>
+<img src="https://drive.google.com/uc?id=1aWDJIVW5ApN4CViJnL_dO1e09cGONvCG" width="500px"></img>
 
 The generated metadata is saved inside the folder `./schema/defaultusername/customObjects/{CUSTOM_OBJECT_NAME}`
+
+## POC Schema Builder
+
+<img src="https://drive.google.com/uc?id=1aVk7LpoLj8WtkLoryQjPIvRrdkaFQcnz" width="900px"></img>
