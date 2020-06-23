@@ -1,7 +1,7 @@
 # Salesforce Schema Builder for VS Code
 
 This extension enable developers to manage Salesforce Custom Objects without having to leave VS Code.
-If you want to contribute with this work, please help cliking on the Buy Me a Coffe button
+If you want to contribute with this work, please click on the button below!
 
 <a href="https://www.buymeacoffee.com/allanoricil" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
@@ -31,7 +31,7 @@ In a SFDX Project directory, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` a
 
 <img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="900px"></img>
 
-The Shema Builder is divided in three sections, the Object Form on the left, the Field manager on the middle and the Field form on the right. In the Object Form you can configure the same options that are available in the Salesfore Setup to create a new Custom Object. The field manager is where you add, remove or search the fields. The field form is enabled every time you click on edit in a field in the field manager. The form is reactive, it is different for each type of field and it provides the same functionality available in the Setup.
+The Schema Builder is divided in three sections, the Object Form on the left, the Field manager on the middle and the Field form on the right. In the Object Form you can configure the same options that are available in the Salesfore Setup to create a new Custom Object. The field manager is where you add, remove or search the fields. The field form is enabled every time you click on edit in a field in the field manager. The form is reactive, it is different for each type of field and it provides the same functionality available in the Setup.
 
 <b>obs:</b> The formula builder is still being developed but you can paste your formula in the "Default" field when available.
 
