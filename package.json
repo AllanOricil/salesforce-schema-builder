@@ -13,7 +13,7 @@
     "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
   },
   "icon": ".images/icon2.png",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "engines": {
     "vscode": "^1.32.0"
   },
@@ -25,19 +25,25 @@
   ],
   "main": "./src/extension.js",
   "contributes": {
-    "commands": [{
-      "command": "SFDX.schemaBuilder",
-      "title": "SFDX: Schema Builder"
-    }],
+    "commands": [
+      {
+        "command": "SFDX.schemaBuilder",
+        "title": "SFDX: Schema Builder"
+      }
+    ],
     "menus": {
-      "explorer/context": [{
-        "command": "SFDX.schemaBuilder",
-        "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
-      }],
-      "editor/context": [{
-        "command": "SFDX.schemaBuilder",
-        "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
-      }]
+      "explorer/context": [
+        {
+          "command": "SFDX.schemaBuilder",
+          "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "SFDX.schemaBuilder",
+          "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
+        }
+      ]
     },
     "configuration": {
       "title": "Salesforce Schema Builder",
