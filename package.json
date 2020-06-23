@@ -48,11 +48,6 @@
     "configuration": {
       "title": "Salesforce Schema Builder",
       "properties": {
-        "salesforceSchemaBuilder.outputDirectory": {
-          "type": "string",
-          "default": "./schema",
-          "description": "It is where the metadata is saved. It is necessary to give a full path."
-        },
         "salesforceSchemaBuilder.formatType": {
           "type": "string",
           "enum": [
@@ -70,6 +65,21 @@
           "type": "boolean",
           "default": "true",
           "description": "Schema Builder will retrieve the Schema Information from your Default Org automatically."
+        },
+        "salesforceSchemaBuilder.saveToWorkingDirectory": {
+          "type": "boolean",
+          "default": "false",
+          "markdownDescription": "If true, the Metadata file will be saved in the Working Directory on the destination specified by `#salesforceSchemaBuilder.workingDirectoryFolder#`"
+        },
+        "salesforceSchemaBuilder.workingDirectoryFolder": {
+          "type": "string",
+          "default": "./schema",
+          "markdownDescription": "It is the folder path, `relative to the Working Directory`. If you choose to save in the force-app folder, change the `#salesforceSchemaBuilder.formatType#` to `Source`"
+        },
+        "salesforceSchemaBuilder.globalWorkingDirectory": {
+          "type": "string",
+          "default": "${env:USERNAME}",
+          "markdownDescription": "It is the folder where all the necessary Metadata for the Forms is saved, like Global Value Sets or Labels. It defaults to `.vscode/extensions/.schema`. If you want to overwrite it, use a `full path` and make sure you have the right to write to this folder."
         }
       }
     }

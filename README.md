@@ -1,6 +1,9 @@
 # Salesforce Schema Builder for VS Code
 
 This extension enable developers to manage Salesforce Custom Objects without having to leave VS Code.
+If you want to contribute with this work, please help cliking on the Buy Me a Coffe button
+
+<a href="https://www.buymeacoffee.com/allanoricil" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
 ## Features
 
@@ -36,17 +39,23 @@ The Shema Builder is divided in three sections, the Object Form on the left, the
 <img src="https://drive.google.com/uc?id=13uw7I39ltDF3YBLbFvk8dKQDV82uOo8P" width="900px"></img>
 <img src="https://drive.google.com/uc?id=1rX9De8Dna95yjomtZvoFgzSPDYah30Ks" width="900px"></img>
 
-If you want to see the generate metadata just click on the button on the top right hand corner of VS Code, like shown in the next image.
+If you want to see the Metadata XML, just click on the button on the top right hand corner of VS Code, like shown in the next image.
 
 <img src="https://drive.google.com/uc?id=1yZJWrRdDjXfXEnuKUcinVidZEzE_ppsA" width="900px"></img>
 
 <img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="900px"></img>
 
-When you finish to configure your new Custom Object, click on the Save button and just wait a few seconds. If everything was deployed correctly, VS Code will display a Success message.
+When you finish to configure your new Custom Object, scroll down and click on the Save button.
 
 <img src="https://drive.google.com/uc?id=1aWDJIVW5ApN4CViJnL_dO1e09cGONvCG" width="500px"></img>
 
-The generated metadata is saved inside the folder `./schema/defaultusername/customObjects/{CUSTOM_OBJECT_NAME}`
+The generated Metadata is saved inside the folder
+
+Windows: `%USERPROFILE%\.vscode\extensions\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
+
+Linux and MacOS: `~/.vscode/extensions/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+
+The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created or edited.
 
 ## POC Schema Builder
 
