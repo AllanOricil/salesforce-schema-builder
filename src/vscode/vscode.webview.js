@@ -109,7 +109,7 @@ class WebView {
       );
 
       const onDiskPath = vscode.Uri.file(
-        path.join(context.extensionPath, ".images", "webview_icon.png")
+        path.join(context.extensionPath, ".images", "icon_dark.png")
       );
       this.panel.iconPath = onDiskPath;
 
