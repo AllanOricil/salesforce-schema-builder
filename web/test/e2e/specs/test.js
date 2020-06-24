@@ -464,6 +464,16 @@ module.exports = {
                 ' Creating...'
             )
             .saveScreenshot('./test/e2e/reports/submiting_valid_form.png')
+            .execute(
+                function (data) {
+                    window.postMessage({
+                        cmd: 'customObjectCreated',
+                    });
+                },
+                [],
+                null
+            )
+            .assert.attributeEquals('#saveSObjectButton', 'outerText', 'Save')
             .end();
     },
 };
