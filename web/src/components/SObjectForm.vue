@@ -193,7 +193,6 @@
                 <label
                     class="form-check-label custom-checkbox-container"
                     for="sObjectAllowSharing"
-                    id="sObjectAllowSharingLabel"
                 >
                     Allow Sharing
                     <input
@@ -272,7 +271,7 @@
 </template>
 
 <script>
-import he from "he";
+import he from 'he';
 export default {
     data() {
         return {
@@ -282,9 +281,9 @@ export default {
                 objectName: undefined,
                 description: undefined,
                 pluralLabel: undefined,
-                gender: "Feminine",
+                gender: 'Feminine',
                 recordName: undefined,
-                dataType: "Text",
+                dataType: 'Text',
                 displayFormat: undefined,
                 startingNumber: undefined,
                 enableReports: false,
@@ -295,7 +294,7 @@ export default {
                 enableBulkApi: false,
                 enableStreamingApi: false,
                 enableSearch: false,
-                deploymentStatus: "Deployed",
+                deploymentStatus: 'Deployed',
             },
         };
     },
@@ -323,7 +322,7 @@ export default {
                 enableStreamingApi: this.sObjectDefinition.enableStreamingApi,
                 enableSearch: this.sObjectDefinition.enableSearch,
                 deploymentStatus: this.sObjectDefinition.deploymentStatus,
-                sharingModel: "ReadWrite",
+                sharingModel: 'ReadWrite',
             };
         },
         isValid() {
@@ -331,24 +330,24 @@ export default {
         },
     },
     watch: {
-        "sObjectDefinition.label"(newValue, oldValue) {
+        'sObjectDefinition.label'(newValue, oldValue) {
             this.sObjectDefinition.objectName = this.sObjectDefinition.label.replace(
                 /\s/g,
-                "_"
+                '_'
             );
             this.sObjectDefinition.name = this.sObjectDefinition.label;
             this.sObjectDefinition.recordName =
-                this.sObjectDefinition.label + " Name";
+                this.sObjectDefinition.label + ' Name';
         },
-        "sObjectDefinition.enableSharing"(newValue, oldValue) {
+        'sObjectDefinition.enableSharing'(newValue, oldValue) {
             this.sObjectDefinition.enableBulkApi = newValue === true;
             this.sObjectDefinition.enableStreamingApi = newValue === true;
         },
-        "sObjectDefinition.enableStreamingApi"(newValue, oldValue) {
+        'sObjectDefinition.enableStreamingApi'(newValue, oldValue) {
             this.sObjectDefinition.enableSharing = newValue === true;
             this.sObjectDefinition.enableBulkApi = newValue === true;
         },
-        "sObjectDefinition.enableBulkApi"(newValue, oldValue) {
+        'sObjectDefinition.enableBulkApi'(newValue, oldValue) {
             this.sObjectDefinition.enableSharing = newValue === true;
             this.sObjectDefinition.enableStreamingApi = newValue === true;
         },

@@ -1,6 +1,3 @@
-// For authoring Nightwatch tests, see
-// http://nightwatchjs.org/guide#usage
-
 module.exports = {
     'verify SObject form fields are present': function (browser) {
         const devServer = browser.globals.devServerURL;
@@ -103,7 +100,9 @@ module.exports = {
             .saveScreenshot('./test/e2e/reports/valid_display_format.png')
             .end();
     },
-    'test Display Format invalid Input': function (browser) {
+    'test Display Format can have 0 or at most 20 characters before {0} sequence': function (
+        browser
+    ) {
         const devServer = browser.globals.devServerURL;
 
         browser
@@ -114,9 +113,101 @@ module.exports = {
             .click('#sObjectDataType option[value=AutoNumber]')
             .waitForElementVisible('#sObjectDisplayFormat')
             .click('#sObjectDisplayFormat')
-            .keys('A')
+            .keys('{0000000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot('./test/e2e/reports/valid_display_format1.png')
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('AAAAAAAAAAAAAAAAAAA-{0000000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot('./test/e2e/reports/valid_display_format2.png')
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('AAAAAAAAAAAAAAAAAAAA-{0000000000}')
             .assert.isValidInput('#sObjectDisplayFormat', 'valid', false)
-            .saveScreenshot('./test/e2e/reports/invalid_display_format.png')
+            .saveScreenshot('./test/e2e/reports/valid_display_format3.png')
+            .end();
+    },
+    'test Display Format must have at least 1 Zero and at most 10 zeros inside {} to be valid': function (
+        browser
+    ) {
+        const devServer = browser.globals.devServerURL;
+
+        browser
+            .url(devServer)
+            .waitForElementVisible('#app', 5000)
+            .waitForElementVisible('#sObjectDataType', 5000)
+            .assert.elementPresent('#sObjectDataType')
+            .click('#sObjectDataType option[value=AutoNumber]')
+            .waitForElementVisible('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{0}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot('./test/e2e/reports/valid_display_format{0}.png')
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{00}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot('./test/e2e/reports/valid_display_format{00}.png')
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot('./test/e2e/reports/valid_display_format{000}.png')
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{0000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot('./test/e2e/reports/valid_display_format{0000}.png')
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{00000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot(
+                './test/e2e/reports/valid_display_format{00000}.png'
+            )
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot(
+                './test/e2e/reports/valid_display_format{000000}.png'
+            )
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{0000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot(
+                './test/e2e/reports/valid_display_format{0000000}.png'
+            )
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{00000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot(
+                './test/e2e/reports/valid_display_format{00000000}.png'
+            )
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{000000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot(
+                './test/e2e/reports/valid_display_format{000000000}.png'
+            )
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{0000000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', true)
+            .saveScreenshot(
+                './test/e2e/reports/valid_display_format{0000000000}.png'
+            )
+            .clearValue('#sObjectDisplayFormat')
+            .click('#sObjectDisplayFormat')
+            .keys('A-{00000000000}')
+            .assert.isValidInput('#sObjectDisplayFormat', 'valid', false)
+            .saveScreenshot(
+                './test/e2e/reports/invalid_display_format_{00000000000}.png'
+            )
             .end();
     },
     'test empty Label is invalid': function (browser) {
@@ -404,7 +495,9 @@ module.exports = {
             )
             .end();
     },
-    'test form can be submited when sobject form is valid': function (browser) {
+    'test sobject form can be submited when it all its fields are valid': function (
+        browser
+    ) {
         const devServer = browser.globals.devServerURL;
 
         browser
@@ -465,7 +558,7 @@ module.exports = {
             )
             .saveScreenshot('./test/e2e/reports/submiting_valid_form.png')
             .execute(
-                function (data) {
+                function () {
                     window.postMessage({
                         cmd: 'customObjectCreated',
                     });
@@ -474,6 +567,181 @@ module.exports = {
                 null
             )
             .assert.attributeEquals('#saveSObjectButton', 'outerText', 'Save')
+            .end();
+    },
+    'test that toogling on Allow Sharing will toogle Allow Streaming Api and Allow Bulk Api': function (
+        browser
+    ) {
+        const devServer = browser.globals.devServerURL;
+
+        browser
+            .url(devServer)
+            .waitForElementVisible('#app', 5000)
+            .assert.elementPresent('#sObjectAllowSharing')
+            .execute(
+                function () {
+                    document.getElementById('sObjectAllowSharing').click();
+                },
+                [],
+                null
+            )
+            .execute(
+                function () {
+                    let sObjectAllowSharing = document.querySelector(
+                        '#sObjectAllowSharing + .checkmark'
+                    );
+                    let sObjectAllowBulkApiAccess = document.querySelector(
+                        '#sObjectAllowBulkApiAccess + .checkmark'
+                    );
+                    let sObjectAllowStreamingApiAccess = document.querySelector(
+                        '#sObjectAllowStreamingApiAccess + .checkmark'
+                    );
+                    return (
+                        window
+                        .getComputedStyle(sObjectAllowSharing, 'after')
+                        .getPropertyValue('display') === 'block' &&
+                        window
+                        .getComputedStyle(
+                            sObjectAllowBulkApiAccess,
+                            'after'
+                        )
+                        .getPropertyValue('display') === 'block' &&
+                        window
+                        .getComputedStyle(
+                            sObjectAllowStreamingApiAccess,
+                            'after'
+                        )
+                        .getPropertyValue('display') === 'block'
+                    );
+                },
+                [],
+                function (result) {
+                    browser
+                        .moveToElement('#saveSObjectButton', 10, 10)
+                        .assert.equal(result.value, true)
+                        .saveScreenshot(
+                            './test/e2e/reports/toogle_allow_sharing_checkbox.png'
+                        );
+                }
+            )
+            .end();
+    },
+    'test that toogling on Allow Bulk Api will toogle Allow Sharing and Allow Streaming Api': function (
+        browser
+    ) {
+        const devServer = browser.globals.devServerURL;
+
+        browser
+            .url(devServer)
+            .waitForElementVisible('#app', 5000)
+            .assert.elementPresent('#sObjectAllowBulkApiAccess')
+            .execute(
+                function () {
+                    document
+                        .getElementById('sObjectAllowBulkApiAccess')
+                        .click();
+                },
+                [],
+                null
+            )
+            .execute(
+                function () {
+                    let sObjectAllowSharing = document.querySelector(
+                        '#sObjectAllowSharing + .checkmark'
+                    );
+                    let sObjectAllowBulkApiAccess = document.querySelector(
+                        '#sObjectAllowBulkApiAccess + .checkmark'
+                    );
+                    let sObjectAllowStreamingApiAccess = document.querySelector(
+                        '#sObjectAllowStreamingApiAccess + .checkmark'
+                    );
+                    return (
+                        window
+                        .getComputedStyle(sObjectAllowSharing, 'after')
+                        .getPropertyValue('display') === 'block' &&
+                        window
+                        .getComputedStyle(
+                            sObjectAllowBulkApiAccess,
+                            'after'
+                        )
+                        .getPropertyValue('display') === 'block' &&
+                        window
+                        .getComputedStyle(
+                            sObjectAllowStreamingApiAccess,
+                            'after'
+                        )
+                        .getPropertyValue('display') === 'block'
+                    );
+                },
+                [],
+                function (result) {
+                    browser
+                        .moveToElement('#saveSObjectButton', 10, 10)
+                        .assert.equal(result.value, true)
+                        .saveScreenshot(
+                            './test/e2e/reports/toogle_allow_bulk_api_checkbox.png'
+                        );
+                }
+            )
+            .end();
+    },
+    'test that toogling on Allow Streaming Api will toogle Allow Sharing and Allow bulk Api': function (
+        browser
+    ) {
+        const devServer = browser.globals.devServerURL;
+
+        browser
+            .url(devServer)
+            .waitForElementVisible('#app', 5000)
+            .assert.elementPresent('#sObjectAllowStreamingApiAccess')
+            .execute(
+                function () {
+                    document
+                        .getElementById('sObjectAllowStreamingApiAccess')
+                        .click();
+                },
+                [],
+                null
+            )
+            .execute(
+                function () {
+                    let sObjectAllowSharing = document.querySelector(
+                        '#sObjectAllowSharing + .checkmark'
+                    );
+                    let sObjectAllowBulkApiAccess = document.querySelector(
+                        '#sObjectAllowBulkApiAccess + .checkmark'
+                    );
+                    let sObjectAllowStreamingApiAccess = document.querySelector(
+                        '#sObjectAllowStreamingApiAccess + .checkmark'
+                    );
+                    return (
+                        window
+                        .getComputedStyle(sObjectAllowSharing, 'after')
+                        .getPropertyValue('display') === 'block' &&
+                        window
+                        .getComputedStyle(
+                            sObjectAllowBulkApiAccess,
+                            'after'
+                        )
+                        .getPropertyValue('display') === 'block' &&
+                        window
+                        .getComputedStyle(
+                            sObjectAllowStreamingApiAccess,
+                            'after'
+                        )
+                        .getPropertyValue('display') === 'block'
+                    );
+                },
+                [],
+                function (result) {
+                    browser
+                        .moveToElement('#saveSObjectButton', 10, 10)
+                        .assert.equal(result.value, true)
+                        .saveScreenshot(
+                            './test/e2e/reports/toogle_allow_streaming_api_checkbox.png'
+                        );
+                }
+            )
             .end();
     },
 };
