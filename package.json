@@ -13,7 +13,7 @@
     "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
   },
   "icon": ".images/icon2.png",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "engines": {
     "vscode": "^1.32.0"
   },
@@ -25,29 +25,37 @@
   ],
   "main": "./src/extension.js",
   "contributes": {
-    "commands": [{
-      "command": "SFDX.schemaBuilder",
-      "title": "SFDX: Schema Builder",
-      "icon": {
-        "light": "/.images/icon_light.png",
-        "dark": "/.images/icon_dark.png"
+    "commands": [
+      {
+        "command": "SFDX.schemaBuilder",
+        "title": "SFDX: Schema Builder",
+        "icon": {
+          "light": "/.images/icon_light.png",
+          "dark": "/.images/icon_dark.png"
+        }
       }
-    }],
+    ],
     "menus": {
-      "editor/title": [{
-        "command": "SFDX.schemaBuilder",
-        "alt": "markdown.showPreviewToSide",
-        "group": "navigation",
-        "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
-      }],
-      "explorer/context": [{
-        "command": "SFDX.schemaBuilder",
-        "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
-      }],
-      "editor/context": [{
-        "command": "SFDX.schemaBuilder",
-        "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
-      }]
+      "editor/title": [
+        {
+          "command": "SFDX.schemaBuilder",
+          "alt": "markdown.showPreviewToSide",
+          "group": "navigation",
+          "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "SFDX.schemaBuilder",
+          "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "SFDX.schemaBuilder",
+          "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
+        }
+      ]
     },
     "configuration": {
       "title": "Salesforce Schema Builder",
