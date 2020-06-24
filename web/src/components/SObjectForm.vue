@@ -1,5 +1,5 @@
 <template>
-    <form class=" mx-2" ref="sObjectForm">
+    <form class="mx-2" id="sObjectForm" ref="sObjectForm">
         <div class="form-row">
             <div class="form-group col-12">
                 <label for="sObjectLabel">Label</label>
@@ -34,8 +34,8 @@
                     v-model="sObjectDefinition.gender"
                     @change="checkValidity"
                 >
-                    <option>Feminine</option>
-                    <option>Masculine</option>
+                    <option value="Feminine">Feminine</option>
+                    <option value="Masculine">Masculine</option>
                 </select>
             </div>
             <div class="form-group col-12">
@@ -44,6 +44,7 @@
                     class="form-control"
                     id="sObjectDescription"
                     rows="3"
+                    maxlength="999"
                     v-model="sObjectDefinition.description"
                     @keyup="checkValidity"
                 ></textarea>
@@ -192,6 +193,7 @@
                 <label
                     class="form-check-label custom-checkbox-container"
                     for="sObjectAllowSharing"
+                    id="sObjectAllowSharingLabel"
                 >
                     Allow Sharing
                     <input
@@ -293,8 +295,8 @@ export default {
                 enableBulkApi: false,
                 enableStreamingApi: false,
                 enableSearch: false,
-                deploymentStatus: "Deployed"
-            }
+                deploymentStatus: "Deployed",
+            },
         };
     },
     computed: {
@@ -305,7 +307,7 @@ export default {
                     displayFormat: this.sObjectDefinition.displayFormat,
                     startingNumber: this.sObjectDefinition.startingNumber,
                     trackHistory: false,
-                    type: this.sObjectDefinition.dataType
+                    type: this.sObjectDefinition.dataType,
                 },
                 label: this.sObjectDefinition.label,
                 description: this.sObjectDefinition.description,
@@ -321,12 +323,12 @@ export default {
                 enableStreamingApi: this.sObjectDefinition.enableStreamingApi,
                 enableSearch: this.sObjectDefinition.enableSearch,
                 deploymentStatus: this.sObjectDefinition.deploymentStatus,
-                sharingModel: "ReadWrite"
+                sharingModel: "ReadWrite",
             };
         },
         isValid() {
             return this.$refs.sObjectForm.checkValidity();
-        }
+        },
     },
     watch: {
         "sObjectDefinition.label"(newValue, oldValue) {
@@ -349,13 +351,13 @@ export default {
         "sObjectDefinition.enableBulkApi"(newValue, oldValue) {
             this.sObjectDefinition.enableSharing = newValue === true;
             this.sObjectDefinition.enableStreamingApi = newValue === true;
-        }
+        },
     },
-    methods:{
-        checkValidity(){
+    methods: {
+        checkValidity() {
             return this.$refs.sObjectForm.checkValidity();
-        }
-    }
+        },
+    },
 };
 </script>
 
