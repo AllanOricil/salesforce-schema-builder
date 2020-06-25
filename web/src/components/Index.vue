@@ -1,62 +1,58 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-between">
-            <h2 class="text-uppercase mt-3 ml-3">Custom Object</h2>
-            <div>
-                <span
-                    :class="[
+  <div class="container">
+    <div class="row justify-content-between">
+      <h2 class="text-uppercase mt-3 ml-3">Custom Object</h2>
+      <div>
+        <span
+          :class="[
                         'icon fa fa-sync mr-3 mt-3',
                         isRefreshingMetadata ? 'fa-spin' : '',
                     ]"
-                    style="font-size: 30px;"
-                    data-placement="top"
-                    title="Refresh Metadata"
-                    @click="refreshMetadata()"
-                ></span>
-                <span
-                    class="icon fa fa-file-code mr-3 mt-3"
-                    style="font-size: 30px;"
-                    data-placement="top"
-                    title="View Metadata"
-                    @click="toogleMetadataView()"
-                ></span>
-            </div>
-        </div>
+          style="font-size: 30px;"
+          data-placement="top"
+          title="Refresh Metadata"
+          @click="refreshMetadata()"
+        ></span>
+        <span
+          class="icon fa fa-file-code mr-3 mt-3"
+          style="font-size: 30px;"
+          data-placement="top"
+          title="View Metadata"
+          @click="toogleMetadataView()"
+        ></span>
+      </div>
+    </div>
 
-        <fieldset :disabled="areFormsDisabled">
-            <div class="row h-100">
-                <div id="forms-panel" class="col-3">
-                    <s-object-form ref="sObjectForm"></s-object-form>
-                </div>
-                <div class="col-9">
-                    <fields-form ref="fieldsForm"></fields-form>
-                </div>
-            </div>
-        </fieldset>
-        <div class="row my-2 mb-4">
-            <button
-                id="saveSObjectButton"
-                type="button"
-                class="btn btn-primary mx-3 w-100"
-                @click="createCustomObject"
-                :disabled="creatingCustomObject"
-            >
-                <div v-if="creatingCustomObject">
-                    <span
-                        class="spinner-grow spinner-grow-sm"
-                        role="status"
-                        aria-hidden="true"
-                    ></span>
-                    Creating...
-                </div>
-                <span v-else>Save</span>
-            </button>
+    <fieldset :disabled="areFormsDisabled">
+      <div class="row h-100">
+        <div id="forms-panel" class="col-3">
+          <s-object-form ref="sObjectForm"></s-object-form>
         </div>
+        <div class="col-9">
+          <fields-form ref="fieldsForm"></fields-form>
+        </div>
+      </div>
+    </fieldset>
+    <div class="row my-2 mb-4">
+      <button
+        id="saveSObjectButton"
+        type="button"
+        class="btn btn-primary mx-3 w-100"
+        @click="createCustomObject"
+        :disabled="creatingCustomObject"
+      >
+        <div v-if="creatingCustomObject">
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          Creating...
+        </div>
+        <span v-else>Save</span>
+      </button>
+    </div>
 
-        <div
-            v-if="showXML"
-            class="fixed d-flex flex-column m-auto absolute"
-            style="
+    <div
+      v-if="showXML"
+      class="fixed d-flex flex-column m-auto absolute"
+      style="
                 position: absolute;
                 width: 40%;
                 height: 100%;
@@ -65,31 +61,24 @@
                 background-color: var(--vscode-editor-background);
                 border-left: thin solid var(--vscode-textSeparator-foreground);
             "
-        >
-            <div class="d-flex">
-                <button
-                    @click="toogleMetadataView()"
-                    class="btn btn-primary flex-grow-1"
-                    style="min-width: 0px;"
-                >
-                    Close Preview
-                </button>
-                <button
-                    v-clipboard="xml"
-                    v-clipboard:success="clipboardSuccessHandler"
-                    v-clipboard:error="clipboardErrorHandler"
-                    class="btn btn-primary flex-grow-1"
-                    style="min-width: 0px;"
-                >
-                    Copy to Clipboard
-                </button>
-            </div>
-            <pre
-                v-highlightjs="xml"
-                class="flex-grow-1"
-            ><code class="html"></code></pre>
-        </div>
+    >
+      <div class="d-flex">
+        <button
+          @click="toogleMetadataView()"
+          class="btn btn-primary flex-grow-1"
+          style="min-width: 0px;"
+        >Close Preview</button>
+        <button
+          v-clipboard="xml"
+          v-clipboard:success="clipboardSuccessHandler"
+          v-clipboard:error="clipboardErrorHandler"
+          class="btn btn-primary flex-grow-1"
+          style="min-width: 0px;"
+        >Copy to Clipboard</button>
+      </div>
+      <pre v-highlightjs="xml" class="flex-grow-1"><code class="html"></code></pre>
     </div>
+  </div>
 </template>
 
 <script>
@@ -205,7 +194,6 @@ export default {
             window.vscode.getBridgeData().then((response) => {
                 console.log(response);
             });
-            this.getSObjectDescribe('a__c');
         },
         clipboardErrorHandler() {},
     },
@@ -214,13 +202,13 @@ export default {
 
 <style scoped>
 .sidenav {
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1; /* Stay on top */
-    top: 0; /* Stay at the top */
-    left: 0;
-    background-color: #111; /* Black */
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 20px;
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 20px;
 }
 </style>

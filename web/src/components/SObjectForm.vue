@@ -61,10 +61,10 @@
           v-model="objectName"
           @keyup="checkValidity"
         />
-        <smal
+        <small
           v-if="sobject.objectName"
           class="form-text text-muted text-truncate"
-        >API Name: {{sobject.objectName + '__c'}}</smal>
+        >API Name: {{sobject.objectName + '__c'}}</small>
       </div>
       <div class="form-group col-12">
         <label for="sObjectRecordName">Record Name</label>

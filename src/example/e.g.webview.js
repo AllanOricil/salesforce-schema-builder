@@ -33,10 +33,15 @@ class EGWebView extends WebView {
 
     constructor() {
         super();
+
+        this.onDidPose = () => {
+            this.defaultOrg = getOrgDisplay();
+        };
+
         this.handler.addApi({
             getAvailableGlobalValueSets: () => {
                 try {
-                    const globalValuesets = getGlobalValueSets();
+                    const globalValuesets = getGlobalValueSets(this.defaultOrg);
                     this.panel.webview.postMessage({
                         cmd: "globalValueSets",
                         data: globalValuesets,
@@ -58,7 +63,7 @@ class EGWebView extends WebView {
             },
             getAllObjectNames: () => {
                 try {
-                    getGlobalDescribe().then(response => {
+                    getGlobalDescribe(this.defaultOrg).then(response => {
                         this.panel.webview.postMessage({
                             cmd: "objects",
                             data: response.data.sobjects,
@@ -80,12 +85,11 @@ class EGWebView extends WebView {
                 }
             },
             createCustomObject: (data) => {
-                const defaultOrg = getOrgDisplay();
                 const customObjectXml = data.xml;
                 const customObjectName = data.objectName;
                 const customObjectsFolder = path.join(
                     GLOBAL_STORAGE_DIR,
-                    defaultOrg.username,
+                    this.defaultOrg.username,
                     "customObjects"
                 );
 
@@ -157,9 +161,10 @@ class EGWebView extends WebView {
                 }
             },
             refreshGlobalValueSetsAndObjectsMetadata: () => {
+                this.defaultOrg = getOrgDisplay();
                 Promise.all([
-                    refreshGlobalValueSets(this.panel),
-                    refreshSObjects(this.panel)
+                    refreshGlobalValueSets(this.defaultOrg, this.panel),
+                    refreshSObjects(this.defaultOrg, this.panel)
                 ]).then(() => {
                     this.panel.webview.postMessage({
                         cmd: "refreshedMetadata",
@@ -180,13 +185,13 @@ class EGWebView extends WebView {
                 });
             },
             getSObjectDescribe: (sObject) => {
-                callSObjectDescribe(sObject).then((response) => {
+                callSObjectDescribe(this.defaultOrg, sObject).then((response) => {
                     this.panel.webview.postMessage({
                         cmd: 'receiveSObjectDescription',
                         data: response.data,
                     });
                 });
-            }
+            },
         });
     }
 

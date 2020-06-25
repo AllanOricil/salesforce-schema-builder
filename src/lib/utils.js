@@ -7,6 +7,7 @@ const {
   exec
 } = require("child_process");
 const axios = require("axios");
+const config = require("../../web/config");
 const HOME_DIR = require("os").homedir();
 const GLOBAL_STORAGE_DIR = path.resolve(
   path.join(HOME_DIR, ".vscode", "extensions", ".schema")
@@ -14,6 +15,8 @@ const GLOBAL_STORAGE_DIR = path.resolve(
 const ORG_LIST_PATH = path.resolve(
   path.join(GLOBAL_STORAGE_DIR, "orgList.json")
 );
+
+const TIME_TO_REQUEST_NEW_AUTH_TOKEN = 1;
 
 const templateCustomObjectMetadata = (templatesPath, data) => {
   return new Promise((resolve) => {
@@ -93,13 +96,12 @@ const setupSchemaGlobalDirectory = () => {
   }
 };
 
-const getSObjectsNames = () => {
+const getSObjectsNames = (defaultOrg) => {
   try {
-    const defaultOrg = getOrgDisplay();
     let sObjectsFile = undefined;
 
     const sObjectsFilePath = path.resolve(
-      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sObjects.json")
+      path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sobjects.json")
     );
     //check if the files is already retrieved for the default org
     try {
@@ -120,12 +122,11 @@ const getSObjectsNames = () => {
   }
 };
 
-const refreshSObjects = (panel) => {
-  const defaultOrg = getOrgDisplay();
+const refreshSObjects = (defaultOrg, panel) => {
   return new Promise((resolve) => {
     getGlobalDescribe(defaultOrg).then(response => {
-      const sObjectsFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sObjects.json"));
-      fs.writeFile(sObjectsFilePath, response.data.sobjects, {
+      const sObjectsFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "sobjects.json"));
+      fs.writeFile(sObjectsFilePath, JSON.stringify(response.data.sobjects), {
         encoding: 'utf-8'
       });
 
@@ -139,9 +140,8 @@ const refreshSObjects = (panel) => {
   });
 };
 
-const getGlobalValueSets = () => {
+const getGlobalValueSets = (defaultOrg) => {
   try {
-    const defaultOrg = getOrgDisplay();
     let globalValuesetsFile = undefined;
     const globalValuesetsPath = path.resolve(
       path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, "globalvalueset.json")
@@ -173,13 +173,12 @@ const getGlobalValueSets = () => {
   }
 };
 
-const refreshGlobalValueSets = (panel) => {
-  return listMetadata('GlobalValueSet', panel);
+const refreshGlobalValueSets = (defaultOrg, panel) => {
+  return listMetadata('GlobalValueSet', defaultOrg, panel);
 };
 
-const listMetadata = (metadataName, panel) => {
+const listMetadata = (metadataName, defaultOrg, panel) => {
   return new Promise((resolve, reject) => {
-    const defaultOrg = getOrgDisplay();
     const metadataFileName = `${metadataName.toLowerCase()}.json`;
     const metadataFilePath = path.resolve(
       path.join(GLOBAL_STORAGE_DIR, defaultOrg.username, metadataFileName)
@@ -217,32 +216,73 @@ const listMetadata = (metadataName, panel) => {
 
 const getOrgDisplay = () => {
   try {
-    const stdout = JSON.parse(execSync(`sfdx force:org:display --json`, {
+    const configList = JSON.parse(execSync(`sfdx force:config:list --json`, {
       encoding: "utf-8",
       cwd: vscode.workspace.rootPath,
     }));
-    return stdout.result;
+
+    let defaultUsername = undefined;
+    if (configList.result && configList.result.length) {
+      defaultUsername = configList.result.filter(config => config.key === 'defaultusername');
+    } else {
+      throw e;
+    }
+
+    if (!defaultUsername) throw e;
+
+    const orgDisplayFilePath = path.resolve(path.join(GLOBAL_STORAGE_DIR, 'orgdisplay.json'));
+    fs.ensureFileSync(orgDisplayFilePath);
+    let orgDisplay = undefined;
+    try {
+      orgDisplay = JSON.parse(fs.readFileSync(orgDisplayFilePath, {
+        encoding: 'utf-8'
+      }));
+    } catch (e) {}
+
+    if (orgDisplay && orgDisplay.updatedTime) {
+      const elapsedTimeInHours = Math.abs(new Date(orgDisplay.updatedTime) - new Date()) / (1000 * 60 * 60);
+      if (elapsedTimeInHours > TIME_TO_REQUEST_NEW_AUTH_TOKEN || orgDisplay.result.alias !== defaultUsername[0].value) {
+        return refreshOrgDisplay();
+      } else {
+        return orgDisplay.result;
+      }
+    } else {
+      return refreshOrgDisplay();
+    }
   } catch (e) {
     throw e;
   }
 };
 
-const getGlobalDescribe = (orgInfo) => {
-  const orgDisplay = orgInfo || getOrgDisplay();
+const refreshOrgDisplay = () => {
+  const stdout = JSON.parse(execSync(`sfdx force:org:display --json`, {
+    encoding: "utf-8",
+    cwd: vscode.workspace.rootPath,
+  }));
+
+  stdout.updatedTime = new Date();
+
+  fs.writeFile(path.resolve(path.join(GLOBAL_STORAGE_DIR, 'orgdisplay.json')), JSON.stringify(stdout), {
+    encoding: 'utf-8'
+  });
+
+  return stdout.result;
+};
+
+const getGlobalDescribe = (defaultOrg) => {
   return axios
-    .get(`${orgDisplay.instanceUrl}/services/data/v48.0/sobjects/`, {
+    .get(`${defaultOrg.instanceUrl}/services/data/v48.0/sobjects/`, {
       headers: {
-        Authorization: `Bearer ${orgDisplay.accessToken}`,
+        Authorization: `Bearer ${defaultOrg.accessToken}`,
       },
     });
 };
 
-const callSObjectDescribe = (sObjectName, orgInfo) => {
-  const orgDisplay = orgInfo || getOrgDisplay();
+const callSObjectDescribe = (defaultOrg, sObjectName) => {
   return axios
-    .get(`${orgDisplay.instanceUrl}/services/data/v48.0/sobjects/${sObjectName}/describe/`, {
+    .get(`${defaultOrg.instanceUrl}/services/data/v48.0/sobjects/${sObjectName}/describe/`, {
       headers: {
-        Authorization: `Bearer ${orgDisplay.accessToken}`,
+        Authorization: `Bearer ${defaultOrg.accessToken}`,
       },
     });
 };
