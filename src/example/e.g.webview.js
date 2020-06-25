@@ -12,7 +12,6 @@ const fs = require("fs-extra");
 const {
     getGlobalValueSets,
     refreshGlobalValueSets,
-    getSObjectsNames,
     refreshSObjects,
     getOrgDisplay,
     getGlobalDescribe,

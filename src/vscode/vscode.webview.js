@@ -45,8 +45,6 @@ class WebView {
      */
     this.onDidReceiveMessage = undefined;
 
-    this.templatesPath = undefined;
-
     this.channel = undefined;
 
     this.sfdxConfig = undefined;
@@ -93,7 +91,6 @@ class WebView {
       this.channel = vscode.window.createOutputChannel(
         "Salesforce Schema Builder"
       );
-      this.templatesPath = path.join(context.extensionPath, "templates");
       this._panel = vscode.window.createWebviewPanel(
         viewType,
         title,
@@ -102,8 +99,7 @@ class WebView {
           enableScripts, // default disabled
           retainContextWhenHidden, // keep state and avoid being reset When hidden webview
           localResourceRoots: [
-            vscode.Uri.file(path.dirname(htmlPath)),
-            vscode.Uri.file(this.templatesPath),
+            vscode.Uri.file(path.dirname(htmlPath))
           ],
         }
       );
