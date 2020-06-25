@@ -336,7 +336,7 @@ export default {
     },
     watch: {
         'sobject.label'(newValue, oldValue) {
-            this.sobject.objectName = this.sobject.label.replace(/\s/g, '_');
+            this.objectName = this.sobject.label.replace(/\s/g, '_');
             this.sobject.name = this.sobject.label;
             this.sobject.recordName = this.sobject.label + ' Name';
         },
@@ -353,9 +353,8 @@ export default {
             this.sobject.enableStreamingApi = newValue === true;
         },
         objectName(newValue) {
-            newValue = newValue.replace(/\s/g, '_');
-            this.objectName = newValue;
-            this.sobject.objectName = this.objectName;
+            this.objectName = newValue.replace(/\s/g, '_');
+            this.sobject.objectName = newValue.replace(/\s/g, '_');
         },
     },
     methods: {
