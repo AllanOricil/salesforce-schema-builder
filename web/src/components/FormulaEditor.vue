@@ -389,19 +389,19 @@ export default {
         value: {
             type: String,
             required: true,
-            default: "",
+            default: '',
         },
     },
     data() {
         return {
-            operator: "",
-            formulaType: "",
-            formula: "",
+            operator: '',
+            formulaType: '',
+            formula: '',
         };
     },
     watch: {
         formula() {
-            this.$emit("input", this.formula);
+            this.$emit('input', this.formula);
         },
     },
     methods: {

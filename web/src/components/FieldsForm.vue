@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import FieldForm from "./FieldForm.vue";
-import FieldsManager from "./FieldsManager.vue";
+import FieldForm from './FieldForm.vue';
+import FieldsManager from './FieldsManager.vue';
 export default {
     components: {
         FieldForm,

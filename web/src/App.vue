@@ -1,12 +1,12 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+    <div id="app">
+        <router-view />
+    </div>
 </template>
 
 <script>
 export default {
-  name: "App"
+    name: 'App',
 };
 </script>
 
@@ -20,11 +20,11 @@ export default {
   margin-top: 60px;
 } */
 ::-webkit-scrollbar {
-  width: 0.5em;
+    width: 0.5em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--vscode-scrollbarSlider-background);
-  outline: 1px solid slategrey;
+    background-color: var(--vscode-scrollbarSlider-background);
+    outline: 1px solid slategrey;
 }
 </style>

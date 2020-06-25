@@ -35,10 +35,10 @@ export default {
     },
     methods: {
         edit() {
-            this.$emit("onEdit", this.field);
+            this.$emit('onEdit', this.field);
         },
         remove() {
-            this.$emit("onRemove", this.field);
+            this.$emit('onRemove', this.field);
         },
     },
 };
