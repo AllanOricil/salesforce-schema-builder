@@ -1,10 +1,10 @@
 exports.assertion = function (selector, stateAttr, stateValue) {
     this.message =
-        "Testing if element <" +
+        'Testing if element <' +
         selector +
-        "> has ValidityState " +
+        '> has ValidityState ' +
         stateAttr +
-        ": " +
+        ': ' +
         stateValue;
     this.expected = stateValue;
 

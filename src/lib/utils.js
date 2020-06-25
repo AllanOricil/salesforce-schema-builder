@@ -7,7 +7,6 @@ const {
   exec
 } = require("child_process");
 const axios = require("axios");
-const config = require("../../web/config");
 const HOME_DIR = require("os").homedir();
 const GLOBAL_STORAGE_DIR = path.resolve(
   path.join(HOME_DIR, ".vscode", "extensions", ".schema")
@@ -18,49 +17,6 @@ const ORG_LIST_PATH = path.resolve(
 
 const TIME_TO_REQUEST_NEW_AUTH_TOKEN = 1;
 
-const templateCustomObjectMetadata = (templatesPath, data) => {
-  return new Promise((resolve) => {
-    let template = fs.readFileSync(path.join(templatesPath, "SObject.xml"), {
-      encoding: "utf-8",
-    });
-
-    template = templateCustomObjectNameField(
-      template,
-      data.dataType === "Text" ?
-      "SObjectNameFieldText.xml" :
-      "SObjectNameFieldAutoNumber.xml",
-      templatesPath
-    );
-
-    for (let [key, value] of Object.entries(data)) {
-      const regex = new RegExp(`{{${key}}}`, "gi");
-      template = template.replace(regex, value);
-    }
-
-    resolve(template);
-  });
-};
-
-const templateCustomObjectNameField = (template, type, templatesPath) => {
-  const nameFieldRegex = new RegExp("{{nameField}}", "gi");
-  const nameFieldTemplate = fs.readFileSync(path.join(templatesPath, type), {
-    encoding: "utf-8",
-  });
-  template = template.replace(nameFieldRegex, nameFieldTemplate);
-  return template;
-};
-
-const sfdxSpawn = (cmd, dir) => {
-  const sfdxExecOptions = {
-    cwd: dir,
-  };
-  console.log(cmd);
-  cmd += " --json";
-  console.log(cmd);
-  return new Promise((resolve) => {
-    resolve(execSync(cmd, sfdxExecOptions));
-  });
-};
 
 const setupSchemaGlobalDirectory = () => {
   try {
@@ -296,8 +252,6 @@ const joinOrgLists = (orgResponse) => {
 };
 
 module.exports = {
-  templateCustomObjectMetadata,
-  sfdxSpawn,
   setupSchemaGlobalDirectory,
   getSObjectsNames,
   refreshSObjects,

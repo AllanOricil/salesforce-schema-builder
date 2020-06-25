@@ -1,3 +1,8 @@
+/* eslint-disable indent */
+/* eslint-disable prettier/prettier */
+const fs = require('fs-extra');
+const path = require('path');
+
 module.exports = {
     'verify SObject form fields are present': function (browser) {
         const devServer = browser.globals.devServerURL;
@@ -554,7 +559,7 @@ module.exports = {
             .assert.attributeEquals(
                 '#saveSObjectButton',
                 'outerText',
-                ' Creating...'
+                ' Deploying...'
             )
             .saveScreenshot('./test/e2e/reports/submiting_valid_form.png')
             .execute(
@@ -743,5 +748,74 @@ module.exports = {
                 }
             )
             .end();
+    },
+    'test a valid XML is generated when user changes the form': function (
+        browser
+    ) {
+        const devServer = browser.globals.devServerURL;
+
+        browser
+            .url(devServer)
+            .waitForElementVisible('#app', 5000)
+            .click('#sObjectLabel')
+            .keys('ABC')
+            .click('#sObjectPluralLabel')
+            .keys('ABC')
+            .click('#sObjectDescription')
+            .keys('ABC')
+            .execute(
+                function () {
+                    document.getElementById('sObjectAllowReports').click();
+                    document.getElementById('sObjectAllowActivities').click();
+                    document.getElementById('sObjectTrackFieldHistory').click();
+                    document
+                        .getElementById('sObjectAllowInChatterGroups')
+                        .click();
+                    document.getElementById('sObjectAllowSharing').click();
+                    document
+                        .getElementById('sObjectAllowBulkApiAccess')
+                        .click();
+                    document
+                        .getElementById('sObjectAllowStreamingApiAccess')
+                        .click();
+                    document.getElementById('sObjectAllowSearch').click();
+                },
+                [],
+                function () {
+                    browser
+                        .execute(
+                            function () {
+                                const vue = document.getElementById('app')
+                                    .__vue__;
+                                const app = vue.$children[0];
+                                const indexComponent = app.$children[0];
+                                return indexComponent.xml;
+                            },
+                            [],
+                            function (result) {
+                                const pathToXml = path.resolve(
+                                    path.join(
+                                        'test',
+                                        'e2e',
+                                        'static',
+                                        'sobject_valid_form.xml'
+                                    )
+                                );
+
+                                const xml = fs
+                                    .readFileSync(pathToXml, {
+                                        encoding: 'utf-8',
+                                    })
+                                    .replace(/\s/g, '');
+
+                                browser.assert.equal(
+                                    result.value.replace(/\s/g, ''),
+                                    xml
+                                );
+                            }
+                        )
+                        .end();
+                }
+            );
     },
 };

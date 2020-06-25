@@ -1,6 +1,7 @@
 <template>
     <div class="d-flex flex-column pt-3" style="max-height: 100%;">
         <button
+            id="add-field-button"
             type="button"
             class="btn btn-primary mb-3"
             style="margin-top: 14px;"
@@ -11,6 +12,7 @@
         <div class="row justify-content-between px-3 mb-4">
             <h2 class="text-uppercase">Fields</h2>
             <input
+                id="search-field-input"
                 type="text"
                 class="col-12 col-lg-9 w-100 justify-content-end my-lg-1 my-0"
                 style="height: 38px;"
@@ -22,12 +24,15 @@
             />
         </div>
         <div
+            id="field-manager-container"
             class="overflow-auto flex-grow-1 pr-0 pr-lg-3"
             style="height: 950px;"
         >
             <field-manager-field-entry
+                :id="`field-${index}`"
                 v-for="(field, index) in filteredFields"
                 :key="index"
+                :index="index"
                 :field="field"
                 :isEditing="field._isEditing"
                 class="mb-2"

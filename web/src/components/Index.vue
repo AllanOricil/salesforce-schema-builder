@@ -4,6 +4,7 @@
             <h2 class="text-uppercase mt-3 ml-3">Custom Object</h2>
             <div>
                 <span
+                    id="refresh-metadata-button"
                     :class="[
                         'icon fa fa-sync mr-3 mt-3',
                         isRefreshingMetadata ? 'fa-spin' : '',
@@ -14,6 +15,7 @@
                     @click="refreshMetadata()"
                 ></span>
                 <span
+                    id="show-xml-button"
                     class="icon fa fa-file-code mr-3 mt-3"
                     style="font-size: 30px;"
                     data-placement="top"
@@ -47,13 +49,14 @@
                         role="status"
                         aria-hidden="true"
                     ></span>
-                    Creating...
+                    Deploying...
                 </div>
                 <span v-else>Save</span>
             </button>
         </div>
 
         <div
+            id="metadata-xml-view"
             v-if="showXML"
             class="fixed d-flex flex-column m-auto absolute"
             style="
@@ -68,6 +71,7 @@
         >
             <div class="d-flex">
                 <button
+                    id="close-xml-button"
                     @click="toogleMetadataView()"
                     class="btn btn-primary flex-grow-1"
                     style="min-width: 0px;"
@@ -75,6 +79,7 @@
                     Close Preview
                 </button>
                 <button
+                    id="copy-to-clipboard-button"
                     v-clipboard="xml"
                     v-clipboard:success="clipboardSuccessHandler"
                     v-clipboard:error="clipboardErrorHandler"
@@ -172,8 +177,6 @@ export default {
                 this.areFormsDisabled = true;
                 const fieldsData = this.$refs.fieldsForm.fieldsComputedData;
                 const sObjectData = this.$refs.sObjectForm.sObjecComputedData;
-                console.log(fieldsData);
-                console.log(sObjectData);
                 this.creatingCustomObject = true;
                 window.vscode.post({
                     cmd: 'createCustomObject',

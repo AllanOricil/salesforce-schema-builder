@@ -8,10 +8,20 @@
         <span class="my-auto mr-3 w-100 text-truncate" style="color: white;">
             {{ field.fullName }}
         </span>
-        <button type="button" class="btn btn-danger mr-2" @click="edit">
+        <button
+            :id="`edit-button-${index}`"
+            type="button"
+            class="btn btn-danger mr-2"
+            @click="edit"
+        >
             <span class="fas fa-edit"></span>
         </button>
-        <button type="button" class="btn btn-danger" @click="remove">
+        <button
+            :id="`delete-button-${index}`"
+            type="button"
+            class="btn btn-danger"
+            @click="remove"
+        >
             <span class="fas fa-trash"></span>
         </button>
     </div>
@@ -21,6 +31,7 @@
 export default {
     props: {
         field: Object,
+        index: Number,
         isEditing: Boolean,
     },
     watch: {
