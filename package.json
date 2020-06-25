@@ -2,6 +2,7 @@
   "name": "salesforce-schema-builder",
   "displayName": "Salesforce Schema Builder",
   "publisher": "allanoricil",
+  "preview": true,
   "author": {
     "name": "Allan Oricil",
     "email": "allanoricilcos@outlook.com"
@@ -13,7 +14,7 @@
     "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
   },
   "icon": ".images/icon2.png",
-  "version": "0.2.11",
+  "version": "0.2.10",
   "engines": {
     "vscode": "^1.32.0"
   },
