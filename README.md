@@ -7,9 +7,10 @@ If you want to contribute with this work, please click on the button below!
 
 ## Features
 
-- [x] Create and Edit Custom Objects and fields.
-- [x] Preview and Copy to Clipboard the Metadata XML.
-- [ ] Create and Edit Validation Rules. ----> Depends on the implementation of the Formula Editor. <-----
+- [x] Create and Edit Salesforce Objects.
+- [ ] Save the Metadata directly to your SFDX Project.
+- [ ] Create and Edit Validation Rules.
+- [ ] Enhanced Formula builder.
 - [ ] [Interactive 2D Schema Visualization.](#poc-schema-builder)
 
 ## Requirements
@@ -19,11 +20,9 @@ If you want to contribute with this work, please click on the button below!
 
 ## How to Use
 
-First, configure a Default Username for SFDX.
+First, configure a Default Username for SFDX using the Global flag.
 
 ```
-sfdx force:config:set defaultusername=scratch_org_alias
-sfdx force:config:set defaultusername=me@my.org
 sfdx force:config:set defaultusername=me@myhub.org -g
 ```
 
