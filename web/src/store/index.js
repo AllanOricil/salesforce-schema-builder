@@ -12,12 +12,17 @@ import {
     orgInfo
 } from './orgInfo';
 
+import {
+    customlabels
+} from './customlabels';
+
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     modules: {
         sobjects,
         globalvaluesets,
-        orgInfo
+        orgInfo,
+        customlabels
     }
 });

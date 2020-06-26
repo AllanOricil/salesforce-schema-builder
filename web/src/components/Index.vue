@@ -132,10 +132,6 @@ export default {
         },
     },
     beforeMount() {
-        window.vscode.post({
-            cmd: 'getOrgInfo',
-        });
-
         window.vscode.onCustomObjectCreated((message) => {
             this.areFormsDisabled = false;
             this.creatingCustomObject = false;
@@ -144,13 +140,15 @@ export default {
             this.isRefreshingMetadata = false;
         });
         window.vscode.onReceiveGlobalValueSets((message) => {
-            this.$store.commit(
-                'globalvaluesets/setGlobalValueSets',
-                message.data.result
-            );
-            window.vscode.showMessage({
-                txt: 'Global Value Sets Loaded',
-            });
+            if (message.data.result) {
+                this.$store.commit(
+                    'globalvaluesets/setGlobalValueSets',
+                    message.data.result
+                );
+                window.vscode.showMessage({
+                    txt: 'Global Value Sets Loaded',
+                });
+            }
         });
         window.vscode.onReceiveObjects((message) => {
             this.$store.commit('sobjects/setSObjects', message.data);
@@ -164,10 +162,23 @@ export default {
                 txt: 'Org Info Loaded',
             });
         });
+        window.vscode.onReceiveCustomLabel((message) => {
+            if (message.data.result) {
+                this.$store.commit(
+                    'customlabels/setCustomLabels',
+                    message.data.result
+                );
+                window.vscode.showMessage({
+                    txt: 'Custom Labels Loaded',
+                });
+            }
+        });
     },
     mounted() {
+        this.$store.dispatch('orgInfo/getOrgInfo');
         this.$store.dispatch('globalvaluesets/getAvailableGlobalValueSets');
         this.$store.dispatch('sobjects/getAvailableSObjects');
+        this.$store.dispatch('customlabels/getCustomLabels');
     },
     data() {
         return {

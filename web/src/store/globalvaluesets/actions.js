@@ -1,5 +1,5 @@
 export const actions = {
-    getAvailableGlobalValueSets(context, sobject) {
+    getAvailableGlobalValueSets(context) {
         window.vscode.post({
             cmd: "getAvailableGlobalValueSets"
         });

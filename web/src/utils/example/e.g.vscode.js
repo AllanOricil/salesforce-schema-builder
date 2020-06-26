@@ -29,6 +29,9 @@ class EGVscode extends Vscode {
     onReceiveOrgInfo(callback) {
         this.on('orgInfo', callback, 0);
     }
+    onReceiveCustomLabel(callback) {
+        this.on('labels', callback, 0);
+    }
 }
 
 export default EGVscode;

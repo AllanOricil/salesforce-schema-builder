@@ -338,7 +338,7 @@
                     required
                     @change="checkValidity"
                 >
-                    <option v-if="orderedGlobalValueSets" value="1"
+                    <option v-if="orderedGlobalValueSets.length > 0" value="1"
                         >Use global picklist value set</option
                     >
                     <option value="2">
@@ -348,7 +348,7 @@
             </div>
             <div
                 v-if="
-                    orderedGlobalValueSets &&
+                    orderedGlobalValueSets.length > 0 &&
                     (field.type === 'MultiselectPicklist' ||
                         field.type === 'Picklist') &&
                     useGlobalPicklistValueSet &&
@@ -808,15 +808,13 @@ export default {
             ).filter((object) => /^\w*__x\b$/g.test(object.name));
         },
         orderedGlobalValueSets() {
-            if (this.$store.state.globalvaluesets.globalValueSets)
-                return Object.values(
-                    this.$store.state.globalvaluesets.globalValueSets
-                ).sort(function (a, b) {
-                    return a.fullName
-                        .toLowerCase()
-                        .localeCompare(b.fullName.toLowerCase());
-                });
-            else return null;
+            return Object.values(
+                this.$store.state.globalvaluesets.globalValueSets
+            ).sort(function (a, b) {
+                return a.fullName
+                    .toLowerCase()
+                    .localeCompare(b.fullName.toLowerCase());
+            });
         },
     },
     watch: {
@@ -846,16 +844,16 @@ export default {
             }
 
             if (newType !== 'Picklist' && newType !== 'MultiselectPicklist') {
-                this.field.valueSet = undefined;
                 this.valueSet = {
                     valueSetName: undefined,
                     restricted: undefined,
                     valueSetDefinition: {
                         sorted: undefined,
-                        values: undefined,
+                        value: undefined,
                     },
                     makeFirstValueDefault: false,
                 };
+                this.field.valueSet = undefined;
                 this.useGlobalPicklistValueSet = undefined;
             }
 
@@ -1015,9 +1013,11 @@ export default {
                 this.field.type === 'Picklist' ||
                 this.field.type === 'MultiselectPicklist'
             ) {
-                this.valueSet.restricted = this.field.valueSet.restricted
-                    ? true
-                    : false;
+                if (this.field.valueSet)
+                    this.valueSet.restricted = this.field.valueSet.restricted
+                        ? true
+                        : false;
+                else this.valueSet.restricted = false;
 
                 if (
                     this.field.valueSet &&
@@ -1043,6 +1043,7 @@ export default {
                 } else {
                     this.useGlobalPicklistValueSet = 1;
                     this.valueSet.valueSetName = this.field.valueSet.valueSetName;
+                    this.valueSet.valueSetDefinition.value = undefined;
                     this.field.valueSet.valueSetDefinition = undefined;
                 }
             } else {
@@ -1087,31 +1088,35 @@ export default {
         valueSet: {
             deep: true,
             handler(newValue) {
-                this.field.valueSet = JSON.parse(JSON.stringify(newValue));
-
-                if (typeof newValue.restricted === 'undefined')
-                    this.field.valueSet.restricted = false;
-                else this.field.valueSet.restricted = newValue.restricted;
-
                 if (
-                    newValue.valueSetDefinition &&
-                    newValue.valueSetDefinition.value
+                    this.field.type === 'Picklist' ||
+                    this.field.type === 'MultiselectPicklist'
                 ) {
-                    this.field.valueSet.valueSetDefinition.value = newValue.valueSetDefinition.value
-                        .split('\n')
-                        .map((value, index) => {
-                            return {
-                                fullName: value,
-                                label: value,
-                                default:
-                                    index === 0 &&
-                                    newValue.makeFirstValueDefault,
-                            };
-                        });
-                } else {
-                    this.field.valueSet.valueSetDefinition = undefined;
+                    this.field.valueSet = JSON.parse(JSON.stringify(newValue));
+
+                    if (!typeof newValue.restricted === 'undefined')
+                        this.field.valueSet.restricted = newValue.restricted;
+
+                    if (
+                        newValue.valueSetDefinition &&
+                        newValue.valueSetDefinition.value
+                    ) {
+                        this.field.valueSet.valueSetDefinition.value = newValue.valueSetDefinition.value
+                            .split('\n')
+                            .map((value, index) => {
+                                return {
+                                    fullName: value,
+                                    label: value,
+                                    default:
+                                        index === 0 &&
+                                        newValue.makeFirstValueDefault,
+                                };
+                            });
+                    } else {
+                        this.field.valueSet.valueSetDefinition = undefined;
+                    }
+                    delete this.field.valueSet.makeFirstValueDefault;
                 }
-                delete this.field.valueSet.makeFirstValueDefault;
             },
         },
     },

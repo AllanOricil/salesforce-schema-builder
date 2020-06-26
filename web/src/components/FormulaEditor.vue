@@ -212,162 +212,7 @@
         >
             <div class="container">
                 <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                </select>
-                <select size="10">
-                    <option>a</option>
-                    <option>abcdasdadsadsasd</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
-                    <option>a</option>
+                    <option v-if="" @click="">Labels</option>
                 </select>
             </div>
 
@@ -398,6 +243,11 @@ export default {
             formulaType: '',
             formula: '',
         };
+    },
+    computed: {
+        labels() {
+            return this.$store.getters['customlabels/getNames'];
+        },
     },
     watch: {
         formula() {

@@ -1,7 +1,7 @@
 export const actions = {
-    getOrgInfo(context) {
+    getCustomLabels(context) {
         window.vscode.post({
-            cmd: 'getOrgInfo',
+            cmd: "getLabels"
         });
     }
 };
