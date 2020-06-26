@@ -338,7 +338,9 @@
                     required
                     @change="checkValidity"
                 >
-                    <option value="1">Use global picklist value set</option>
+                    <option v-if="orderedGlobalValueSets" value="1"
+                        >Use global picklist value set</option
+                    >
                     <option value="2">
                         Enter values, with each value separated by a new line
                     </option>
@@ -346,6 +348,7 @@
             </div>
             <div
                 v-if="
+                    orderedGlobalValueSets &&
                     (field.type === 'MultiselectPicklist' ||
                         field.type === 'Picklist') &&
                     useGlobalPicklistValueSet &&
@@ -805,13 +808,15 @@ export default {
             ).filter((object) => /^\w*__x\b$/g.test(object.name));
         },
         orderedGlobalValueSets() {
-            return Object.values(
-                this.$store.state.globalvaluesets.globalValueSets
-            ).sort(function (a, b) {
-                return a.fullName
-                    .toLowerCase()
-                    .localeCompare(b.fullName.toLowerCase());
-            });
+            if (this.$store.state.globalvaluesets.globalValueSets)
+                return Object.values(
+                    this.$store.state.globalvaluesets.globalValueSets
+                ).sort(function (a, b) {
+                    return a.fullName
+                        .toLowerCase()
+                        .localeCompare(b.fullName.toLowerCase());
+                });
+            else return null;
         },
     },
     watch: {
@@ -1006,13 +1011,20 @@ export default {
                 );
             else this.defaultValue = undefined;
 
-            if (newValue === 'Picklist' || newValue === 'MultiselectPicklist') {
-                this.field.valueSet.restricted =
-                    this.field.valueSet.restricted === null ||
-                    typeof this.field.valueSet.restricted === 'undefined';
-                this.valueSet.restricted = this.field.valueSet.restricted;
+            if (
+                this.field.type === 'Picklist' ||
+                this.field.type === 'MultiselectPicklist'
+            ) {
+                this.valueSet.restricted = this.field.valueSet.restricted
+                    ? true
+                    : false;
 
-                if (this.field.valueSet.valueSetDefinition.value) {
+                if (
+                    this.field.valueSet &&
+                    this.field.valueSet.valueSetDefinition &&
+                    this.field.valueSet.valueSetDefinition.value &&
+                    this.field.valueSet.valueSetDefinition.value.length
+                ) {
                     this.useGlobalPicklistValueSet = 2;
                     this.field.valueSet.value;
                     this.valueSet.valueSetDefinition.value = this.field.valueSet.valueSetDefinition.value.reduce(
@@ -1025,19 +1037,13 @@ export default {
                         },
                         ''
                     );
+
+                    this.valueSet.makeFirstValueDefault = this.field.valueSet.valueSetDefinition.value[0].default;
+                    this.valueSet.valueSetDefinition.sorted = this.field.valueSet.valueSetDefinition.sorted;
                 } else {
                     this.useGlobalPicklistValueSet = 1;
                     this.valueSet.valueSetName = this.field.valueSet.valueSetName;
                     this.field.valueSet.valueSetDefinition = undefined;
-                }
-
-                if (
-                    this.field.valueSet.valueSetDefinition &&
-                    this.field.valueSet.valueSetDefinition.value &&
-                    this.field.valueSet.valueSetDefinition.value.length
-                ) {
-                    this.valueSet.makeFirstValueDefault = this.field.valueSet.valueSetDefinition.value[0].default;
-                    this.valueSet.valueSetDefinition.sorted = this.field.valueSet.valueSetDefinition.sorted;
                 }
             } else {
                 this.field.valueSet = undefined;
@@ -1081,36 +1087,31 @@ export default {
         valueSet: {
             deep: true,
             handler(newValue) {
+                this.field.valueSet = JSON.parse(JSON.stringify(newValue));
+
+                if (typeof newValue.restricted === 'undefined')
+                    this.field.valueSet.restricted = false;
+                else this.field.valueSet.restricted = newValue.restricted;
+
                 if (
-                    newValue === 'Picklist' ||
-                    newValue === 'MultiselectPicklist'
+                    newValue.valueSetDefinition &&
+                    newValue.valueSetDefinition.value
                 ) {
-                    this.field.valueSet = JSON.parse(JSON.stringify(newValue));
-
-                    if (typeof newValue.restricted === 'undefined')
-                        this.field.valueSet.restricted = true;
-                    else this.field.valueSet.restricted = newValue.restricted;
-
-                    if (
-                        newValue.valueSetDefinition &&
-                        newValue.valueSetDefinition.value
-                    ) {
-                        this.field.valueSet.valueSetDefinition.value = newValue.valueSetDefinition.value
-                            .split('\n')
-                            .map((value, index) => {
-                                return {
-                                    fullName: value,
-                                    label: value,
-                                    default:
-                                        index === 0 &&
-                                        newValue.makeFirstValueDefault,
-                                };
-                            });
-                    } else {
-                        this.field.valueSet.valueSetDefinition = undefined;
-                    }
-                    delete this.field.valueSet.makeFirstValueDefault;
+                    this.field.valueSet.valueSetDefinition.value = newValue.valueSetDefinition.value
+                        .split('\n')
+                        .map((value, index) => {
+                            return {
+                                fullName: value,
+                                label: value,
+                                default:
+                                    index === 0 &&
+                                    newValue.makeFirstValueDefault,
+                            };
+                        });
+                } else {
+                    this.field.valueSet.valueSetDefinition = undefined;
                 }
+                delete this.field.valueSet.makeFirstValueDefault;
             },
         },
     },

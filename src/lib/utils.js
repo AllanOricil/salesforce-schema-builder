@@ -44,6 +44,8 @@ const setupSchemaGlobalDirectory = () => {
         fs.ensureDir(path.resolve(path.join(orgDir, "customObjects")));
       });
     }
+
+
   } catch (error) {
     vscode.window.showErrorMessage(
       "Could not get Org List. Ensure you can run 'sfdx force:org:list --all --json' before opening the extension."

@@ -18,11 +18,15 @@ const SCHEMA_STORAGE_DIR = path.resolve(
  * @param {vscode.ExtensionContext} context
  */
 const activate = (context) => {
+  vscode.window.showInformationMessage('Salesforce Schema Builder is being Activated');
+
   fs.ensureDir(SCHEMA_STORAGE_DIR);
 
   setupSchemaGlobalDirectory();
 
   webview.activate(context, name, "SFDX.schemaBuilder");
+
+  vscode.window.showInformationMessage('Salesforce Schema Builder is Activated');
 };
 
 const deactivate = () => {

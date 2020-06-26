@@ -66,11 +66,14 @@ export default {
             } else return true;
         },
         filteredFields() {
-            if (typeof this.searchValue !== 'undefined' && this.fields.length) {
+            if (this.searchValue) {
                 return this.fields.filter((value) => {
-                    return value.fullName
-                        .toUpperCase()
-                        .includes(this.searchValue.toUpperCase());
+                    return (
+                        value.fullName &&
+                        value.fullName
+                            .toUpperCase()
+                            .includes(this.searchValue.toUpperCase())
+                    );
                 });
             } else {
                 return this.fields;

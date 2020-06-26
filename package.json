@@ -22,7 +22,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:SFDX.schemaBuilder"
+    "workspaceContains:**/sfdx-project.json"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -72,27 +72,27 @@
             "The resulted file is saved as plain Metadata."
           ],
           "default": "Metadata",
-          "description": "It defines the ouput type format. If you are working with a sfdx package, choose Source."
+          "description": "It can be plain Metadata or Source, if you want to work with a sfdx package."
         },
         "salesforceSchemaBuilder.autoUpdateAvailableObjects": {
           "type": "boolean",
           "default": "true",
-          "description": "Schema Builder will retrieve the Schema Information from your Default Org automatically."
+          "description": "Schema Builder will retrieve the database information from your Default Org automatically."
         },
         "salesforceSchemaBuilder.saveToWorkingDirectory": {
           "type": "boolean",
           "default": "false",
-          "markdownDescription": "If true, the Metadata file will be saved in the Working Directory on the destination specified by `#salesforceSchemaBuilder.workingDirectoryFolder#`"
+          "markdownDescription": "If true, the Metadata file will be saved on the destination specified by `#salesforceSchemaBuilder.workingDirectory#`"
         },
-        "salesforceSchemaBuilder.workingDirectoryFolder": {
+        "salesforceSchemaBuilder.workingDirectory": {
           "type": "string",
-          "default": "./schema",
-          "markdownDescription": "It is the folder path, `relative to the Working Directory`. If you choose to save in the force-app folder, change the `#salesforceSchemaBuilder.formatType#` to `Source`"
+          "default": "./manifest",
+          "markdownDescription": "It is the path `relative to the Working Directory`. If you choose to save in the force-app folder, change the `#salesforceSchemaBuilder.formatType#` to `Source`. This will instruct Schema Builder to convert the Metadata to Source automatically."
         },
-        "salesforceSchemaBuilder.globalWorkingDirectory": {
+        "salesforceSchemaBuilder.globalDirectory": {
           "type": "string",
           "default": "${env:USERNAME}",
-          "markdownDescription": "It is the folder where all the necessary Metadata for the Forms is saved, like Global Value Sets or Labels. It defaults to `.vscode/extensions/.schema`. If you want to overwrite it, use a `full path` and make sure you have the right to write to this folder."
+          "markdownDescription": "It is the folder where all the metadata necessary to render the forms is kept, like Global Value Sets,  SObjects and Labels. It defaults to `.vscode/extensions/.schema`. If you want to overwrite it, use an `absolute path` and make sure you have the right to write to thew path."
         }
       }
     }

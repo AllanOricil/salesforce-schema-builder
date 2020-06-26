@@ -36,6 +36,8 @@ class EGWebView extends WebView {
     constructor() {
         super();
 
+        this.defaultOrg = getOrgDisplay();
+
         this.onDidPose = () => {
             this.defaultOrg = getOrgDisplay();
         };
