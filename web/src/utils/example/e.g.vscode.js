@@ -26,6 +26,9 @@ class EGVscode extends Vscode {
     onReceiveSObjectDescription(callback) {
         this.on('receiveSObjectDescription', callback, 0);
     }
+    onReceiveOrgInfo(callback) {
+        this.on('orgInfo', callback, 0);
+    }
 }
 
 export default EGVscode;

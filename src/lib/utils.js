@@ -234,6 +234,35 @@ const getGlobalDescribe = (defaultOrg) => {
     });
 };
 
+const getOrgInfo = () => {
+  const stdout = JSON.parse(execSync(`sfdx force:data:soql:query -q "SELECT LanguageLocaleKey FROM Organization" --json`, {
+    encoding: "utf-8",
+    cwd: vscode.workspace.rootPath,
+  }));
+
+  return stdout.result.records[0];
+};
+
+const refreshOrgInfo = (defaultOrg, panel) => {
+  return new Promise((resolve) => {
+    const orgInfo = getOrgInfo();
+    panel.postMessage({
+      cmd: 'orgInfo',
+      data: orgInfo
+    });
+    resolve(orgInfo);
+  });
+};
+
+const executeSOQL = (soql, defaultOrg) => {
+  return axios
+    .get(`${defaultOrg.instanceUrl}/services/data/v48.0/query/?q=${soql.replace(/\s/g, '+')}`, {
+      headers: {
+        Authorization: `Bearer ${defaultOrg.accessToken}`,
+      },
+    });
+};
+
 const callSObjectDescribe = (defaultOrg, sObjectName) => {
   return axios
     .get(`${defaultOrg.instanceUrl}/services/data/v48.0/sobjects/${sObjectName}/describe/`, {
@@ -260,6 +289,8 @@ module.exports = {
   getOrgDisplay,
   getGlobalDescribe,
   callSObjectDescribe,
+  getOrgInfo,
+  refreshOrgInfo,
   HOME_DIR,
   GLOBAL_STORAGE_DIR,
   ORG_LIST_PATH,

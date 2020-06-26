@@ -132,6 +132,10 @@ export default {
         },
     },
     beforeMount() {
+        window.vscode.post({
+            cmd: 'getOrgInfo',
+        });
+
         window.vscode.onCustomObjectCreated((message) => {
             this.areFormsDisabled = false;
             this.creatingCustomObject = false;
@@ -152,6 +156,12 @@ export default {
             this.$store.commit('sobjects/setSObjects', message.data);
             window.vscode.showMessage({
                 txt: 'SObjects Loaded',
+            });
+        });
+        window.vscode.onReceiveOrgInfo((message) => {
+            this.$store.commit('orgInfo/setOrgInfo', message.data);
+            window.vscode.showMessage({
+                txt: 'Org Info Loaded',
             });
         });
     },
@@ -181,8 +191,7 @@ export default {
                 window.vscode.post({
                     cmd: 'createCustomObject',
                     args: {
-                        objectName: this.$refs.sObjectForm.sObjectDefinition
-                            .objectName,
+                        objectName: this.$refs.sObjectForm.sobject.objectName,
                         xml: this.xml,
                     },
                 });

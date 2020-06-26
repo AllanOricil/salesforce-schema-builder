@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex flex-column pt-3" style="max-height: 100%;">
+    <div class="d-flex flex-column pt-3 h-100" style="max-height: 100%;">
         <button
             id="add-field-button"
             type="button"
@@ -26,7 +26,7 @@
         <div
             id="field-manager-container"
             class="overflow-auto flex-grow-1 pr-0 pr-lg-3"
-            style="height: 950px;"
+            style="height: 900px;"
         >
             <field-manager-field-entry
                 :id="`field-${index}`"

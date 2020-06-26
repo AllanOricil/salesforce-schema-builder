@@ -16,6 +16,8 @@ const {
     getOrgDisplay,
     getGlobalDescribe,
     callSObjectDescribe,
+    getOrgInfo,
+    refreshOrgInfo,
     GLOBAL_STORAGE_DIR
 } = require("../lib/utils.js");
 /**
@@ -79,6 +81,28 @@ class EGWebView extends WebView {
                         });
                     this.panel.webview.postMessage({
                         cmd: "objects",
+                        data: e,
+                    });
+                    this.channel.appendLine(e);
+                }
+            },
+            getOrgInfo: () => {
+                try {
+                    const orgInfo = getOrgInfo();
+                    this.panel.postMessage({
+                        cmd: 'orgInfo',
+                        data: orgInfo
+                    });
+                } catch (e) {
+                    vscode.window
+                        .showErrorMessage("Couldn't get Org Info", "Show Output")
+                        .then((selection) => {
+                            if (selection === "Show Output") {
+                                this.channel.show();
+                            }
+                        });
+                    this.panel.webview.postMessage({
+                        cmd: "orgInfo",
                         data: e,
                     });
                     this.channel.appendLine(e);
@@ -164,7 +188,8 @@ class EGWebView extends WebView {
                 this.defaultOrg = getOrgDisplay();
                 Promise.all([
                     refreshGlobalValueSets(this.defaultOrg, this.panel),
-                    refreshSObjects(this.defaultOrg, this.panel)
+                    refreshSObjects(this.defaultOrg, this.panel),
+                    refreshOrgInfo(this.defaultOrg, this.panel)
                 ]).then(() => {
                     this.panel.webview.postMessage({
                         cmd: "refreshedMetadata",

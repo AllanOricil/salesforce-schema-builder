@@ -25,7 +25,7 @@
                     @keyup="checkValidity"
                 />
             </div>
-            <div class="form-group col-12">
+            <div v-if="hasGender" class="form-group col-12">
                 <label for="sObjecctGender">Gender</label>
                 <select
                     class="form-control"
@@ -277,6 +277,7 @@
 
 <script>
 import he from 'he';
+import languagesWithGender from '../../static/json/languagesWithGender.json';
 export default {
     data() {
         return {
@@ -286,7 +287,7 @@ export default {
                 objectName: undefined,
                 description: undefined,
                 pluralLabel: undefined,
-                gender: 'Feminine',
+                gender: undefined,
                 recordName: undefined,
                 dataType: 'Text',
                 displayFormat: undefined,
@@ -302,6 +303,7 @@ export default {
                 deploymentStatus: 'Deployed',
             },
             objectName: undefined,
+            languages: languagesWithGender.languages,
         };
     },
     computed: {
@@ -333,6 +335,17 @@ export default {
         isValid() {
             return this.$refs.sObjectForm.checkValidity();
         },
+        orgLanguageLocaleKey() {
+            return this.$store.state.orgInfo.orgInfo.LanguageLocaleKey;
+        },
+        hasGender() {
+            return (
+                this.orgLanguageLocaleKey &&
+                this.languages &&
+                this.languages.length &&
+                this.languages.includes(this.orgLanguageLocaleKey)
+            );
+        },
     },
     watch: {
         'sobject.label'(newValue, oldValue) {
@@ -351,6 +364,9 @@ export default {
         'sobject.enableBulkApi'(newValue, oldValue) {
             this.sobject.enableSharing = newValue === true;
             this.sobject.enableStreamingApi = newValue === true;
+        },
+        hasGender(newValue) {
+            this.sobject.gender = newValue === false ? undefined : 'Feminine';
         },
         objectName(newValue) {
             this.objectName = newValue.replace(/\s/g, '_');

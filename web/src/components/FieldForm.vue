@@ -708,7 +708,6 @@
 import he from 'he';
 import { type } from 'os';
 import FormulaEditor from './FormulaEditor.vue';
-import whitelistedStandardSObjects from '../../static/json/whiteListedStandardSObjectsForRelationship.json';
 
 export default {
     components: {
