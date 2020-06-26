@@ -14,7 +14,7 @@
     "url": "https://github.com/AllanOricil/salesforce-schema-builder.git"
   },
   "icon": ".images/icon2.png",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "engines": {
     "vscode": "^1.32.0"
   },
