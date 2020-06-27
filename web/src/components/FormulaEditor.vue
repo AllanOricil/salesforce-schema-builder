@@ -198,6 +198,7 @@
                 :options="cmOptions"
                 heigth="200px"
                 @ready="onCmReady"
+                @cursorActivity="onCmCursorActivity"
             />
         </div>
         <div class="form-group col-12">
@@ -243,7 +244,7 @@
                 <b-button size="md" variant="danger" @click="close()"
                     >Close</b-button
                 >
-                <b-button size="md" variant="danger" @click="insert()"
+                <b-button size="md" variant="danger" @click="insertField()"
                     >Insert</b-button
                 >
             </template>
@@ -277,6 +278,7 @@ export default {
                 mode: 'mathematica',
                 theme: 'vscode-dark',
                 lineNumbers: true,
+                lineWrapping: true,
                 line: true,
             },
             operator: '',
@@ -339,9 +341,13 @@ export default {
                     selected: undefined,
                 },
             ],
+            cursorPosition: {},
         };
     },
     computed: {
+        codemirror() {
+            return this.$refs.cmEditor.codemirror;
+        },
         labels() {
             return this.$store.getters['customlabels/getNames'];
         },
@@ -381,15 +387,11 @@ export default {
         },
     },
     methods: {
-        changeTheme() {
-            alert('oi');
-            cmOptions.theme = 'dracula';
-        },
         addOperator() {
-            this.formula += this.operator;
+            this.codemirror.doc.replaceSelection(this.operator);
         },
         addFunction() {
-            this.formula += this.formulaType;
+            this.codemirror.doc.replaceSelection(this.formulaType);
         },
         addPicklistWithOptions(e, index) {
             const picklist = JSON.parse(e.target.value);
@@ -675,8 +677,8 @@ export default {
         removeNext(index) {
             this.picklists.splice(index + 1);
         },
-        insert() {
-            this.formula += this.fieldToInsert;
+        insertField() {
+            this.codemirror.doc.replaceSelection(this.fieldToInsert);
             this.$bvModal.hide('modal-1');
         },
         onCmReady(cm) {

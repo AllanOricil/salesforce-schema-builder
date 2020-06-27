@@ -85,7 +85,10 @@ export default {
                 delete field._isValid;
                 delete field._isEditing;
 
-                if (field.defaultValue) {
+                if (
+                    field.defaultValue &&
+                    typeof field.defaultValue !== 'boolean'
+                ) {
                     field.defaultValue = field.defaultValue.replace(/\s/g, '');
                 }
 
@@ -109,14 +112,6 @@ export default {
                     } else {
                         field.deleteConstraint = 'Restrict';
                     }
-                }
-
-                if (
-                    field.type !== 'Checkbox' &&
-                    field.defaultValue &&
-                    !field.defaultValue.replace(/\s/g, '').length
-                ) {
-                    delete field.defaultValue;
                 }
             });
             return computedFields;
