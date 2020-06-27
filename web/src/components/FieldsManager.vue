@@ -84,6 +84,11 @@ export default {
             computedFields.forEach((field) => {
                 delete field._isValid;
                 delete field._isEditing;
+
+                if (field.defaultValue) {
+                    field.defaultValue = field.defaultValue.replace(/\s/g, '');
+                }
+
                 if (field.type === 'Formula') {
                     if (field.formulaType === 'Cunrrecy') {
                         field.precision = 18;
