@@ -61,6 +61,7 @@
             class="fixed d-flex flex-column m-auto absolute"
             style="
                 position: absolute;
+                z-index: 999;
                 width: 40%;
                 height: 100%;
                 top: 0px;

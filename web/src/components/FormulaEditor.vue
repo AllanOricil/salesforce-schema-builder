@@ -192,14 +192,13 @@
             </div>
         </div>
         <div class="form-group col-12 mb-2">
-            <textarea
-                class="form-control"
-                id="formulaField"
-                rows="4"
-                maxlength="3900"
+            <codemirror
+                ref="cmEditor"
                 v-model="formula"
-                required
-            ></textarea>
+                :options="cmOptions"
+                heigth="200px"
+                @ready="onCmReady"
+            />
         </div>
         <div class="form-group col-12">
             <b-button v-b-modal.modal-1>Insert Field</b-button>
@@ -254,7 +253,16 @@
 
 <script>
 import apiList from '../../static/json/apiList.json';
+import { codemirror } from 'vue-codemirror';
+import 'codemirror/mode/mathematica/mathematica.js';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/vscode-dark.css';
+import 'codemirror/theme/dracula.css';
+
 export default {
+    components: {
+        codemirror,
+    },
     props: {
         value: {
             type: String,
@@ -264,6 +272,13 @@ export default {
     },
     data() {
         return {
+            cmOptions: {
+                tabSize: 4,
+                mode: 'mathematica',
+                theme: 'vscode-dark',
+                lineNumbers: true,
+                line: true,
+            },
             operator: '',
             formulaType: '',
             formula: '',
@@ -309,12 +324,14 @@ export default {
                         {
                             label: 'User',
                             value: '$User',
+                            reference: 'User',
                             isVisible: true,
                             hasNext: true,
                         },
                         {
                             label: 'User Role',
                             value: '$UserRole',
+                            reference: 'UserRole',
                             isVisible: true,
                             hasNext: true,
                         },
@@ -364,6 +381,10 @@ export default {
         },
     },
     methods: {
+        changeTheme() {
+            alert('oi');
+            cmOptions.theme = 'dracula';
+        },
         addOperator() {
             this.formula += this.operator;
         },
@@ -657,6 +678,9 @@ export default {
         insert() {
             this.formula += this.fieldToInsert;
             this.$bvModal.hide('modal-1');
+        },
+        onCmReady(cm) {
+            cm.setSize(null, 200);
         },
     },
 };
