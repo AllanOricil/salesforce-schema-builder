@@ -241,11 +241,21 @@
             </div>
 
             <template v-slot:modal-footer="{ close }">
-                <b-button size="md" variant="danger" @click="close()"
-                    >Close</b-button
+                <button
+                    type="button"
+                    class="btn btn-md danger"
+                    @click="close()"
                 >
-                <b-button size="md" variant="danger" @click="insertField()"
-                    >Insert</b-button
+                    Close
+                </button>
+                >
+                <button
+                    type="button"
+                    class="btn btn-md danger"
+                    @click="insertField()"
+                >
+                    Insert
+                </button>
                 >
             </template>
         </b-modal>
