@@ -1,0 +1,488 @@
+{
+    "options": [{
+            "label": "API Enterprise Server 10.0 URL",
+            "value": "Enterprise_Server_URL_100",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 11.0 URL",
+            "value": "Enterprise_Server_URL_110",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 11.1 URL",
+            "value": "Enterprise_Server_URL_111",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 12.0 URL",
+            "value": "Enterprise_Server_URL_120",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 13.0 URL",
+            "value": "Enterprise_Server_URL_130",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 14.0 URL",
+            "value": "Enterprise_Server_URL_140",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 15.0 URL",
+            "value": "Enterprise_Server_URL_150",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 16.0 URL",
+            "value": "Enterprise_Server_URL_160",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 17.0 URL",
+            "value": "Enterprise_Server_URL_170",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 18.0 URL",
+            "value": "Enterprise_Server_URL_180",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 19.0 URL",
+            "value": "Enterprise_Server_URL_190",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 2.5 URL",
+            "value": "Enterprise_Server_URL_25",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 20.0 URL",
+            "value": "Enterprise_Server_URL_200",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 21.0 URL",
+            "value": "Enterprise_Server_URL_210",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 22.0 URL",
+            "value": "Enterprise_Server_URL_220",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 23.0 URL",
+            "value": "Enterprise_Server_URL_230",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 24.0 URL",
+            "value": "Enterprise_Server_URL_240",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 25.0 URL",
+            "value": "Enterprise_Server_URL_250",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 26.0 URL",
+            "value": "Enterprise_Server_URL_260",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 27.0 URL",
+            "value": "Enterprise_Server_URL_270",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 28.0 URL",
+            "value": "Enterprise_Server_URL_280",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 29.0 URL",
+            "value": "Enterprise_Server_URL_290",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 3.0 URL",
+            "value": "Enterprise_Server_URL_30",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 30.0 URL",
+            "value": "Enterprise_Server_URL_300",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 31.0 URL",
+            "value": "Enterprise_Server_URL_310",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 32.0 URL",
+            "value": "Enterprise_Server_URL_320",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 33.0 URL",
+            "value": "Enterprise_Server_URL_330",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 34.0 URL",
+            "value": "Enterprise_Server_URL_340",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 35.0 URL",
+            "value": "Enterprise_Server_URL_350",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 36.0 URL",
+            "value": "Enterprise_Server_URL_360",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 37.0 URL",
+            "value": "Enterprise_Server_URL_370",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 38.0 URL",
+            "value": "Enterprise_Server_URL_380",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 39.0 URL",
+            "value": "Enterprise_Server_URL_390",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 4.0 URL",
+            "value": "Enterprise_Server_URL_40",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 40.0 URL",
+            "value": "Enterprise_Server_URL_400",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 41.0 URL",
+            "value": "Enterprise_Server_URL_410",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 42.0 URL",
+            "value": "Enterprise_Server_URL_420",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 43.0 URL",
+            "value": "Enterprise_Server_URL_430",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 44.0 URL",
+            "value": "Enterprise_Server_URL_440",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 45.0 URL",
+            "value": "Enterprise_Server_URL_450",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 46.0 URL",
+            "value": "Enterprise_Server_URL_460",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 47.0 URL",
+            "value": "Enterprise_Server_URL_470",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 48.0 URL",
+            "value": "Enterprise_Server_URL_480",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 5.0 URL",
+            "value": "Enterprise_Server_URL_50",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 6.0 URL",
+            "value": "Enterprise_Server_URL_60",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 7.0 URL",
+            "value": "Enterprise_Server_URL_70",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 8.0 URL",
+            "value": "Enterprise_Server_URL_80",
+            "isVisible": true
+        },
+        {
+            "label": "API Enterprise Server 9.0 URL",
+            "value": "Enterprise_Server_URL_90",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 10.0 URL",
+            "value": "Partner_Server_URL_100",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 11.0 URL",
+            "value": "Partner_Server_URL_110",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 11.1 URL",
+            "value": "Partner_Server_URL_111",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 13.0 URL",
+            "value": "Partner_Server_URL_120",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 13.0 URL",
+            "value": "Partner_Server_URL_130",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 14.0 URL",
+            "value": "Partner_Server_URL_140",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 15.0 URL",
+            "value": "Partner_Server_URL_150",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 16.0 URL",
+            "value": "Partner_Server_URL_160",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 17.0 URL",
+            "value": "Partner_Server_URL_170",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 18.0 URL",
+            "value": "Partner_Server_URL_180",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 19.0 URL",
+            "value": "Partner_Server_URL_190",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 2.5 URL",
+            "value": "Partner_Server_URL_25",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 20.0 URL",
+            "value": "Partner_Server_URL_200",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 21.0 URL",
+            "value": "Partner_Server_URL_210",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 22.0 URL",
+            "value": "Partner_Server_URL_220",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 23.0 URL",
+            "value": "Partner_Server_URL_230",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 24.0 URL",
+            "value": "Partner_Server_URL_240",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 25.0 URL",
+            "value": "Partner_Server_URL_250",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 26.0 URL",
+            "value": "Partner_Server_URL_260",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 27.0 URL",
+            "value": "Partner_Server_URL_270",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 28.0 URL",
+            "value": "Partner_Server_URL_280",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 29.0 URL",
+            "value": "Partner_Server_URL_290",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 3.0 URL",
+            "value": "Partner_Server_URL_30",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 30.0 URL",
+            "value": "Partner_Server_URL_300",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 31.0 URL",
+            "value": "Partner_Server_URL_310",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 32.0 URL",
+            "value": "Partner_Server_URL_320",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 34.0 URL",
+            "value": "Partner_Server_URL_330",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 34.0 URL",
+            "value": "Partner_Server_URL_340",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 35.0 URL",
+            "value": "Partner_Server_URL_350",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 36.0 URL",
+            "value": "Partner_Server_URL_360",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 37.0 URL",
+            "value": "Partner_Server_URL_370",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 38.0 URL",
+            "value": "Partner_Server_URL_380",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 39.0 URL",
+            "value": "Partner_Server_URL_390",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 4.0 URL",
+            "value": "Partner_Server_URL_40",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 40.0 URL",
+            "value": "Partner_Server_URL_400",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 41.0 URL",
+            "value": "Partner_Server_URL_410",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 42.0 URL",
+            "value": "Partner_Server_URL_420",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 43.0 URL",
+            "value": "Partner_Server_URL_430",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 44.0 URL",
+            "value": "Partner_Server_URL_440",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 45.0 URL",
+            "value": "Partner_Server_URL_450",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 46.0 URL",
+            "value": "Partner_Server_URL_460",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 47.0 URL",
+            "value": "Partner_Server_URL_470",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 48.0 URL",
+            "value": "Partner_Server_URL_480",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 5.0 URL",
+            "value": "Partner_Server_URL_50",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 6.0 URL",
+            "value": "Partner_Server_URL_60",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 7.0 URL",
+            "value": "Partner_Server_URL_70",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 8.0 URL",
+            "value": "Partner_Server_URL_80",
+            "isVisible": true
+        },
+        {
+            "label": "API Partner Server 9.0 URL",
+            "value": "Partner_Server_URL_90",
+            "isVisible": true
+        },
+        {
+            "label": "API Session ID",
+            "value": "Session_ID",
+            "isVisible": true
+        }
+    ]
+}

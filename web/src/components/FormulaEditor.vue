@@ -196,6 +196,7 @@
                 class="form-control"
                 id="formulaField"
                 rows="4"
+                maxlength="3900"
                 v-model="formula"
                 required
             ></textarea>
@@ -211,9 +212,32 @@
             cancel-disabled
         >
             <div class="container">
-                <select size="10">
-                    <option v-if="" @click="">Labels</option>
+                <select
+                    v-for="(picklist, index) in picklists"
+                    :key="index"
+                    size="10"
+                    class="mr-2"
+                    v-model="picklist.selected"
+                >
+                    <option
+                        v-for="(option, optionIndex) in picklist.options"
+                        :key="index + '' + optionIndex"
+                        v-if="option.isVisible"
+                        :value="JSON.stringify(option)"
+                        @click="
+                            option.hasNext
+                                ? addPicklistWithOptions($event, index)
+                                : removeNext(index)
+                        "
+                        >{{
+                            option.label + (option.hasNext ? ' ⮞' : '')
+                        }}</option
+                    >
                 </select>
+            </div>
+
+            <div class="container text-wrap mt-2">
+                <span id="formula">{{ fieldToInsert }}</span>
             </div>
 
             <template v-slot:modal-footer="{ close }">
@@ -229,6 +253,7 @@
 </template>
 
 <script>
+import apiList from '../../static/json/apiList.json';
 export default {
     props: {
         value: {
@@ -242,16 +267,100 @@ export default {
             operator: '',
             formulaType: '',
             formula: '',
+            picklists: [
+                {
+                    options: [
+                        {
+                            label: 'Object',
+                            value: '',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'API',
+                            value: '$Api',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Label',
+                            value: '$Label',
+                            isVisible: false,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Organization',
+                            value: '$Organization',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Profile',
+                            value: '$Profile',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'System',
+                            value: '$System',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'User',
+                            value: '$User',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'User Role',
+                            value: '$UserRole',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                    ],
+                    selected: undefined,
+                },
+            ],
         };
     },
     computed: {
         labels() {
             return this.$store.getters['customlabels/getNames'];
         },
+        fieldToInsert() {
+            return this.picklists.reduce(function (
+                previous,
+                current,
+                index,
+                array
+            ) {
+                let valueToConcatenate =
+                    typeof current.selected !== 'undefined'
+                        ? JSON.parse(current.selected).value
+                        : '';
+                return (
+                    previous +
+                    (previous !== '' && index > 0 && valueToConcatenate
+                        ? '.'
+                        : '') +
+                    valueToConcatenate
+                );
+            },
+            '');
+        },
+        userFields() {
+            return this.$store.getters['sobjects/getSObjectFields']('User');
+        },
     },
     watch: {
         formula() {
             this.$emit('input', this.formula);
+        },
+        labels(newValue) {
+            if (newValue.length > 0) {
+                this.picklists[0].options[2].isVisible = true;
+            }
         },
     },
     methods: {
@@ -260,6 +369,294 @@ export default {
         },
         addFunction() {
             this.formula += this.formulaType;
+        },
+        addPicklistWithOptions(e, index) {
+            const picklist = JSON.parse(e.target.value);
+            const picklistValue = picklist.value;
+            const picklistReference = picklist.reference;
+            this.picklists.splice(index + 1);
+
+            let newPicklist = {
+                options: [],
+                selected: undefined,
+            };
+
+            if (index === 0) {
+                if (picklistValue === '') {
+                    newPicklist.options = [
+                        {
+                            label: 'Name',
+                            value: 'Name',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Created By',
+                            value: 'CreatedBy',
+                            reference: 'User',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Created By Id',
+                            value: 'CreatedById',
+                            reference: 'User',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Owner (Queue)',
+                            value: 'Owner:Queue',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Owner (User)',
+                            value: 'Owner:User',
+                            reference: 'User',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Owner Id',
+                            value: 'OwnerId',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Created Date',
+                            value: 'CreatedDate',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Last Modified By',
+                            value: 'LastModifiedBy',
+                            reference: 'User',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Last Modified By Id',
+                            value: 'LastModifiedById',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Last Modified Date',
+                            value: 'LastModifiedDate',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Record Id',
+                            value: 'RecordId',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                    ];
+                } else if (picklistValue === '$Label') {
+                    this.labels.forEach((label) => {
+                        newPicklist.options.push({
+                            label,
+                            value: label,
+                            isVisible: true,
+                        });
+                    });
+                } else if (picklistValue === '$Api') {
+                    newPicklist.options = apiList.options;
+                } else if (picklistValue === '$System') {
+                    newPicklist.options.push({
+                        label: 'Origin Date Time',
+                        value: 'OriginDateTime',
+                        isVisible: true,
+                        hasNext: false,
+                    });
+                } else if (picklistValue === '$Profile') {
+                    newPicklist.options = [
+                        {
+                            label: 'Created Date',
+                            value: 'CreatedDate',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Description',
+                            value: 'Description',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Last Modified By Id',
+                            value: 'LastModifiedById',
+                            isVisible: true,
+                            hasNext: true,
+                        },
+                        {
+                            label: 'Last Modified Date',
+                            value: 'LastModifiedDate',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Manage Users',
+                            value: 'ManageUsers',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Name',
+                            value: 'Name',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Profile Id',
+                            value: 'ProfileId',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Usage Type',
+                            value: 'UsageType',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'User Type',
+                            value: 'UserType',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                    ];
+                } else if (picklistValue === '$UserRole') {
+                    newPicklist.options = [
+                        {
+                            label: 'Case Access Level for Account Owner',
+                            value: 'CaseAccessForAccountOwner',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Contact Access Level for Account Owner',
+                            value: 'ContactAccessForAccountOwner',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Description',
+                            value: 'RollupDescription',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Developer Name',
+                            value: 'DeveloperName',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Last Modified Date',
+                            value: 'LastModifiedDate',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'May Forecast Manager Share',
+                            value: 'MayForecastManagerShare',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Name',
+                            value: 'Name',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Opportunity Access Level for Account Owner',
+                            value: 'OpportunityAccessForAccountOwner',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Portal Role',
+                            value: 'PortalRole',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Portal Type',
+                            value: 'PortalType',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                        {
+                            label: 'Role ID',
+                            value: 'Id',
+                            isVisible: true,
+                            hasNext: false,
+                        },
+                    ];
+                }
+            } else {
+                if (picklistReference) {
+                    this.$store.getters['sobjects/getSObjectFields'](
+                        picklistReference
+                    ).forEach((field) => {
+                        if (field.referenceTo.length > 0) {
+                            if (
+                                this.$store.getters[
+                                    'sobjects/getSObjectFields'
+                                ](field.referenceTo[0]).length === 0
+                            ) {
+                                this.$store.dispatch(
+                                    'sobjects/getSObjectDescribe',
+                                    field.referenceTo[0]
+                                );
+                            }
+                            newPicklist.options.push({
+                                label: field.label,
+                                value: field.relationshipName,
+                                reference: field.referenceTo[0],
+                                isVisible: true,
+                                hasNext: true,
+                            });
+
+                            newPicklist.options.push({
+                                label: field.label,
+                                value: field.name,
+                                isVisible: true,
+                                hasNext: false,
+                            });
+                        } else {
+                            if (this.canBeUsedInFormula(field))
+                                newPicklist.options.push({
+                                    label: field.label,
+                                    value: field.name,
+                                    isVisible: true,
+                                    hasNext: field.referenceTo.length > 0,
+                                });
+                        }
+                    });
+                }
+            }
+
+            this.picklists.push(newPicklist);
+        },
+        canBeUsedInFormula(field) {
+            return (field.type === 'textarea' && field.length > 255) ||
+                field.type === 'encryptedstring' ||
+                field.name === 'Description'
+                ? false
+                : true;
+        },
+        removeNext(index) {
+            this.picklists.splice(index + 1);
+        },
+        insert() {
+            this.formula += this.fieldToInsert;
+            this.$bvModal.hide('modal-1');
         },
     },
 };
@@ -270,5 +667,12 @@ export default {
     overflow-x: auto;
     white-space: nowrap;
     padding: 0;
+}
+
+#formula {
+    color: var(--vscode-menu-foreground) !important;
+    font-family: var(--vscode-font-family) !important;
+    font-weight: var(--vscode-font-weight) !important;
+    font-size: 18px !important;
 }
 </style>

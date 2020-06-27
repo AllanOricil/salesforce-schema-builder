@@ -173,8 +173,17 @@ export default {
                 });
             }
         });
+        window.vscode.onReceiveSObjectDescription((message) => {
+            if (message.data) {
+                this.$store.commit('sobjects/setSObject', message.data);
+                window.vscode.showMessage({
+                    txt: 'SObject Details Received',
+                });
+            }
+        });
     },
     mounted() {
+        this.$store.dispatch('sobjects/getSObjectDescribe', 'User');
         this.$store.dispatch('orgInfo/getOrgInfo');
         this.$store.dispatch('globalvaluesets/getAvailableGlobalValueSets');
         this.$store.dispatch('sobjects/getAvailableSObjects');

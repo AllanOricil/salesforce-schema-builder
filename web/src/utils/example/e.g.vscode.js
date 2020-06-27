@@ -24,7 +24,7 @@ class EGVscode extends Vscode {
         this.on('refreshedMetadata', callback, 0);
     }
     onReceiveSObjectDescription(callback) {
-        this.on('receiveSObjectDescription', callback, 0);
+        this.on('sobjectDescribe', callback, 0);
     }
     onReceiveOrgInfo(callback) {
         this.on('orgInfo', callback, 0);

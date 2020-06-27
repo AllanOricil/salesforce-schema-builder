@@ -5,12 +5,10 @@ const path = require('path');
 const { execSync, exec } = require('child_process');
 const axios = require('axios');
 const HOME_DIR = require('os').homedir();
-
 const GLOBAL_STORAGE_DIR = path.resolve(path.join(HOME_DIR, '.schemabuilder'));
 const ORG_LIST_PATH = path.resolve(
   path.join(GLOBAL_STORAGE_DIR, 'orgList.json')
 );
-
 const TIME_TO_REQUEST_NEW_AUTH_TOKEN = 1;
 
 const setupSchemaGlobalDirectory = () => {
@@ -113,7 +111,7 @@ const getGlobalValueSets = (defaultOrg) => {
       return listMetadata('GlobalValueSet', defaultOrg);
     }
 
-    return globalValuesets;
+    return new Promise((resolve) => resolve(globalValuesets));
   } catch (e) {
     throw e;
   }

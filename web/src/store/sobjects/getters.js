@@ -15,4 +15,11 @@ export const getters = {
                     .localeCompare(b.name.toLowerCase());
             });
     },
+    getSObjectFields: (state) => (apiName) => {
+        if (state.sobjectsWithDetails[apiName]) {
+            return state.sobjectsWithDetails[apiName].fields;
+        } else {
+            return [];
+        }
+    }
 };
