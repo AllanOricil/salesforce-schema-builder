@@ -44,6 +44,8 @@ sfdx force:config:set defaultusername=me@myhub.org -g
 
 Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and select it to open the Schema Builder.
 
+<img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="600px"></img>
+
 Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
 You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
 
