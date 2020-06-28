@@ -18,6 +18,7 @@ If you want to contribute with this work, please click on the button below!
 
 - sfdx-cli 7.58.2 or above
 - VS Code 1.32.0 or above
+- MUST BE USED FROM A SFDX PROJECT
 
 # Instalation
 
