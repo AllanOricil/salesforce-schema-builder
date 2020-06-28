@@ -14,7 +14,7 @@
     "url": "https://github.com/AllanOricil/schema-builder-issues.git"
   },
   "icon": ".images/icon.png",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "engines": {
     "vscode": "^1.32.0"
   },
