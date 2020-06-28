@@ -108,6 +108,10 @@ The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the def
 
 # Enhanced Formula Editor
 
+<img src="https://drive.google.com/uc?id=1W415UkSflJ3i8HLs6lkRecoKJRBBS01j" width="600px"></img>
+
+<img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="600px"></img>
+
 # POC Schema Builder
 
 Once the solution to create and edit SObjects is stable, I will start to develop this POC.
