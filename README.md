@@ -24,6 +24,7 @@ Open VS Code, click on the Extension button in the side bar menu, search for `Sa
 
 <img src="https://drive.google.com/uc?id=18AxpHzeGz9_dUEdVC1GEerkRLnW2ZDMv" width="800px"></img>
 
+<<<<<<< HEAD
 Then wait for the Activation Message to appear.
 
 <img src="https://drive.google.com/uc?id=1SdsySV3__XbDMdWFxZX4khTNlcfs_l-m" width="600px"></img>
@@ -31,6 +32,15 @@ Then wait for the Activation Message to appear.
 # How to Deploy a new Custom Object
 
 ### Configure a Default Username
+=======
+Then wait for the following message to appear.
+
+<img src="https://drive.google.com/uc?id=1SdsySV3__XbDMdWFxZX4khTNlcfs_l-m" width="800px"></img>
+
+# How to Deploy a new Custom Object
+
+## Configure SFDX
+>>>>>>> e971c068a8cbd31c1f921e6a5e53b10d51d80ccf
 
 Configure a Default Username in the SFDX using the Global flag. The UI will this user to save your Custom Object.
 
@@ -38,12 +48,30 @@ Configure a Default Username in the SFDX using the Global flag. The UI will this
 sfdx force:config:set defaultusername=me@myhub.org -g
 ```
 
+<<<<<<< HEAD
 ## Open the Schema Builder
 
 Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and select it to open the Schema Builder.
+=======
+## Open Schema Builder
 
-<img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="900px"></img>
+Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and select it to open the Schema Builder.
 
+<img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="600px"></img>
+
+## Configure your Object and Fields
+
+Create the new SObject and its Fields.
+
+<img src="https://drive.google.com/uc?id=1YZDUKFz3eu2VjLRRUXip_tFd31t8vMcF" width="900px"></img>
+
+## Save
+>>>>>>> e971c068a8cbd31c1f921e6a5e53b10d51d80ccf
+
+Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
+You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
+
+<<<<<<< HEAD
 ## Configure your Object and Fields
 
 Create the new SObject and its Fields.
@@ -66,6 +94,21 @@ If the deploy failed you will see the following notification message.
 You can see the error message clicking on the `Show Output` button to see the errors.
 
 <img src="https://drive.google.com/uc?id=12_34OqZGNtxPYY2jVr02qN05LnUqxrcP" width="1200px"></img>
+=======
+<img src="https://drive.google.com/uc?id=1v3JjZtHxeBGGHs6bEcXiPygsLAEjOIUU" width="900px"></img>
+
+If the Custom Object was deployed correctly you should see the following notification message.
+
+<img src="https://drive.google.com/uc?id=16iNrrrjMToIEUEWFoS_6Yr4525jNjOFO" width="900px"></img>
+
+If the deploy failed you will see the following notification message.
+
+<img src="https://drive.google.com/uc?id=15LvELxLWXVyTCusoC8E0orZR1blm7ZRA" width="900px"></img>
+
+You can see the error message clicking on the `Show Output` button to see the errors.
+
+<img src="https://drive.google.com/uc?id=12_34OqZGNtxPYY2jVr02qN05LnUqxrcP" width="900px"></img>
+>>>>>>> e971c068a8cbd31c1f921e6a5e53b10d51d80ccf
 
 # How to Deploy to a different Environment
 
@@ -74,6 +117,7 @@ Change the defaultusername again with the following command.
 ```
 sfdx force:config:set defaultusername=me@myhub.org -g
 ```
+<<<<<<< HEAD
 
 Then click on the Save button and the new object will be on the new Environment.
 
@@ -96,6 +140,23 @@ To preview the Metadata while creating your SObject, click on the indicated butt
 <img src="https://drive.google.com/uc?id=1HB9pBCFvtx-d_pHP_HMyKVWGmfPUedRo" width="600px"></img>
 
 A panel with the generated Metadata XML will open. You can use it to verify if the Metadata is correct. If you find something wrong you can open an issue [here](https://github.com/AllanOricil/schema-builder-issues).
+=======
+
+Then click on the Save button and the new object will be on the new Environment.
+
+# How to Load the Custom Objects, Labels, Global Value Sets from the new Environment
+
+Everytime you choose a new Environment click on the Refresh button and wait a few seconds to see Custom Objects, Labels and Global Value Sets on the forms.
+You can also close and open again the Schema Builder to get the metadata related to the new environment.
+
+<img src="https://drive.google.com/uc?id=1zOw1hvf2aWz34BpLr19RXm805YA0RjKt" width="900px"></img>
+
+# How to Preview the Metadata XML
+
+To preview the Metadata while creating your SObject, click on the indicated button in the image below.
+
+<img src="https://drive.google.com/uc?id=1HB9pBCFvtx-d_pHP_HMyKVWGmfPUedRo" width="900px"></img>
+>>>>>>> e971c068a8cbd31c1f921e6a5e53b10d51d80ccf
 
 This metadata is also saved in the following location, depending on your OS.
 
