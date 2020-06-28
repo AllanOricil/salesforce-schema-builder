@@ -7,8 +7,9 @@ If you want to contribute with this work, please click on the button below!
 
 ## Features
 
-- [x] Create and Edit Salesforce Objects.
+- [x] Create Salesforce SObjects.
 - [x] [Enhanced Formula builder](#enhanced-formula-editor).
+- [ ] Edit Salesforce SObjects.
 - [ ] Save the Metadata directly to your SFDX Project.
 - [ ] Create and Edit Validation Rules.
 - [ ] [Interactive 2D Schema Visualization.](#poc-schema-builder)
@@ -45,7 +46,7 @@ Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and selec
 Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
 You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
 
-## Configure your Object and Fields
+## Create a new Custom Object with Fields
 
 Create the new SObject and its Fields.
 
