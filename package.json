@@ -13,8 +13,8 @@
     "type": "git",
     "url": "https://github.com/AllanOricil/schema-builder-issues.git"
   },
-  "icon": ".images/icon2.png",
-  "version": "0.4.4",
+  "icon": ".images/icon.png",
+  "version": "0.4.5",
   "engines": {
     "vscode": "^1.32.0"
   },
