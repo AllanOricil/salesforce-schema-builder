@@ -1,7 +1,11 @@
 // @ts-nocheck
-const { WebView } = require('../vscode/vscode.webview');
+const {
+  WebView
+} = require('../vscode/vscode.webview');
 const vscode = require('vscode');
-const { execSync } = require('child_process');
+const {
+  execSync
+} = require('child_process');
 
 const path = require('path');
 const fs = require('fs-extra');
@@ -106,8 +110,7 @@ class EGWebView extends WebView {
       </types>
       <version>48.0</version>
   </Package>
-  `,
-          {
+  `, {
             encoding: 'utf8',
           }
         );
@@ -118,16 +121,14 @@ class EGWebView extends WebView {
             'objects',
             customObjectName + '__c.object'
           ),
-          customObjectXml,
-          {
+          customObjectXml, {
             encoding: 'utf8',
           }
         );
 
         try {
           const metadataDeployResult = execSync(
-            `sfdx force:mdapi:deploy -d ${customObjectFolder} -w 90 --json`,
-            {
+            `sfdx force:mdapi:deploy -d ${customObjectFolder} -w 90 --json`, {
               cwd: vscode.workspace.rootPath,
               encoding: 'utf8',
             }
@@ -141,9 +142,7 @@ class EGWebView extends WebView {
                 this.channel.show();
               }
             });
-          this.panel.webview.postMessage({
-            cmd: 'customObjectCreated',
-          });
+          this.postMessage('customObjectCreated');
         } catch (e) {
           this.channel.appendLine(e.stdout);
           vscode.window
@@ -153,24 +152,25 @@ class EGWebView extends WebView {
                 this.channel.show();
               }
             });
+          this.postMessage('customObjectCreated');
         }
       },
       refreshGlobalValueSetsAndObjectsMetadata: () => {
         this.defaultOrg = getOrgDisplay();
         Promise.all([
-          refreshOrgInfo(this.defaultOrg, (response) => {
-            this.postMessage('orgInfo', response);
-          }),
-          refreshGlobalValueSets(this.defaultOrg, (response) => {
-            this.postMessage('globalValueSets', response);
-          }),
-          refreshSObjects(this.defaultOrg, (response) => {
-            this.postMessage('objects', response.data.sobjects);
-          }),
-          refreshLabels(this.defaultOrg, (response) => {
-            this.postMessage('labels', response);
-          }),
-        ])
+            refreshOrgInfo(this.defaultOrg, (response) => {
+              this.postMessage('orgInfo', response);
+            }),
+            refreshGlobalValueSets(this.defaultOrg, (response) => {
+              this.postMessage('globalValueSets', response);
+            }),
+            refreshSObjects(this.defaultOrg, (response) => {
+              this.postMessage('objects', response.data.sobjects);
+            }),
+            refreshLabels(this.defaultOrg, (response) => {
+              this.postMessage('labels', response);
+            }),
+          ])
           .then(() => {
             this.panel.webview.postMessage({
               cmd: 'refreshedMetadata',

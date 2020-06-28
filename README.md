@@ -8,7 +8,7 @@ If you want to contribute with this work, please click on the button below!
 ## Features
 
 - [x] Create and Edit Salesforce Objects.
-- [x] Enhanced Formula builder.
+- [x] [Enhanced Formula builder](#enhanced-formula-editor).
 - [ ] Save the Metadata directly to your SFDX Project.
 - [ ] Create and Edit Validation Rules.
 - [ ] [Interactive 2D Schema Visualization.](#poc-schema-builder)
@@ -64,13 +64,13 @@ If the deploy failed you will see the following notification message.
 
 <img src="https://drive.google.com/uc?id=15LvELxLWXVyTCusoC8E0orZR1blm7ZRA" width="600px"></img>
 
-You can see the error message clicking on the `Show Output` button to see the errors.
+You can see the error message clicking on the `Show Output`. It displays exactly what you would have seen on the `Deploy Status` page on the Setup.
 
 <img src="https://drive.google.com/uc?id=12_34OqZGNtxPYY2jVr02qN05LnUqxrcP" width="1200px"></img>
 
 # How to Deploy to a different Environment
 
-Change the defaultusername again with the following command.
+Change the defaultusername with the following command.
 
 ```
 sfdx force:config:set defaultusername=me@myhub.org -g
@@ -100,12 +100,16 @@ A panel with the generated Metadata XML will open. You can use it to verify if t
 
 This metadata is also saved in the following location, depending on your OS.
 
-Windows: `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
+<b>Windows:</b> `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
 
-Linux and MacOS: `~/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+<b>Linux and MacOS:</b> `~/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
 
 The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created.
 
-## POC Schema Builder
+# Enhanced Formula Editor
+
+# POC Schema Builder
+
+Once the solution to create and edit SObjects is stable, I will start to develop this POC.
 
 <img src="https://drive.google.com/uc?id=1aVk7LpoLj8WtkLoryQjPIvRrdkaFQcnz" width="900px"></img>
