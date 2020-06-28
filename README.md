@@ -1,6 +1,6 @@
 # Salesforce Schema Builder for VS Code
 
-This extension enable developers to manage Salesforce Custom Objects without having to leave VS Code.
+This extension is being created to enable developers to manage Salesforce Custom Objects without having to leave VS Code.
 If you want to contribute with this work, please click on the button below!
 
 <a href="https://www.buymeacoffee.com/allanoricil" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
