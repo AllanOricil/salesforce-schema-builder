@@ -48,10 +48,16 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "SFDX.schemaBuilder",
+          "group": "navigation",
+          "when": "resourceFilename =~ /sfdx-project.json/"
+        }
+      ],
       "editor/title": [
         {
           "command": "SFDX.schemaBuilder",
-          "alt": "markdown.showPreviewToSide",
           "group": "navigation",
           "when": "resourceExtname == .object || resourceFilename =~ /.object-meta.xml/"
         }
