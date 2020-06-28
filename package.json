@@ -21,6 +21,13 @@
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "salesforce",
+    "sobjects",
+    "sfdx",
+    "database",
+    "schema"
+  ],
   "activationEvents": [
     "*"
   ],
