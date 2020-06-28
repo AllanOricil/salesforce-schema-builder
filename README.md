@@ -15,46 +15,90 @@ If you want to contribute with this work, please click on the button below!
 
 ## Requirements
 
-- sfdx-cli/7.58.2-937f666ed4 win32-x64 node-v10.15.3
-- VS Code 1.32.0
+- sfdx-cli 7.58.2 or above
+- VS Code 1.32.0 or above
 
-## How to Use
+# Instalation
 
-First, configure a Default Username for SFDX using the Global flag.
+Open VS Code, click on the Extension button in the side bar menu, search for `Salesforce Schema Builder` and click `Install`.
+
+<img src="https://drive.google.com/uc?id=18AxpHzeGz9_dUEdVC1GEerkRLnW2ZDMv" width="800px"></img>
+
+Then wait for the following message to appear.
+
+<img src="https://drive.google.com/uc?id=1SdsySV3__XbDMdWFxZX4khTNlcfs_l-m" width="800px"></img>
+
+# How to Deploy a new Custom Object
+
+## Configure SFDX
+
+Configure a Default Username in the SFDX using the Global flag. The UI will this user to save your Custom Object.
 
 ```
 sfdx force:config:set defaultusername=me@myhub.org -g
 ```
 
-In a SFDX Project directory, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and select it to open the Schema Builder.
+## Open Schema Builder
 
-<img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="900px"></img>
+Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and select it to open the Schema Builder.
 
-The Schema Builder is divided in three sections, the Object Form on the left, the Field manager on the middle and the Field form on the right. In the Object Form you can configure the same options that are available in the Salesfore Setup to create a new Custom Object. The field manager is where you add, remove or search the fields. The field form is enabled every time you click on edit in a field in the field manager. The form is reactive, it is different for each type of field and it provides the same functionality available in the Setup.
+<img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="600px"></img>
 
-<b>obs:</b> The formula builder is still being developed but you can paste your formula in the "Default" field when available.
+## Configure your Object and Fields
 
-<img src="https://drive.google.com/uc?id=1rOpCKTUxbTf6CgoEVK0u1sVhRKl7GuNM" width="900px"></img>
-<img src="https://drive.google.com/uc?id=13uw7I39ltDF3YBLbFvk8dKQDV82uOo8P" width="900px"></img>
-<img src="https://drive.google.com/uc?id=1rX9De8Dna95yjomtZvoFgzSPDYah30Ks" width="900px"></img>
+Create the new SObject and its Fields.
 
-If you want to see the Metadata XML, just click on the button on the top right hand corner of VS Code, like shown in the next image.
+<img src="https://drive.google.com/uc?id=1YZDUKFz3eu2VjLRRUXip_tFd31t8vMcF" width="900px"></img>
 
-<img src="https://drive.google.com/uc?id=1yZJWrRdDjXfXEnuKUcinVidZEzE_ppsA" width="900px"></img>
+## Save
 
-<img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="900px"></img>
+Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
+You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
 
-When you finish to configure your new Custom Object, scroll down and click on the Save button.
+<img src="https://drive.google.com/uc?id=1v3JjZtHxeBGGHs6bEcXiPygsLAEjOIUU" width="900px"></img>
 
-<img src="https://drive.google.com/uc?id=1aWDJIVW5ApN4CViJnL_dO1e09cGONvCG" width="500px"></img>
+If the Custom Object was deployed correctly you should see the following notification message.
 
-The generated Metadata is saved inside the folder
+<img src="https://drive.google.com/uc?id=16iNrrrjMToIEUEWFoS_6Yr4525jNjOFO" width="900px"></img>
 
-Windows: `%USERPROFILE%\.vscode\extensions\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
+If the deploy failed you will see the following notification message.
 
-Linux and MacOS: `~/.vscode/extensions/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+<img src="https://drive.google.com/uc?id=15LvELxLWXVyTCusoC8E0orZR1blm7ZRA" width="900px"></img>
 
-The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created or edited.
+You can see the error message clicking on the `Show Output` button to see the errors.
+
+<img src="https://drive.google.com/uc?id=12_34OqZGNtxPYY2jVr02qN05LnUqxrcP" width="900px"></img>
+
+# How to Deploy to a different Environment
+
+Change the defaultusername again with the following command.
+
+```
+sfdx force:config:set defaultusername=me@myhub.org -g
+```
+
+Then click on the Save button and the new object will be on the new Environment.
+
+# How to Load the Custom Objects, Labels, Global Value Sets from the new Environment
+
+Everytime you choose a new Environment click on the Refresh button and wait a few seconds to see Custom Objects, Labels and Global Value Sets on the forms.
+You can also close and open again the Schema Builder to get the metadata related to the new environment.
+
+<img src="https://drive.google.com/uc?id=1zOw1hvf2aWz34BpLr19RXm805YA0RjKt" width="900px"></img>
+
+# How to Preview the Metadata XML
+
+To preview the Metadata while creating your SObject, click on the indicated button in the image below.
+
+<img src="https://drive.google.com/uc?id=1HB9pBCFvtx-d_pHP_HMyKVWGmfPUedRo" width="900px"></img>
+
+This metadata is also saved in the following location, depending on your OS.
+
+Windows: `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
+
+Linux and MacOS: `~/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+
+The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created.
 
 ## POC Schema Builder
 
