@@ -8,7 +8,7 @@ If you want to contribute with this work, please click on the button below!
 ## Features
 
 - [x] Create Salesforce SObjects.
-- [x] [Enhanced Formula builder](#enhanced-formula-editor).
+- [x] [Enhanced Formula Editor](#enhanced-formula-editor).
 - [ ] Edit Salesforce SObjects.
 - [ ] Save the Metadata directly to your SFDX Project.
 - [ ] Create and Edit Validation Rules.
