@@ -97,7 +97,7 @@ To preview the Metadata while creating your SObject, click on the indicated butt
 
 <img src="https://drive.google.com/uc?id=1HB9pBCFvtx-d_pHP_HMyKVWGmfPUedRo" width="600px"></img>
 
-A panel with the generated Metadata XML will open. You can use it to verify if the Metadata is correct. If you find something wrong you can open an issue [here](https://github.com/AllanOricil/schema-builder-issues).
+A panel with the generated Metadata XML will open. You can use it to verify if the Metadata is correct. If you find something wrong you can open an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
 
 <img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="600px"></img>
 
@@ -111,9 +111,15 @@ The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the def
 
 # Enhanced Formula Editor
 
+Now functions and operators can be easily found on top of the text area.
+
 <img src="https://drive.google.com/uc?id=1W415UkSflJ3i8HLs6lkRecoKJRBBS01j" width="600px"></img>
 
-<img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="600px"></img>
+And if you need to get a field reference you can click on the `Insert Field` button to open the field selection.
+
+<img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="1200px"></img>
+
+<b>OBS:</b> Currently there are more fields showing up then it should. I have to put in a blacklist some of the fields manually because the Salesforce API's do not have any info saying that the field is referenceable on a formula or not. You can help me to do it opening an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
 
 # POC Schema Builder
 
