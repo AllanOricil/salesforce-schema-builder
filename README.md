@@ -99,11 +99,13 @@ To preview the Metadata while creating your SObject, click on the indicated butt
 
 A panel with the generated Metadata XML will open. You can use it to verify if the Metadata is correct. If you find something wrong you can open an issue [here](https://github.com/AllanOricil/schema-builder-issues).
 
+<img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="600px"></img>
+
 This metadata is also saved in the following location, depending on your OS.
 
 <b>Windows:</b> `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
 
-<b>Linux and MacOS:</b> `~/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+<b>Linux and MacOS:</b> `home/username/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
 
 The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created.
 
