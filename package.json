@@ -8,13 +8,13 @@
     "email": "allanoricilcos@outlook.com"
   },
   "homepage": "https://github.com/AllanOricil/schema-builder-issues/blob/master/README.md",
-  "description": "Allow developers to manage Salesforce Objects from Visual Studio Code",
+  "description": "Manage Salesforce Objects",
   "repository": {
     "type": "git",
     "url": "https://github.com/AllanOricil/schema-builder-issues.git"
   },
   "icon": ".images/icon.png",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "engines": {
     "vscode": "^1.32.0"
   },
