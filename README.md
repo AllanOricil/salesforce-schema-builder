@@ -114,7 +114,7 @@ The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the def
 
 # Enhanced Formula Editor
 
-Now functions and operators can be easily found on top of the text area.
+Now functions and operators can be easily found on top of the text area. The formula editor also have sintax highlight.
 
 <img src="https://drive.google.com/uc?id=1W415UkSflJ3i8HLs6lkRecoKJRBBS01j" width="600px"></img>
 
