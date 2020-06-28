@@ -53,7 +53,7 @@ Create the new SObject and its Fields.
 
 <img src="https://drive.google.com/uc?id=1YZDUKFz3eu2VjLRRUXip_tFd31t8vMcF" width="1200px"></img>
 
-Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
+Make sure there are no errors and then Click on the Save button. The Save button only works if the forms are all valid.
 You will notice that the button changed to `Deploying...`. Also, while the Custom Object is being deployed, the forms are disabled.
 
 <img src="https://drive.google.com/uc?id=1v3JjZtHxeBGGHs6bEcXiPygsLAEjOIUU" width="1200px"></img>
@@ -120,7 +120,7 @@ And if you need to get a field reference you can click on the `Insert Field` but
 
 <img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="1200px"></img>
 
-<b>OBS:</b> Currently there are more fields showing up then it should. I have to put in a blacklist some of the fields manually because the Salesforce API's do not have any info saying that the field is referenceable on a formula or not. You can help me to do it opening an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
+<b>OBS:</b> Currently there are more fields being displayed then it should. I have to put in a blacklist some of the fields manually because the Salesforce API's do not have any info saying that the field is referenceable on a formula or not. You can help me to do it opening an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
 
 # POC Schema Builder
 
