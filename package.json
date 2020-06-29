@@ -48,13 +48,6 @@
       }
     ],
     "menus": {
-      "commandPalette": [
-        {
-          "command": "SFDX.schemaBuilder",
-          "group": "navigation",
-          "when": "resourceFilename =~ /sfdx-project.json/"
-        }
-      ],
       "editor/title": [
         {
           "command": "SFDX.schemaBuilder",
