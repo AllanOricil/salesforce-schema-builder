@@ -1,6 +1,6 @@
 # Salesforce Schema Builder for VS Code
 
-This extension enable developers to manage Salesforce Custom Objects without having to leave VS Code.
+This extension is being created to enable developers to manage Salesforce Custom Objects without having to leave VS Code.
 If you want to contribute with this work, please click on the button below!
 
 <a href="https://www.buymeacoffee.com/allanoricil" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
@@ -8,7 +8,7 @@ If you want to contribute with this work, please click on the button below!
 ## Features
 
 - [x] Create Salesforce SObjects.
-- [x] [Enhanced Formula builder](#enhanced-formula-editor).
+- [x] [Enhanced Formula Editor](#enhanced-formula-editor).
 - [ ] Edit Salesforce SObjects.
 - [ ] Save the Metadata directly to your SFDX Project.
 - [ ] Create and Edit Validation Rules.
@@ -18,6 +18,7 @@ If you want to contribute with this work, please click on the button below!
 
 - sfdx-cli 7.58.2 or above
 - VS Code 1.32.0 or above
+- MUST BE USED FROM A SFDX PROJECT
 
 # Instalation
 
@@ -43,6 +44,8 @@ sfdx force:config:set defaultusername=me@myhub.org -g
 
 Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and select it to open the Schema Builder.
 
+<img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="600px"></img>
+
 Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
 You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
 
@@ -52,7 +55,7 @@ Create the new SObject and its Fields.
 
 <img src="https://drive.google.com/uc?id=1YZDUKFz3eu2VjLRRUXip_tFd31t8vMcF" width="1200px"></img>
 
-Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
+Make sure there are no errors and then Click on the Save button. The Save button only works if the forms are all valid.
 You will notice that the button changed to `Deploying...`. Also, while the Custom Object is being deployed, the forms are disabled.
 
 <img src="https://drive.google.com/uc?id=1v3JjZtHxeBGGHs6bEcXiPygsLAEjOIUU" width="1200px"></img>
@@ -97,21 +100,29 @@ To preview the Metadata while creating your SObject, click on the indicated butt
 
 <img src="https://drive.google.com/uc?id=1HB9pBCFvtx-d_pHP_HMyKVWGmfPUedRo" width="600px"></img>
 
-A panel with the generated Metadata XML will open. You can use it to verify if the Metadata is correct. If you find something wrong you can open an issue [here](https://github.com/AllanOricil/schema-builder-issues).
+A panel with the generated Metadata XML will open. You can use it to verify if the Metadata is correct. If you find something wrong you can open an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
+
+<img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="600px"></img>
 
 This metadata is also saved in the following location, depending on your OS.
 
 <b>Windows:</b> `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
 
-<b>Linux and MacOS:</b> `~/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+<b>Linux and MacOS:</b> `home/username/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
 
 The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created.
 
 # Enhanced Formula Editor
 
+Now functions and operators can be easily found on top of the text area. The formula editor also have sintax highlight.
+
 <img src="https://drive.google.com/uc?id=1W415UkSflJ3i8HLs6lkRecoKJRBBS01j" width="600px"></img>
 
-<img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="600px"></img>
+And if you need to get a field reference you can click on the `Insert Field` button to open the field selection.
+
+<img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="1200px"></img>
+
+<b>OBS:</b> Currently there are more fields being displayed then it should. I have to put in a blacklist some of the fields manually because the Salesforce API's do not have any info saying that the field is referenceable on a formula or not. You can help me to do it opening an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
 
 # POC Schema Builder
 
