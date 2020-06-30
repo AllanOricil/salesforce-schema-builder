@@ -104,10 +104,18 @@ class WebView {
         }
       );
 
-      const onDiskPath = vscode.Uri.file(
+      const darkIcon = vscode.Uri.file(
         path.join(context.extensionPath, ".images", "icon_dark.png")
       );
-      this.panel.iconPath = onDiskPath;
+
+      const lightIcon = vscode.Uri.file(
+        path.join(context.extensionPath, ".images", "icon_light.png")
+      );
+      
+      this.panel.iconPath = {
+        light: lightIcon,
+        dark: darkIcon
+      };
 
       // load html
       this.panel.webview.html = WebView.getHtml4Path(htmlPath);
