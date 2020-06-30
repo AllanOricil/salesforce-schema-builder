@@ -147,7 +147,7 @@
                         "
           >
             {{
-            option.label + (option.hasNext ? ' ⮞' : '')
+            option.label + (option.hasNext ? ' ➤' : '')
             }}
           </option>
         </select>
