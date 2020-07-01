@@ -75,8 +75,8 @@
               <option value="YEAR(date)">YEAR</option>
             </select>
           </div>
-          <div class="d-flex pl-auto pr-0 mx-auto mb-0">
-            <button class="btn btn-primary my-auto" @click="addFunction()">
+          <div class="d-flex pl-auto">
+            <button class="btn btn-primary h-100" @click="addFunction()">
               <span class="fa fa-plus"></span>
             </button>
           </div>
@@ -105,8 +105,8 @@
               <option value="||">|| Or</option>
             </select>
           </div>
-          <div class="d-flex pl-auto pr-0 mx-auto mb-0">
-            <button class="btn btn-primary my-auto" @click="addOperator()">
+          <div class="d-flex pl-auto">
+            <button class="btn btn-primary h-100" @click="addOperator()">
               <span class="fa fa-plus"></span>
             </button>
           </div>
