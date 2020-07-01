@@ -46,6 +46,8 @@ Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and selec
 
 <img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="600px"></img>
 
+Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
+You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
 
 ## Create a new Custom Object with Fields
 
@@ -80,7 +82,7 @@ sfdx force:config:set defaultusername=me@myhub.org -g
 
 Then click on the Save button and the new object will be on the new Environment.
 
-# How to Refresh Custom Objects, Labels and Global Value Sets after switching to a new Environment
+# How to Refresh Custom Objects, Labels and Global Value Sets for the new Username
 
 Everytime you choose a new Environment click on the Refresh button and wait a few seconds to see new Custom Objects, Labels and Global Value Sets on the forms.
 You can also close and open again the Schema Builder to get the metadata related to the new environment.
@@ -102,11 +104,13 @@ A panel with the generated Metadata XML will open. You can use it to verify if t
 
 <img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="600px"></img>
 
-This metadata is saved in the following location, depending on your OS.
+This metadata is also saved in the following location, depending on your OS.
 
 <b>Windows:</b> `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
 
 <b>Linux and MacOS:</b> `home/username/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
+
+The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created.
 
 # Enhanced Formula Editor
 
@@ -119,6 +123,24 @@ And if you need to get a field reference you can click on the `Insert Field` but
 <img src="https://drive.google.com/uc?id=1gDyWZf0FIDN664EBjPtaHvMMf2cuUOf8" width="1200px"></img>
 
 <b>OBS:</b> Currently there are more fields being displayed then it should. I have to put in a blacklist some of the fields manually because the Salesforce API's do not have any info saying that the field is referenceable on a formula or not. You can help me to do it opening an Issue [here](https://github.com/AllanOricil/schema-builder-issues).
+
+# Multiple VSCode Themes
+
+## Dark
+
+<img src="https://drive.google.com/uc?id=1D-Weq-qsEzks7yGzDdpfEglgGTWXZHNx" width="1200px"></img>
+
+## Light
+
+<img src="https://drive.google.com/uc?id=1rbBJ9hKEJ6IDr1EEO4Wkw7Yr4d6lcVVW" width="1200px"></img>
+
+## Quite Light
+
+<img src="https://drive.google.com/uc?id=17DwuuothYK5rJ8W_KRu7Txaz5bx4KDNG" width="1200px"></img>
+
+## Abyss
+
+<img src="https://drive.google.com/uc?id=1oiizthNQBqEVX7L-C1E2Z12ornCW1pNc" width="1200px"></img>
 
 # POC Schema Builder
 
