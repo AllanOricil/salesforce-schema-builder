@@ -46,8 +46,6 @@ Open a SFDX Project, press `Ctrl+Shift+P`, type `SFDX: Schema Builder` and selec
 
 <img src="https://drive.google.com/uc?id=1Be54v-Og83A9emO_tJAWZepjyiktnOMq" width="600px"></img>
 
-Make sure there are no errors and then Click on Save. The Save button only works if the forms are all valid.
-You will notice that the button changed to `Deploying...`. While the Custom Object is being deployed the forms are disabled.
 
 ## Create a new Custom Object with Fields
 
@@ -82,7 +80,7 @@ sfdx force:config:set defaultusername=me@myhub.org -g
 
 Then click on the Save button and the new object will be on the new Environment.
 
-# How to Refresh Custom Objects, Labels and Global Value Sets for the new Username
+# How to Refresh Custom Objects, Labels and Global Value Sets after switching to a new Environment
 
 Everytime you choose a new Environment click on the Refresh button and wait a few seconds to see new Custom Objects, Labels and Global Value Sets on the forms.
 You can also close and open again the Schema Builder to get the metadata related to the new environment.
@@ -104,13 +102,11 @@ A panel with the generated Metadata XML will open. You can use it to verify if t
 
 <img src="https://drive.google.com/uc?id=1956XLUE0njEMwzrNBn8t1gem1incODK-" width="600px"></img>
 
-This metadata is also saved in the following location, depending on your OS.
+This metadata is saved in the following location, depending on your OS.
 
 <b>Windows:</b> `%USERPROFILE%\.schema\DEFAULT_USERNAME\customObjects\CUSTOM_OBJECT_NAME`
 
 <b>Linux and MacOS:</b> `home/username/.schema/DEFAULT_USERNAME/customObjects/CUSTOM_OBJECT_NAME`
-
-The variables `DEFAULT_USERNAME` and `CUSTOM_OBJECT_NAME` are defined by the default username configured in sfdx and the object api name you created.
 
 # Enhanced Formula Editor
 
