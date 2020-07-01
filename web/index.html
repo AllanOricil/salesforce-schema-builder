@@ -58,7 +58,7 @@
     input,
     textarea,
     select {
-        border: 1px solid transparent !important;
+        border: 1px solid var(--vscode-inputOption-activeBackground) !important;
         border-radius: 0 !important;
         background-color: var(--vscode-input-background) !important;
         color: var(--vscode-input-foreground) !important;
@@ -72,6 +72,13 @@
         background-color: var(--vscode-input-background) !important;
         color: var(--vscode-input-foreground) !important;
         box-shadow: none !important;
+    }
+
+    input:invalid,
+    textarea:invalid,
+    select:invalid {
+        background-color: var(--vscode-inputValidation-errorBackground) !important;
+        border-color: var(--vscode-inputValidation-errorBorder) !important;
     }
 
     ::placeholder {
@@ -147,17 +154,18 @@
         left: 0 !important;
         height: 20px !important;
         width: 20px !important;
-        background-color: var(--vscode-settings-checkboxBackground) !important;
+        border: 1px solid var(--vscode-inputOption-activeBackground) !important;
+        background-color: var(--vscode-input-background) !important;
     }
 
     /* On mouse-over, add a grey background color */
     .custom-checkbox-container:hover input~.checkmark {
-        background-color: var(--vscode-settings-checkboxBackground) !important;
+        background-color: var(--vscode-button-background) !important;
     }
 
     /* When the checkbox is checked, add a blue background */
     .custom-checkbox-container input:checked~.checkmark {
-        background-color: var(--vscode-settings-checkboxForeground) !important;
+        background-color: var(--vscode-button-background) !important;
     }
 
     /* Create the checkmark/indicator (hidden when not checked) */
@@ -178,19 +186,13 @@
         top: 4px !important;
         width: 5px !important;
         height: 10px !important;
-        border: solid var(--vscode-settings-checkboxBorder) !important;
+        border: solid var(--vscode-button-foreground) !important;
         border-width: 0 3px 3px 0 !important;
         -webkit-transform: rotate(45deg) !important;
         -ms-transform: rotate(45deg) !important;
         transform: rotate(45deg) !important;
     }
 
-    input:invalid,
-    textarea:invalid,
-    select:invalid {
-        background-color: var(--vscode-inputValidation-errorBackground) !important;
-        border-color: var(--vscode-inputValidation-errorBorder) !important;
-    }
 
     .modal-content {
         background-color: var(--vscode-editor-background) !important;

@@ -191,8 +191,8 @@ html {
     --vscode-scrollbarSlider-activeBackground: rgba(0, 0, 0, 0.6);
     --vscode-scrollbarSlider-background: rgba(100, 100, 100, 0.4);
     --vscode-scrollbarSlider-hoverBackground: rgba(100, 100, 100, 0.7);
-    --vscode-settings-checkboxBackground: #ffffff;
-    --vscode-settings-checkboxBorder: #cecece;
+    --vscode-settings-checkboxBackground: #66afe0;
+    --vscode-settings-checkboxBorder: #ffffff;
     --vscode-settings-checkboxForeground: #f0f0f0;
     --vscode-settings-dropdownBackground: #ffffff;
     --vscode-settings-dropdownBorder: #cecece;

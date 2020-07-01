@@ -33,7 +33,7 @@
     "schema"
   ],
   "activationEvents": [
-    "*"
+    "workspaceContains:sfdx-project.json"
   ],
   "main": "./src/extension.js",
   "contributes": {

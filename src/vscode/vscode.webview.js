@@ -194,7 +194,7 @@ class WebView {
     context.subscriptions.push(
       vscode.commands.registerCommand(cmdName, (uri) => {
         this._uri = uri;
-        this.showPanel(context, htmlPath);
+          this.showPanel(context, htmlPath);
         this.bridgeData.updateItems({
             extensionPath: context.extensionPath,
             rootPath: vscode.workspace.rootPath,

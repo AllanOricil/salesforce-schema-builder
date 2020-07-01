@@ -5,7 +5,7 @@
             class="fas fa-exclamation-triangle my-auto mr-2"
             style="color: var(--vscode-editorOverviewRuler-errorForeground);"
         ></span>
-        <span class="my-auto mr-3 w-100 text-truncate" style="color: white;">
+        <span class="field-entry-api-name my-auto mr-3 w-100 text-truncate" style="color: white;">
             {{ field.fullName }}
         </span>
         <button
@@ -63,5 +63,9 @@ export default {
 .notEditing {
     padding-left: 10px;
     border-left: 3px solid transparent;
+}
+
+.field-entry-api-name{
+    color: var(--vscode-input-foreground) !important;
 }
 </style>

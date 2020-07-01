@@ -225,7 +225,7 @@ const getOrgDisplay = () => {
         (1000 * 60 * 60);
       if (
         elapsedTimeInHours > TIME_TO_REQUEST_NEW_AUTH_TOKEN ||
-        orgDisplay.result.alias !== defaultUsername[0].value
+        orgDisplay.result.username !== defaultUsername[0].value
       ) {
         return refreshOrgDisplay();
       } else {
